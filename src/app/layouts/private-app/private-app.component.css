@@ -1,0 +1,42 @@
+
+.toolbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  font-weight: 600;
+  z-index: 99!important;
+}
+
+
+#contain {
+  padding-top: 80px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+section {
+  -webkit-box-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+}
+
+.sideBar {
+  margin-left: 400px;
+  transition: all ease .3s;
+}
+
+
+@media screen and (max-width: 991px) {
+  .sideBar {
+    margin-left: 0;
+    transition: all ease .3s;
+  }
+}

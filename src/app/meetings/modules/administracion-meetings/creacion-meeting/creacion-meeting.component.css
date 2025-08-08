@@ -1,0 +1,600 @@
+/* ELIMINAR SCROLLBARS DEL BODY Y HTML */
+:host {
+  overflow: hidden !important;
+}
+
+:host::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+}
+
+:host {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
+}
+
+/* ELIMINAR SCROLLBARS GLOBALMENTE */
+::ng-deep body::-webkit-scrollbar,
+::ng-deep html::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+}
+
+::ng-deep body,
+::ng-deep html {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
+}
+
+.calendar-container {
+  padding: 20px;
+  background: white;
+  min-height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  overflow: hidden;
+}
+
+.calendar-container::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+}
+
+.calendar-container {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
+}
+
+.calendar-header {
+  text-align: center;
+  margin-bottom: 30px;
+  color: #333;
+}
+
+.calendar-header h2 {
+  font-size: 2.5rem;
+  font-weight: 300;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.calendar-header p {
+  font-size: 1.1rem;
+  color: #666;
+  margin: 0;
+}
+
+.calendar-wrapper {
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+  padding: 20px;
+  margin-bottom: 30px;
+  overflow: visible;
+  border: 1px solid #e9ecef;
+  height: auto;
+  min-height: 100vh;
+}
+
+/* Eliminar scrollbars del contenedor principal */
+.calendar-wrapper::-webkit-scrollbar {
+  display: none !important;
+}
+
+.calendar-wrapper {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
+}
+
+/* Estilos básicos para FullCalendar */
+:host ::ng-deep .fc {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Eliminar scrollbars de contenedores principales */
+:host ::ng-deep .fc::-webkit-scrollbar {
+  display: none !important;
+}
+
+:host ::ng-deep .fc {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
+}
+
+:host ::ng-deep .fc-header-toolbar {
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  gap: 10px;
+}
+
+:host ::ng-deep .fc-button {
+  background: #007bff !important;
+  border: none !important;
+  border-radius: 8px !important;
+  padding: 8px 16px !important;
+  font-weight: 500 !important;
+  transition: all 0.3s ease !important;
+  color: white !important;
+  margin: 0 2px !important;
+  font-size: 0.9rem !important;
+}
+
+:host ::ng-deep .fc-button:hover {
+  background: #0056b3 !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2) !important;
+}
+
+:host ::ng-deep .fc-button:active {
+  transform: translateY(0) !important;
+}
+
+:host ::ng-deep .fc-toolbar-chunk {
+  display: flex !important;
+  gap: 5px !important;
+  align-items: center !important;
+}
+
+:host ::ng-deep .fc-toolbar-chunk:not(:last-child) {
+  margin-right: 15px !important;
+}
+
+:host ::ng-deep .fc-toolbar-title {
+  font-size: 1.5rem !important;
+  font-weight: 600 !important;
+  color: #333 !important;
+}
+
+:host ::ng-deep .fc-daygrid-day {
+  transition: all 0.3s ease;
+}
+
+:host ::ng-deep .fc-daygrid-day:hover {
+  background-color: #f8f9fa !important;
+}
+
+:host ::ng-deep .fc-event {
+  border-radius: 6px !important;
+  border: none !important;
+  padding: 4px 8px !important;
+  font-weight: 500 !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+  transition: all 0.3s ease !important;
+}
+
+:host ::ng-deep .fc-event:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+}
+
+:host ::ng-deep .fc-day-today {
+  background-color: rgba(0, 123, 255, 0.1) !important;
+}
+
+/* Fondo blanco para el grid de día */
+:host ::ng-deep .fc-timegrid-body,
+:host ::ng-deep .fc-timegrid-slots,
+:host ::ng-deep .fc-timegrid-col-frame,
+:host ::ng-deep .fc-timegrid-col-events,
+:host ::ng-deep .fc-timegrid-col-bg,
+:host ::ng-deep .fc-timegrid-slot,
+:host ::ng-deep .fc-timegrid-slot-lane {
+  background-color: white !important;
+}
+
+/* Fondo blanco para las celdas de día específicamente */
+:host ::ng-deep .fc-daygrid-day,
+:host ::ng-deep .fc-daygrid-day-frame,
+:host ::ng-deep .fc-daygrid-day-events,
+:host ::ng-deep .fc-daygrid-day-bg {
+  background-color: white !important;
+}
+
+/* Fondo blanco para las columnas de tiempo */
+:host ::ng-deep .fc-timegrid-col {
+  background-color: white !important;
+}
+
+/* Asegurar que el área principal del calendario tenga fondo blanco */
+:host ::ng-deep .fc-view-harness,
+:host ::ng-deep .fc-view-harness-active {
+  background-color: white !important;
+}
+
+/* Scroll vertical solo para el grid de horas */
+:host ::ng-deep .fc-timegrid-body {
+  overflow-y: auto !important;
+  max-height: none !important;
+  height: auto !important;
+}
+
+/* Estilos del scrollbar solo para el grid de horas */
+:host ::ng-deep .fc-timegrid-body::-webkit-scrollbar {
+  width: 12px !important;
+  display: block !important;
+}
+
+:host ::ng-deep .fc-timegrid-body::-webkit-scrollbar-track {
+  background: #f1f1f1 !important;
+  border-radius: 6px !important;
+}
+
+:host ::ng-deep .fc-timegrid-body::-webkit-scrollbar-thumb {
+  background: #007bff !important;
+  border-radius: 6px !important;
+  border: 2px solid #f1f1f1 !important;
+}
+
+:host ::ng-deep .fc-timegrid-body::-webkit-scrollbar-thumb:hover {
+  background: #0056b3 !important;
+}
+
+/* Forzar que el scroll sea visible en Firefox y otros navegadores */
+:host ::ng-deep .fc-timegrid-body {
+  scrollbar-width: thin !important;
+  scrollbar-color: #007bff #f1f1f1 !important;
+}
+
+/* Asegurar que el contenedor tenga altura suficiente para mostrar scroll */
+:host ::ng-deep .fc-timegrid {
+  height: auto !important;
+  min-height: auto !important;
+}
+
+/* Eliminar scroll del contenedor padre */
+:host ::ng-deep .fc-view-harness {
+  overflow: hidden !important;
+}
+
+:host ::ng-deep .fc-view-harness-active {
+  overflow: hidden !important;
+}
+
+/* ELIMINAR TODOS LOS SCROLLBARS EXCEPTO EL AZUL */
+:host ::ng-deep *::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+}
+
+:host ::ng-deep * {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
+}
+
+/* EXCEPCIÓN: Solo mostrar scrollbar azul en el grid de horas */
+:host ::ng-deep .fc-timegrid-body::-webkit-scrollbar {
+  display: block !important;
+  width: 12px !important;
+}
+
+:host ::ng-deep .fc-timegrid-body {
+  scrollbar-width: thin !important;
+  scrollbar-color: #007bff #f1f1f1 !important;
+}
+
+/* Asegurar que el contenido del calendario sea scrollable */
+:host ::ng-deep .fc-timegrid-col-frame {
+  height: auto !important;
+  overflow: hidden !important;
+}
+
+:host .fc-timegrid-col-events {
+  height: auto !important;
+  overflow: hidden !important;
+}
+
+/* Eliminar scrollbars de elementos específicos */
+:host ::ng-deep .fc-timegrid-col-frame::-webkit-scrollbar,
+:host ::ng-deep .fc-timegrid-col-events::-webkit-scrollbar,
+:host ::ng-deep .fc-timegrid::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+}
+
+:host ::ng-deep .fc-timegrid-col-frame,
+:host ::ng-deep .fc-timegrid-col-events,
+:host ::ng-deep .fc-timegrid {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
+}
+
+/* Estilos básicos para la línea de hora actual */
+:host ::ng-deep .fc-timegrid-now-indicator {
+  z-index: 99999 !important;
+  pointer-events: none !important;
+  position: relative !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  background: none !important;
+}
+
+:host ::ng-deep .fc-timegrid-now-indicator-line {
+  background: #dc3545 !important;
+  height: 3px !important;
+  border: none !important;
+  box-shadow: 0 0 8px rgba(220, 53, 69, 0.8) !important;
+  z-index: 99999 !important;
+  opacity: 1 !important;
+  position: absolute !important;
+  width: 100% !important;
+  display: block !important;
+  visibility: visible !important;
+}
+
+:host ::ng-deep .fc-timegrid-now-indicator-arrow {
+  background-color: #dc3545 !important;
+  border: none !important;
+  box-shadow: 0 0 8px rgba(220, 53, 69, 0.8) !important;
+  z-index: 99999 !important;
+  opacity: 1 !important;
+  position: absolute !important;
+  display: block !important;
+  visibility: visible !important;
+  width: 0 !important;
+  height: 0 !important;
+  border-left: 8px solid #dc3545 !important;
+  border-top: 8px solid transparent !important;
+  border-bottom: 8px solid transparent !important;
+  left: -8px !important;
+  top: -4px !important;
+}
+
+/* Estilos básicos para la línea de hora actual en vista de día */
+:host ::ng-deep .fc-daygrid-now-indicator {
+  z-index: 99999 !important;
+  pointer-events: none !important;
+  position: relative !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  background: none !important;
+}
+
+:host ::ng-deep .fc-daygrid-now-indicator-line {
+  background: #dc3545 !important;
+  height: 3px !important;
+  border: none !important;
+  box-shadow: 0 0 8px rgba(220, 53, 69, 0.8) !important;
+  z-index: 99999 !important;
+  opacity: 1 !important;
+  position: absolute !important;
+  width: 100% !important;
+  display: block !important;
+  visibility: visible !important;
+}
+
+:host ::ng-deep .fc-daygrid-now-indicator-arrow {
+  background-color: #dc3545 !important;
+  border: none !important;
+  box-shadow: 0 0 8px rgba(220, 53, 69, 0.8) !important;
+  z-index: 99999 !important;
+  opacity: 1 !important;
+  position: absolute !important;
+  display: block !important;
+  visibility: visible !important;
+  width: 0 !important;
+  height: 0 !important;
+  border-left: 8px solid #dc3545 !important;
+  border-top: 8px solid transparent !important;
+  border-bottom: 8px solid transparent !important;
+  left: -8px !important;
+  top: -4px !important;
+}
+
+/* Estilos adicionales para forzar la visibilidad */
+:host ::ng-deep .fc-timegrid-now-indicator *,
+:host ::ng-deep .fc-daygrid-now-indicator * {
+  z-index: 99999 !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  display: block !important;
+}
+
+.calendar-info {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.info-card {
+  background: white;
+  border-radius: 15px;
+  padding: 25px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  max-width: 500px;
+  width: 100%;
+}
+
+.info-card h4 {
+  color: #333;
+  font-size: 1.3rem;
+  margin-bottom: 15px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.info-card ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.info-card li {
+  padding: 8px 0;
+  color: #666;
+  font-size: 1rem;
+  border-bottom: 1px solid #f0f0f0;
+  transition: all 0.3s ease;
+}
+
+.info-card li:last-child {
+  border-bottom: none;
+}
+
+.info-card li:hover {
+  color: #667eea;
+  padding-left: 5px;
+}
+
+/* Estilos para la leyenda de horarios */
+.schedule-legend {
+  margin-top: 15px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  gap: 10px;
+}
+
+.legend-color {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+}
+
+.legend-color.office-hours {
+  background-color: white;
+  border-left: 3px solid #007bff;
+}
+
+.legend-color.off-hours {
+  background-color: #f8f9fa;
+}
+
+.legend-color.current-time {
+  background-color: #dc3545;
+  width: 2px;
+  height: 20px;
+}
+
+.legend-color.scroll-hint {
+  background: linear-gradient(45deg, #007bff, #0056b3);
+  width: 20px;
+  height: 20px;
+  position: relative;
+}
+
+.legend-color.scroll-hint::before {
+  content: "↑";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .calendar-container {
+    padding: 10px;
+  }
+  
+  .calendar-header h2 {
+    font-size: 2rem;
+  }
+  
+  .calendar-wrapper {
+    padding: 15px;
+  }
+  
+  :host ::ng-deep .fc-header-toolbar {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  :host ::ng-deep .fc-toolbar-chunk {
+    display: flex !important;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  :host ::ng-deep .fc-button {
+    padding: 6px 12px !important;
+    font-size: 0.8rem !important;
+  }
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.calendar-wrapper {
+  animation: fadeIn 0.6s ease-out;
+}
+
+.info-card {
+  animation: fadeIn 0.8s ease-out;
+}
+
+/* Asegurar que todas las horas se muestren correctamente */
+:host ::ng-deep .fc-timegrid-slot {
+  height: 60px !important;
+  min-height: 60px !important;
+}
+
+:host ::ng-deep .fc-timegrid-slot-lane {
+  height: 60px !important;
+  min-height: 60px !important;
+}
+
+/* Asegurar que el contenedor principal del calendario tenga altura suficiente */
+:host ::ng-deep .fc-view-harness {
+  height: auto !important;
+  min-height: 100vh !important;
+}
+
+:host ::ng-deep .fc-view-harness-active {
+  height: auto !important;
+  min-height: 100vh !important;
+}
+
+/* Asegurar que el grid de tiempo se expanda correctamente */
+:host ::ng-deep .fc-timegrid-axis {
+  height: auto !important;
+}
+
+:host ::ng-deep .fc-timegrid-col-frame {
+  height: auto !important;
+}
+
+/* Asegurar que el calendario se expanda correctamente */
+:host ::ng-deep .fc {
+  height: auto !important;
+  min-height: 100vh !important;
+}
+
+:host ::ng-deep .fc-view-harness {
+  height: auto !important;
+  min-height: 100vh !important;
+}
+
+:host ::ng-deep .fc-view-harness-active {
+  height: auto !important;
+  min-height: 100vh !important;
+}
+
+/* Asegurar que el grid de tiempo se expanda correctamente */
+:host ::ng-deep .fc-timegrid-axis {
+  height: auto !important;
+}
+
+:host ::ng-deep .fc-timegrid-col-frame {
+  height: auto !important;
+}

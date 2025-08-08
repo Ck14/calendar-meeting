@@ -1,0 +1,157 @@
+<div class="p-3">
+    <div *ngIf="(mq === 'lg' || mq === 'xl') then laptop else dispositivoMovil"></div>
+    <ng-template #laptop>
+
+        <h4 class="text-muted">Usuarios</h4>
+        <div class="card  p-3">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-6">
+
+
+
+                        <div class="form-icon right">
+                            <input type="text" class="form-control form-control-icon" placeholder="Buscar" [(ngModel)]="term" />
+                            <i class="bi bi-search"></i>
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-2">
+
+                        <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+
+                            <div class="btn-group" role="group">
+                                <button id="btnGroupDrop1" type="button" style="color: white; overflow: visible;" [ngClass]="{'btn-success': textFiltro=='Activo', 'btn-danger':  textFiltro=='Inactivo' }" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+
+                            {{this.textFiltro}}
+                          </button>
+                                <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                                    <li (click)="filtrar(true)"><a class="dropdown-item"><span style="vertical-align: middle;  color: var(--bs-info);" class="material-icons">check</span>&nbsp;Activo</a></li>
+                                    <li (click)="filtrar(false)"><a class="dropdown-item"><span style="vertical-align: middle;  color: var(--bs-info);" class="material-icons">block</span>&nbsp;Inactivo</a></li>
+                                    <li (click)="limpiarFiltro()"><a class="dropdown-item"><span style="vertical-align: middle;  color: var(--bs-info);" class="material-icons">contacts</span>&nbsp;Todos</a></li>
+
+
+
+
+                                </ul>
+                                <!-- <button (click)="limpiarFiltro()" tooltip="Limpiar filtro" type="button" style="color: white; overflow: visible; " [ngClass]="{'btn-success': textFiltro=='Activo', 'btn-danger':  textFiltro=='Inactivo'}" class="btn btn-primary ">
+                                    <span style="vertical-align: middle; align-content: start;  color: white;" class="material-icons">close</span>
+                                  </button> -->
+                            </div>
+                        </div>
+
+
+
+                    </div>
+
+                    <div class="col-4 text-end">
+                        <button type="button" class="btn btn-primary btn-label" (click)="abrirModalAgregarUsuario()">
+                <i class="bi bi-plus label-icon"></i>
+                Crear usuario
+              </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="card overflow-hidden p-3">
+
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-core">
+                        <thead>
+                            <tr>
+                                <th>NIT</th>
+                                <th>Nombre</th>
+                                <th>Correo Electrónico Institucional (Envío de notificaciones del sistema)</th>
+                                <th style="text-align: center;">Estado usuario</th>
+                                <th style="text-align: center;">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of listaUsuarios| filterPipe: term | paginate : { itemsPerPage: itemsPage, currentPage: currentPageModel }">
+                                <td>{{ item.nitUsuario }}</td>
+                                <td>{{ item.nombreCompleto }}</td>
+                                <td>{{ item.emailInstitucional }}</td>
+                                <td class="bg-table text-uppercase fw-semibold" [class]="item.activo ? 'bg-success' : 'bg-danger'" align="center">{{ (item.activo) ? "Activo" : "Inactivo" }}</td>
+                                <td align="center">
+                                    <button tooltip="Editar rol" class="btn btn-icon btn-ghost-secondary rounded-circle" style="color: var(--bs-primary);" (click)="abrirModalRolesUsuario(item)">
+                                <span class="material-icons">assignment_ind</span>
+                                </button>
+                                    <button tooltip="Actualizar correo" class="btn btn-icon btn-ghost-secondary rounded-circle" style="color: var(--bs-primary);" (click)="abrirModalActualizacionCorreo(item)">
+                                <span class="material-icons">mail</span>
+                                </button>
+
+                                    <button tooltip="Activar/Inactivar" [hidden]="item.activo" class="btn btn-icon btn-ghost-secondary rounded-circle" style="color: var(--bs-danger);" (click)="botonActivar(item, true)">
+                                <span class="material-icons">toggle_off</span>
+                                </button>
+
+                                    <button tooltip="Activar/Inactivar" [hidden]="!item.activo" class="btn btn-icon btn-ghost-secondary rounded-circle" style="color: var(--bs-success);" (click)="botonActivar(item, false)">
+                                <span class="material-icons">toggle_on</span>
+                                </button>
+
+
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <pagination-controls [maxSize]="maxSizeModel" [directionLinks]="directionLinks" (pageChange)="currentPageModel = $event" [previousLabel]="previousLabelModel" [nextLabel]="nextLabelModel"></pagination-controls>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+    </ng-template>
+    <ng-template #dispositivoMovil>
+        <div class="row">
+            <div class="col-md-12 mb-3">
+                <!-- <input type="text" class="form-control" placeholder="Buscar" [(ngModel)]="filtrarBusqueda" /> -->
+            </div>
+            <button type="button" class="btn btn-primary btn-fab" (click)="abrirModalAgregarUsuario()">
+          <span class="material-icons">add</span>
+        </button>
+
+            <div class="col-md-6 sm-12" *ngFor="let item of listaUsuarios| filterPipe: term  ">
+                <div class="card overflow-hidden" [class]="item.activo? 'bar-left-success' : 'bar-left-danger'">
+                    <div class="card-header">
+                        <div class="d-flex">
+                            <div class="card-title mb-0">
+                                <strong>{{ item.nombreCompleto }}</strong>
+                                <span class="badge ms-1 mb-0" [class]="item.activo ? 'badge-soft-success' : 'badge-soft-danger'">{{ (item.activo) ? "Activo" : "Inactivo" }}</span> <br>
+                                <small>{{item.nitUsuario}}</small>
+                            </div>
+                            <div class="ms-auto my-auto">
+                                <div class="btn-group" dropdown>
+                                    <button dropdownToggle type="button" class="btn btn-icon-sm light">
+                      <i class="bi bi-three-dots-vertical"></i>
+                    </button>
+                                    <ul *dropdownMenu class="dropdown-menu dropdown-menu-right" style="z-index: 100;">
+                                        <li role="menuitem"><a class="dropdown-item" (click)="editarModalUsuario()">Ver permisos</a></li>
+                                        <li role="menuitem"><a class="dropdown-item" (click)="editarModalUsuario()">Editar</a></li>
+                                        <li role="menuitem"><a class="dropdown-item" (click)="editarModalUsuario()">Eliminar</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!-- <div *ngIf="!listadoUsuariosFiltrados.length" [class]="resultadobusqueda ? 'alert-warning' : 'alert-danger'" class="alert alert-dismissible fade show" role="alert">
+            <span *ngIf="!resultadobusqueda"><strong>Lo sentimos!</strong> No encontramos resultados</span>
+            <span *ngIf="resultadobusqueda"><strong>Lo sentimos!</strong> No pudimos encontrar ningún resultado para su búsqueda. Use palabras más genéricas o revise su ortografía.</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div> -->
+    </ng-template>
+    <!-- <div *ngIf="listadoUsuariosFiltrados.length > itemsPage " class="d-flex justify-content-center">
+        <pagination-controls class="pagination-rounded" (pageChange)="page = $event" previousLabel="" nextLabel=""></pagination-controls>
+    </div> -->
+</div>

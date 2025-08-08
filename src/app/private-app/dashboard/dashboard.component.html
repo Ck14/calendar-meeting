@@ -1,0 +1,96 @@
+<section class="p-3">
+    <div class="row">
+        <div class="col-12 col-md-12">
+            <h4>Dashboard</h4>
+        </div>
+        <div class="mt-2"></div>
+
+        <div *ngFor="let item of menu[0].opciones" [hidden]="item.descripcion=='Inicio'" class="col-xs-12  col-md-12  col-lg-6   col-xl-6 col-xxl-3">
+            <div class="card overflow-hidden text-truncate" (click)="goToMenu(item.url)">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-8">
+                            <span class="fs-20"><b>{{item.nombre}}</b></span>
+                            <br>
+                            <span>{{item.descripcion}}</span>
+                        </div>
+                        <div class="col-4">
+                            <div class="squad-icon my-auto float-end" [ngClass]="item.color">
+                                <span style="color: white;" class="material-icons">{{item.icono}}</span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- <div class="col-xs-12 col-md-12 col-lg-6 col-xl-6 col-xxl-3 ">
+            <div class="card overflow-hidden text-truncate " (click)="goToMenu( 'catalogos') ">
+                <div class="card-body ">
+                    <div class="row ">
+                        <div class="col-8 ">
+                            <span class="fs-20 "><b>Catálogos</b></span>
+                            <br>
+                            <span>Administración de catálogos</span>
+                        </div>
+                        <div class="col-4 ">
+                            <div class="squad-icon bg-danger my-auto float-end ">
+                                <i class="bi bi-file-text "></i>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12 col-md-12 col-lg-6 col-xl-6 col-xxl-3 ">
+            <div class="card overflow-hidden text-truncate " (click)="goToMenu( 'encuestas') ">
+                <div class="card-body ">
+                    <div class="row ">
+                        <div class="col-8 ">
+                            <span class="fs-20 "><b>Encuestas</b></span>
+                            <br>
+                            <span>Administración de encuestas</span>
+                        </div>
+                        <div class="col-4 ">
+                            <div class="squad-icon bg-info my-auto float-end ">
+                                <i class="bi bi-file-earmark-check "></i>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xs-12 col-md-12 col-lg-6 col-xl-6 col-xxl-3 ">
+            <div class="card overflow-hidden text-truncate " (click)="goToMenu( 'digitacion') ">
+                <div class="card-body ">
+                    <div class="row ">
+                        <div class="col-8 ">
+                            <span class="fs-20 "><b>Digitación</b></span>
+                            <br>
+                            <span>Digitación de encuestas</span>
+                        </div>
+                        <div class="col-4 text-end ">
+                            <div class="squad-icon bg-info my-auto float-end ">
+                                <i class="bi bi-file-earmark-check "></i>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div> -->
+
+
+
+
+
+
+
+    </div>
+</section>

@@ -1,0 +1,41 @@
+.table-core tbody td:nth-child(1) {
+    border-left: none !important;
+}
+
+
+/* .table-core {
+    border-collapse: collapse;
+    border-spacing: 0;
+  }
+  .table-core tr {
+    border-top: 6px solid white !important;
+  
+  } */
+
+.float-right {
+    float: right;
+}
+
+.card {
+    box-shadow: 0 4px 16px #a9b8c826;
+}
+
+.estado {
+    content: '';
+    position: absolute;
+    right: 0;
+    width: 20px;
+    height: 20px;
+    /* -webkit-transform: scale(.707) rotate(45deg);
+    -ms-transform: scale(.707) rotate(45deg);
+    -moz-transform: scale(.707) rotate(45deg);
+    transform: scale(.707) rotate(45deg); */
+    z-index: 1;
+    -webkit-box-shadow: 2px -2px 0 1px rgba(255, 255, 255, 1), 3px -3px 0 2px rgba(255, 255, 255, .1);
+    box-shadow: 2px -2px 0 1px rgba(255, 255, 255, 1), 3px -3px 0 2px rgba(255, 255, 255, .1);
+    border-radius: 0 5px 0 50px;
+}
+
+.datos-personales h6 {
+    margin-bottom: 0.2rem;
+}

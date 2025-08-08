@@ -1,0 +1,46 @@
+<header class="d-flex d-flex justify-content-between align-items-center border-bottom">
+    <div class="d-flex align-items-center gap-3">
+        <button class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle" (click)="toggle()">
+      <span translate="no" class="material-icons">{{ iconMenu }}</span>
+    </button>
+        <div id="info-direccion" class="text-truncate">
+            <div class="d-flex align-items-center" id="info">
+                <a routerLink="">
+                    <img class="header-logo">
+                </a>
+                <div class="ms-2 d-none d-xl-inline-block">
+                    <span>Clima Laboral</span><br>
+                    <small>Dirección de Bienestar Laboral</small>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="d-flex align-items-center gap-3">
+        <div class="header-item">
+            <button class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle" (click)="cambiarApariencia()">
+          <i translate="no" [class]="iconMode" ></i>
+        </button>
+        </div>
+        <div class="header-item ">
+            <button class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle">
+          <span translate="no" class="material-icons icon-spin">settings</span>
+        </button>
+        </div>
+        <div class="dropdown header-item topbar-user" dropdown>
+            <button id="button-user2" type="button" dropdownToggle class="btn btn-user dropdown-toggle" data-bs-toggle="dropdown">
+          <span class="d-flex align-items-center">
+            <span translate="no" class="material-icons">account_circle</span>
+            <span class="text-start ms-xl-2">
+                <span translate="no" class="d-none d-xl-inline-block ms-1 fw-medium user-name-text">{{usuario.name}}</span>
+                <span translate="no" class="d-none d-xl-block ms-1 fs-12 user-name-sub-text">{{usuario.nit}}</span>
+            </span>
+          </span>
+        </button>
+            <div id="dropdown-user2" *dropdownMenu class="dropdown-menu" role="menu" aria-labelledby="button-user">
+                <h6 class="dropdown-header">Bienvenido {{ name }}</h6>
+                <a class="dropdown-item" routerLink="seguridad/mi-perfil"><i class="bi bi-person-circle text-muted fs-16 align-middle me-2"></i> <span class="align-middle">Perfil</span></a>
+                <a class="dropdown-item" (click)="logout()"><i class="bi bi-box-arrow-right text-muted fs-16 align-middle me-2"></i> <span class="align-middle">Cerrar sesión</span></a>
+            </div>
+        </div>
+    </div>
+</header>

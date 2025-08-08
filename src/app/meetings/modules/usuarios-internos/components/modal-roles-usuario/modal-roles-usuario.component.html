@@ -1,0 +1,86 @@
+<div class="modal-content modal-minfin">
+    <div class="modal-body">
+        <h4 class="modal-title mb-3">{{ tituloModal }}</h4>
+        <form class="row g-3" [formGroup]="FormUsuario">
+
+
+
+            <div class="col-lg-12">
+
+                <a [hidden]="!usuarioEditar.activo" style="margin-right: 20px;" class="float-end btn btn-icon btn-ghost-secondary rounded-circle ">Activo <span style="color: var(--bs-success);" class="material-icons">toggle_on</span></a>
+                <a [hidden]="usuarioEditar.activo" style="margin-right: 20px;" class="float-end btn btn-icon btn-ghost-secondary rounded-circle ">Inactivo <span style="color: var(--bs-danger);" class="material-icons">toggle_on</span></a>
+
+            </div>
+
+
+
+            <div class="col-lg-6">
+                <label class="form-label ">Nit:</label>
+                <input type="text" class="form-control me-2" formControlName="nitUsuario" placeholder="Ingrese un numero de NIT" [readOnly]="true" style="background-color: #E4E4E4" />
+
+            </div>
+
+            <div class="col-lg-6">
+                <label class="form-label ">Nombre Usuario:</label>
+                <input type="text" class="form-control usuario-color" formControlName="nombreCompleto" [readOnly]="true" style="background-color: #E4E4E4" />
+                <div *ngIf="nombreCompleto?.invalid && (nombreCompleto?.dirty || nombreCompleto?.touched)">
+                    <small *ngIf="nombreCompleto?.hasError('required')" class="text-danger">Campo obligatorio</small>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <label class="form-label ">Correo electrónico personal:</label>
+                <input type="text" class="form-control" formControlName="correoPersonal" [readOnly]="true" style="background-color: #E4E4E4" />
+                <div *ngIf="correoPersonal?.invalid && (correoPersonal?.dirty || correoPersonal?.touched)">
+                    <small *ngIf="correoPersonal?.hasError('required')" class="text-danger">Campo obligatorio</small>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <label class="form-label ">Correo electrónico institucional</label>
+                <input type="text" class="form-control" formControlName="correoInstitucional" [readOnly]="true" style="background-color: #E4E4E4" />
+                <div *ngIf="correoInstitucional?.invalid && (correoInstitucional?.dirty || correoInstitucional?.touched)">
+                    <small *ngIf="correoInstitucional?.hasError('required')" class="text-danger">Campo obligatorio</small>
+                </div>
+            </div>
+
+
+            <div class="col-lg-6">
+                <label style="padding-bottom: 10px;">Roles No Asignados</label> &nbsp;
+                <ul class="list-group list-group-flush list-customize">
+                    <li class="list-group-item" *ngFor="let item of rolesSinAsignar">
+
+                        <button class="btn btn-icon-customize btn-outline-primary" (click)="asignar(item)">
+                            <span class="material-icons">add</span>
+                            </button>
+                        <label class="form-check-label" style="padding-left: 10px;">{{item.nombre}}</label>
+                    </li>
+                </ul>
+
+            </div>
+
+
+            <div class="col-lg-6">
+                <label style="padding-bottom: 10px;">Roles Asignados</label> &nbsp;
+                <ul class="list-group list-group-flush list-customize">
+                    <li class="list-group-item" *ngFor="let item of rolesAsignados">
+
+                        <button class="btn btn-icon-customize btn-outline-primary" (click)="desasignar(item)">
+                            <span class="material-icons">remove</span>
+                            </button>
+
+                        <label class="form-check-label" style="padding-left: 10px;">  {{  item.nombre}}</label>
+                    </li>
+
+                </ul>
+
+            </div>
+
+
+        </form>
+    </div>
+    <div class="modal-footer" style="text-align: left;">
+        <button type="button" class="btn btn-soft-danger" (click)="bsModalRef.hide()">
+        Regresar
+      </button>
+    </div>
+</div>

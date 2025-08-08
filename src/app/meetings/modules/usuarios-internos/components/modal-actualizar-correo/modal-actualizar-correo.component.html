@@ -1,0 +1,80 @@
+<div class="modal-content modal-minfin">
+    <div class="modal-body">
+        <h4 class="modal-title mb-3">{{ tituloModal }}</h4>
+        <form class="row g-3" [formGroup]="FormUsuario">
+
+
+            <div class="col-lg-6">
+                <label class="form-label ">Nit:</label>
+                <input type="text" class="form-control me-2" formControlName="nitUsuario" placeholder="Ingrese un numero de NIT" [readOnly]="true" style="background-color: #E4E4E4" />
+
+            </div>
+
+            <div class="col-lg-6">
+                <label class="form-label ">Nombre Usuario:</label>
+                <input type="text" class="form-control usuario-color" formControlName="nombreCompleto" [readOnly]="true" style="background-color: #E4E4E4" />
+                <div *ngIf="nombreCompleto?.invalid && (nombreCompleto?.dirty || nombreCompleto?.touched)">
+                    <small *ngIf="nombreCompleto?.hasError('required')" class="text-danger">Campo obligatorio</small>
+                </div>
+            </div>
+
+
+            <div class="col-lg-6">
+                <label class="form-label ">Correo institucional actual:</label>
+                <input type="text" class="form-control" formControlName="correoInstitucional" [readOnly]="true" style="background-color: #E4E4E4" />
+                <div *ngIf="correoInstitucional?.invalid && (correoInstitucional?.dirty || correoInstitucional?.touched)">
+                    <small *ngIf="correoInstitucional?.hasError('required')" class="text-danger">Campo obligatorio</small>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <label class="form-label ">Correo institucional nuevo:</label>
+                <input type="text" class="form-control" formControlName="correoInstitucionalNuevo" />
+                <div *ngIf="correoInstitucionalNuevo?.invalid && (correoInstitucionalNuevo?.dirty || correoInstitucionalNuevo?.touched)">
+                    <!-- <small *ngIf="correoInstitucionalNuevo?.hasError('required')" class="text-danger">Campo obligatorio</small> -->
+                    <small *ngIf="correoInstitucionalNuevo?.hasError('email')" class="text-danger">El correo electrónico es invalido</small>
+
+                </div>
+
+
+                <div *ngIf="correoInstitucionalNuevo?.valid">
+                    <small *ngIf="correosIguales()" class="text-danger">El correo electrónico ya se encuentra registrado</small>
+                </div>
+
+            </div>
+
+
+
+
+            <div class="col-lg-6">
+                <label class="form-label ">Correo personal registrado actualmente:</label>
+                <input type="text" class="form-control" formControlName="correoPersonal" [readOnly]="true" style="background-color: #E4E4E4" />
+                <div *ngIf="correoPersonal?.invalid && (correoPersonal?.dirty || correoPersonal?.touched)">
+                    <small *ngIf="correoPersonal?.hasError('required')" class="text-danger">Campo obligatorio</small>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <label class="form-label ">Correo personal (Información registrada en la SAT):</label>
+                <input type="text" class="form-control" formControlName="correoPersonalSat" [readOnly]="true" style="background-color: #E4E4E4" />
+                <div *ngIf="correoPersonalSat?.invalid && (correoPersonalSat?.dirty || correoPersonalSat?.touched)">
+                    <small *ngIf="correoPersonalSat?.hasError('required')" class="text-danger">Campo obligatorio</small>
+                </div>
+            </div>
+
+
+
+
+
+        </form>
+    </div>
+    <div class="modal-footer" style="text-align: left;">
+        <button type="button" class="btn btn-soft-success" (click)="guardarCambios()" [disabled]="!habilitarBoton()">
+            Actualizar
+          </button>
+
+        <button type="button" class="btn btn-soft-danger" (click)="bsModalRef.hide()">
+        Cancelar
+      </button>
+    </div>
+</div>

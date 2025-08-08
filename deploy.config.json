@@ -1,0 +1,11 @@
+{
+    "backendScript": "../Backend/makeDockerImage_PROD.sh",
+    "frontendScript": "./makeDockerImage_PROD.sh",
+    "nexusUser": "usuario_nexus",
+    "nexusPass": "password_nexus",
+    "ocpLoginCmd": "oc login https://ocp.example.com:6443 --token=sha256~xxxx",
+    "ocpProject": "mi-proyecto-ocp",
+    "deploymentName": "mi-app",
+    "containerName": "mi-app-container",
+    "imageRepo": "nexus.repo.com/mi-app"
+}
