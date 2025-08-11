@@ -1,0 +1,79 @@
+<div class="modal-header">
+    <h5 class="modal-title">{{ tituloModal }}</h5>
+    <button type="button" class="btn-close" (click)="cancel()" aria-label="Close"></button>
+</div>
+
+<div class="modal-body">
+    <form>
+        <div class="row">
+            <div class="col-md-8">
+                <div class="mb-3">
+                    <label for="eventTitle" class="form-label">Título de la Reunión *</label>
+                    <input type="text" class="form-control" id="eventTitle" [(ngModel)]="modalData.title" name="title"
+                        required>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="mb-3">
+                    <label for="eventPriority" class="form-label">Prioridad</label>
+                    <select class="form-select" id="eventPriority" [(ngModel)]="modalData.priority" name="priority">
+                        <option value="low">Baja</option>
+                        <option value="medium">Media</option>
+                        <option value="high">Alta</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="eventStart" class="form-label">Fecha y Hora de Inicio *</label>
+                    <input type="datetime-local" class="form-control" id="eventStart" [(ngModel)]="modalData.start"
+                        name="start" required>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="eventEnd" class="form-label">Fecha y Hora de Fin *</label>
+                    <input type="datetime-local" class="form-control" id="eventEnd" [(ngModel)]="modalData.end"
+                        name="end" required>
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="eventRoom" class="form-label">Sala de Reunión</label>
+            <select class="form-select" id="eventRoom" [(ngModel)]="modalData.room" name="room">
+                <option value="">Seleccionar sala...</option>
+                <option *ngFor="let room of availableRooms" [value]="room">{{room}}</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="eventDescription" class="form-label">Descripción</label>
+            <textarea class="form-control" id="eventDescription" rows="3" [(ngModel)]="modalData.description"
+                name="description" placeholder="Descripción de la reunión..."></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label for="eventAttendees" class="form-label">Participantes</label>
+            <input type="text" class="form-control" id="eventAttendees" [(ngModel)]="modalData.attendees"
+                name="attendees" placeholder="Separar nombres con comas">
+            <div class="form-text">Ejemplo: Juan Pérez, María García, Carlos López</div>
+        </div>
+
+        <div class="mb-3">
+            <label for="eventOrganizer" class="form-label">Organizador</label>
+            <input type="text" class="form-control" id="eventOrganizer" [(ngModel)]="modalData.organizer"
+                name="organizer">
+        </div>
+    </form>
+</div>
+
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="cancel()">Cancelar</button>
+    <button type="button" class="btn btn-primary" (click)="saveEvent()">
+        Guardar Reunión
+    </button>
+</div>

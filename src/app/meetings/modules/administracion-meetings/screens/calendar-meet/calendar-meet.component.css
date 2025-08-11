@@ -1,0 +1,478 @@
+/* ELIMINAR SCROLLBARS DEL BODY Y HTML */
+:host {
+    overflow: hidden !important;
+  }
+  
+  :host::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+  }
+  
+  :host {
+    -ms-overflow-style: none !important;
+    scrollbar-width: none !important;
+  }
+  
+  /* ELIMINAR SCROLLBARS GLOBALMENTE */
+  ::ng-deep body::-webkit-scrollbar,
+  ::ng-deep html::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+  }
+  
+  ::ng-deep body,
+  ::ng-deep html {
+    -ms-overflow-style: none !important;
+    scrollbar-width: none !important;
+  }
+  
+  /* Bootstrap Calendar Styles */
+  .calendar-container {
+    padding: 20px;
+    background: #f8f9fa;
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  .calendar-header {
+    margin-bottom: 30px;
+  }
+  
+  .calendar-wrapper {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+  }
+  
+  /* FullCalendar Bootstrap Integration */
+  :host ::ng-deep .fc {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  /* Header Toolbar Bootstrap Styling */
+  :host ::ng-deep .fc-header-toolbar {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    padding: 1rem;
+    margin: 0;
+    border-radius: 0.375rem 0.375rem 0 0;
+    color: #495057;
+    border-bottom: 1px solid #dee2e6;
+  }
+  
+  :host ::ng-deep .fc-button {
+    background: #ffffff !important;
+    border: 1px solid #dee2e6 !important;
+    border-radius: 0.375rem !important;
+    padding: 0.5rem 1rem !important;
+    font-weight: 500 !important;
+    transition: all 0.3s ease !important;
+    color: #495057 !important;
+    margin: 0 0.25rem !important;
+    font-size: 0.875rem !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+  
+  :host ::ng-deep .fc-button:hover {
+    background: #f8f9fa !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15) !important;
+    color: #212529 !important;
+    border-color: #adb5bd !important;
+  }
+  
+  :host ::ng-deep .fc-button:active {
+    transform: translateY(0) !important;
+    background: #e9ecef !important;
+  }
+  
+  :host ::ng-deep .fc-button.fc-button-active {
+    background: #007bff !important;
+    color: white !important;
+    border-color: #007bff !important;
+    box-shadow: 0 2px 4px rgba(0, 123, 255, 0.3) !important;
+  }
+  
+  :host ::ng-deep .fc-toolbar-title {
+    font-size: 1.5rem !important;
+    font-weight: 600 !important;
+    color: #495057 !important;
+  }
+  
+  /* Day Grid Styling */
+  :host ::ng-deep .fc-daygrid-day {
+    transition: all 0.3s ease;
+    border: 1px solid #dee2e6;
+  }
+  
+  :host ::ng-deep .fc-daygrid-day:hover {
+    background-color: #f8f9fa !important;
+    transform: scale(1.02);
+  }
+  
+  :host ::ng-deep .fc-day-today {
+    background-color: rgba(0, 123, 255, 0.1) !important;
+    border: 2px solid #007bff !important;
+  }
+  
+  /* Event Styling with Bootstrap Colors */
+  :host ::ng-deep .fc-event {
+    border-radius: 0.375rem !important;
+    border: none !important;
+    padding: 0.25rem 0.5rem !important;
+    font-weight: 500 !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+    transition: all 0.3s ease !important;
+    margin: 1px 0 !important;
+    position: relative !important;
+    overflow: hidden !important;
+    min-height: 20px !important;
+    display: block !important;
+  }
+  
+  :host ::ng-deep .fc-event:hover {
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  }
+  
+  /* Event content styling */
+  :host ::ng-deep .fc-event-title {
+    font-weight: 600 !important;
+    font-size: 0.875rem !important;
+    line-height: 1.2 !important;
+  }
+  
+  :host ::ng-deep .fc-event-time {
+    font-size: 0.75rem !important;
+    opacity: 0.9 !important;
+    font-weight: 500 !important;
+  }
+  
+  /* Room indicator */
+  :host ::ng-deep .fc-event::before {
+    content: attr(data-room);
+    position: absolute;
+    top: 2px;
+    right: 4px;
+    font-size: 0.65rem;
+    font-weight: 600;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 1px 4px;
+    border-radius: 2px;
+    color: #495057;
+    opacity: 0.8;
+  }
+  
+  /* Priority indicators */
+  :host ::ng-deep .event-priority-high::after {
+    content: "🔴";
+    position: absolute;
+    top: 2px;
+    left: 4px;
+    font-size: 0.7rem;
+  }
+  
+  :host ::ng-deep .event-priority-medium::after {
+    content: "🟡";
+    position: absolute;
+    top: 2px;
+    left: 4px;
+    font-size: 0.7rem;
+  }
+  
+  :host ::ng-deep .event-priority-low::after {
+    content: "🟢";
+    position: absolute;
+    top: 2px;
+    left: 4px;
+    font-size: 0.7rem;
+  }
+  
+  /* Event tooltip enhancement */
+  :host ::ng-deep .fc-event[title]:hover::after {
+    content: attr(title);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    white-space: pre-line;
+    z-index: 1000;
+    min-width: 200px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+  
+  /* Bootstrap Event Classes */
+  :host ::ng-deep .bootstrap-event {
+    border-radius: 0.375rem !important;
+    font-weight: 500 !important;
+  }
+  
+  :host ::ng-deep .event-primary {
+    background-color: rgba(0, 123, 255, 0.3) !important;
+    border-color: rgba(0, 86, 179, 0.5) !important;
+    color: #0056b3 !important;
+  }
+  
+  :host ::ng-deep .event-success {
+    background-color: rgba(40, 167, 69, 0.3) !important;
+    border-color: rgba(30, 126, 52, 0.5) !important;
+    color: #1e7e34 !important;
+  }
+  
+  :host ::ng-deep .event-danger {
+    background-color: rgba(220, 53, 69, 0.3) !important;
+    border-color: rgba(200, 35, 51, 0.5) !important;
+    color: #c82333 !important;
+  }
+  
+  :host ::ng-deep .event-warning {
+    background-color: rgba(255, 193, 7, 0.3) !important;
+    border-color: rgba(224, 168, 0, 0.5) !important;
+    color: #856404 !important;
+  }
+  
+  :host ::ng-deep .event-info {
+    background-color: rgba(23, 162, 184, 0.3) !important;
+    border-color: rgba(17, 122, 139, 0.5) !important;
+    color: #117a8b !important;
+  }
+  
+  /* Time Grid Styling */
+  :host ::ng-deep .fc-timegrid-slot {
+    height: 60px !important;
+    min-height: 60px !important;
+    border-bottom: 1px solid #dee2e6;
+  }
+  
+  :host ::ng-deep .fc-timegrid-slot-lane {
+    height: 60px !important;
+    min-height: 60px !important;
+  }
+  
+  :host ::ng-deep .fc-timegrid-axis {
+    background-color: #f8f9fa !important;
+    border-right: 1px solid #dee2e6;
+  }
+  
+  :host ::ng-deep .fc-timegrid-col {
+    background-color: white !important;
+  }
+  
+  /* Ensure proper scrolling for 24-hour view 
+  :host ::ng-deep .fc-timegrid-body {
+    max-height: 70vh !important;
+    overflow-y: auto !important;
+  }*/
+  
+  :host ::ng-deep .fc-timegrid-body::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  :host ::ng-deep .fc-timegrid-body::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+  }
+  
+  :host ::ng-deep .fc-timegrid-body::-webkit-scrollbar-thumb {
+    background: #007bff;
+    border-radius: 4px;
+  }
+  
+  :host ::ng-deep .fc-timegrid-body::-webkit-scrollbar-thumb:hover {
+    background: #0056b3;
+  }
+  
+  /* Time grid specific event styling */
+  :host ::ng-deep .fc-timegrid-event {
+    position: absolute !important;
+    z-index: 10 !important;
+    border-radius: 0.375rem !important;
+    border: none !important;
+    padding: 0.25rem 0.5rem !important;
+    font-weight: 500 !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+    transition: all 0.3s ease !important;
+    margin: 1px !important;
+    overflow: hidden !important;
+    min-height: 20px !important;
+    display: block !important;
+  }
+  
+  :host ::ng-deep .fc-timegrid-event:hover {
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+    z-index: 20 !important;
+  }
+  
+  /* Ensure events are properly positioned in time grid */
+  :host ::ng-deep .fc-timegrid-event-harness {
+    position: absolute !important;
+  }
+  
+  :host ::ng-deep .fc-timegrid-event-harness .fc-event {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    margin: 1px !important;
+    height: auto !important;
+    min-height: 20px !important;
+  }
+  
+  /* Event content styling */
+  :host ::ng-deep .fc-event-title {
+    font-weight: 600 !important;
+    font-size: 0.875rem !important;
+    line-height: 1.2 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+  
+  :host ::ng-deep .fc-event-time {
+    font-size: 0.75rem !important;
+    opacity: 0.9 !important;
+    font-weight: 500 !important;
+  }
+  
+  /* Now Indicator Styling */
+  :host ::ng-deep .fc-timegrid-now-indicator-line {
+    background: #dc3545 !important;
+    height: 3px !important;
+    border: none !important;
+    box-shadow: 0 0 8px rgba(220, 53, 69, 0.8) !important;
+    z-index: 99999 !important;
+  }
+  
+  :host ::ng-deep .fc-timegrid-now-indicator-arrow {
+    background-color: #dc3545 !important;
+    border: none !important;
+    box-shadow: 0 0 8px rgba(220, 53, 69, 0.8) !important;
+    z-index: 99999 !important;
+    width: 0 !important;
+    height: 0 !important;
+    border-left: 8px solid #dc3545 !important;
+    border-top: 8px solid transparent !important;
+    border-bottom: 8px solid transparent !important;
+    left: -8px !important;
+    top: -4px !important;
+  }
+  
+  /* Day Grid Now Indicator */
+  :host ::ng-deep .fc-daygrid-now-indicator-line {
+    background: #dc3545 !important;
+    height: 3px !important;
+    border: none !important;
+    box-shadow: 0 0 8px rgba(220, 53, 69, 0.8) !important;
+    z-index: 99999 !important;
+  }
+  
+  :host ::ng-deep .fc-daygrid-now-indicator-arrow {
+    background-color: #dc3545 !important;
+    border: none !important;
+    box-shadow: 0 0 8px rgba(220, 53, 69, 0.8) !important;
+    z-index: 99999 !important;
+    width: 0 !important;
+    height: 0 !important;
+    border-left: 8px solid #dc3545 !important;
+    border-top: 8px solid transparent !important;
+    border-bottom: 8px solid transparent !important;
+    left: -8px !important;
+    top: -4px !important;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .calendar-container {
+      padding: 10px;
+    }
+    
+    :host ::ng-deep .fc-header-toolbar {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    
+    :host ::ng-deep .fc-toolbar-chunk {
+      display: flex !important;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 0.25rem;
+    }
+    
+    :host ::ng-deep .fc-button {
+      padding: 0.375rem 0.75rem !important;
+      font-size: 0.8rem !important;
+    }
+    
+    :host ::ng-deep .fc-toolbar-title {
+      font-size: 1.25rem !important;
+    }
+  }
+  
+  /* Animation */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .calendar-wrapper {
+    animation: fadeIn 0.6s ease-out;
+  }
+  
+  /* Card Enhancements */
+  .card {
+    transition: all 0.3s ease;
+  }
+  
+  .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+  }
+  
+  /* Bootstrap Icons */
+  .bi {
+    font-size: 1.1em;
+  }
+  
+  /* Ensure proper spacing for 24-hour view */
+  :host ::ng-deep .fc-view-harness {
+    height: auto !important;
+    min-height: 70vh !important;
+  }
+  
+  :host ::ng-deep .fc-view-harness-active {
+    height: auto !important;
+    min-height: 70vh !important;
+  }
+  
+  /* Custom Scrollbar for Time Grid */
+  :host ::ng-deep .fc-timegrid-body::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  :host ::ng-deep .fc-timegrid-body::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+  }
+  
+  :host ::ng-deep .fc-timegrid-body::-webkit-scrollbar-thumb {
+    background: #007bff;
+    border-radius: 4px;
+  }
+  
+  :host ::ng-deep .fc-timegrid-body::-webkit-scrollbar-thumb:hover {
+    background: #0056b3;
+  }
+  

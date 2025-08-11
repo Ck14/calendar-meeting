@@ -1,9 +1,12 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CalendarOptions, EventInput } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import listPlugin from '@fullcalendar/list';
+import { BsModalService } from 'ngx-bootstrap/modal';
+import { ModalCrearMeetComponent, ModalCrearMeetData, MeetingEvent as CreateMeetingEvent } from '../../components/modal-crear-meet/modal-crear-meet.component';
+import { ModalEditarMeetComponent, ModalEditarMeetData, MeetingEvent as EditMeetingEvent } from '../../components/modal-editar-meet/modal-editar-meet.component';
 
 // Interfaz extendida para eventos con datos adicionales
 interface MeetingEvent extends EventInput {
@@ -23,13 +26,15 @@ interface MeetingEvent extends EventInput {
 }
 
 @Component({
-  selector: 'app-creacion-meeting',
-  templateUrl: './creacion-meeting.component.html',
-  styleUrls: ['./creacion-meeting.component.css']
+  selector: 'app-calendar-meet',
+  templateUrl: './calendar-meet.component.html',
+  styleUrls: ['./calendar-meet.component.css']
 })
-export class CreacionMeetingComponent implements OnInit {
+export class CalendarMeetComponent implements OnInit {
 
-  @ViewChild('eventModal') eventModal!: ElementRef;
+  // Referencias a los modales
+  bsModalCrear: any;
+  bsModalEditar: any;
 
   // Lista de salas disponibles
   availableRooms = [
@@ -41,20 +46,6 @@ export class CreacionMeetingComponent implements OnInit {
     'Auditorio Principal',
     'Sala de Capacitación'
   ];
-
-  // Variables para el modal
-  isEditing = false;
-  currentEvent: any = null;
-  modalData = {
-    title: '',
-    start: '',
-    end: '',
-    room: '',
-    description: '',
-    attendees: '',
-    organizer: 'Usuario Actual',
-    priority: 'medium'
-  };
 
   calendarOptions: CalendarOptions = {
     plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin],
@@ -145,10 +136,10 @@ export class CreacionMeetingComponent implements OnInit {
       }
     ],
     select: (arg) => {
-      this.showEventModal(arg);
+      this.abrirModalCrearEvento(arg);
     },
     eventClick: (arg) => {
-      this.showEventDetails(arg.event);
+      this.abrirModalEditarEvento(arg.event);
     },
     eventDidMount: (arg) => {
       this.customizeEventDisplay(arg.event);
@@ -156,6 +147,8 @@ export class CreacionMeetingComponent implements OnInit {
     dayCellClassNames: 'bootstrap-day-cell',
     eventClassNames: 'bootstrap-event'
   };
+
+  constructor(private modalService: BsModalService) { }
 
   ngOnInit(): void {
     setTimeout(() => {
@@ -171,115 +164,100 @@ export class CreacionMeetingComponent implements OnInit {
     return Math.random().toString(36).substr(2, 9);
   }
 
-  // Método para mostrar modal de creación de evento
-  private showEventModal(arg: any): void {
-    this.isEditing = false;
-    this.currentEvent = null;
-
-    // Formatear las fechas para los inputs datetime-local
-    const startDate = new Date(arg.startStr);
-    const endDate = new Date(arg.endStr);
-
-    // Limpiar datos del modal
-    this.modalData = {
-      title: '',
-      start: this.formatDateTimeForInput(startDate),
-      end: this.formatDateTimeForInput(endDate),
-      room: '',
-      description: '',
-      attendees: '',
-      organizer: 'Usuario Actual',
-      priority: 'medium'
+  // Método para abrir modal de crear evento
+  abrirModalCrearEvento(arg: any): void {
+    const initialState: ModalCrearMeetData = {
+      tituloModal: 'Crear Nueva Reunión',
+      startDate: new Date(arg.startStr),
+      endDate: new Date(arg.endStr)
     };
 
-    // Mostrar modal usando Bootstrap
-    const modal = new (window as any).bootstrap.Modal(document.getElementById('eventModal'));
-    modal.show();
-  }
-
-  // Método para mostrar detalles del evento
-  private showEventDetails(event: any): void {
-    this.isEditing = true;
-    this.currentEvent = event;
-
-    const eventData = event.extendedProps;
-
-    // Llenar datos del modal
-    this.modalData = {
-      title: event.title,
-      start: this.formatDateTimeForInput(event.start),
-      end: this.formatDateTimeForInput(event.end),
-      room: eventData.room || '',
-      description: eventData.description || '',
-      attendees: eventData.attendees ? eventData.attendees.join(', ') : '',
-      organizer: eventData.organizer || 'Usuario Actual',
-      priority: eventData.priority || 'medium'
-    };
-
-    // Mostrar modal
-    const modal = new (window as any).bootstrap.Modal(document.getElementById('eventModal'));
-    modal.show();
-  }
-
-  // Método para guardar evento
-  saveEvent(): void {
-    if (!this.modalData.title || !this.modalData.start || !this.modalData.end) {
-      alert('Por favor complete los campos obligatorios');
-      return;
-    }
-
-    // Convertir las fechas de string a Date objects
-    const startDate = new Date(this.modalData.start);
-    const endDate = new Date(this.modalData.end);
-
-    // Validar que la fecha de fin sea posterior a la de inicio
-    if (endDate <= startDate) {
-      alert('La fecha de fin debe ser posterior a la fecha de inicio');
-      return;
-    }
-
-    const newEvent: MeetingEvent = {
-      id: this.isEditing ? this.currentEvent.id : this.createEventId(),
-      title: this.modalData.title,
-      start: startDate,
-      end: endDate,
-      room: this.modalData.room || undefined,
-      description: this.modalData.description || undefined,
-      attendees: this.modalData.attendees ? this.modalData.attendees.split(',').map(a => a.trim()) : undefined,
-      organizer: this.modalData.organizer,
-      priority: this.modalData.priority as 'low' | 'medium' | 'high',
-      backgroundColor: this.getEventColor(this.modalData.priority),
-      borderColor: this.getEventBorderColor(this.modalData.priority),
-      textColor: this.getEventTextColor(this.modalData.priority),
-      classNames: ['bootstrap-event', `event-${this.getEventType(this.modalData.priority)}`]
-    };
-
-    if (this.isEditing) {
-      // Actualizar evento existente
-      this.currentEvent.setProp('title', newEvent.title);
-      this.currentEvent.setExtendedProp('room', newEvent.room);
-      this.currentEvent.setExtendedProp('description', newEvent.description);
-      this.currentEvent.setExtendedProp('attendees', newEvent.attendees);
-      this.currentEvent.setExtendedProp('organizer', newEvent.organizer);
-      this.currentEvent.setExtendedProp('priority', newEvent.priority);
-      this.currentEvent.setStart(startDate);
-      this.currentEvent.setEnd(endDate);
-    } else {
-      // Agregar nuevo evento
-      const calendarApi = (this.calendarOptions.events as any);
-      if (calendarApi) {
-        calendarApi.push(newEvent);
+    this.bsModalCrear = this.modalService.show(
+      ModalCrearMeetComponent,
+      {
+        initialState,
+        class: "modal-lg modal-dialog-centered",
+        keyboard: true,
+        backdrop: "static",
       }
-    }
+    );
 
-    // Cerrar modal
-    const modal = (window as any).bootstrap.Modal.getInstance(document.getElementById('eventModal'));
-    modal.hide();
+    // Suscribirse al resultado del modal
+    this.bsModalCrear.content = initialState;
+    this.bsModalCrear.onHidden?.subscribe((result: any) => {
+      if (result && result.title) {
+        this.agregarNuevoEvento(result);
+      }
+    });
   }
 
-  // Método para editar evento
-  private editEvent(event: any): void {
-    this.showEventDetails(event);
+  // Método para abrir modal de editar evento
+  abrirModalEditarEvento(event: any): void {
+    const initialState: ModalEditarMeetData = {
+      tituloModal: `Editar Reunión: ${event.title}`,
+      event: event
+    };
+
+    this.bsModalEditar = this.modalService.show(
+      ModalEditarMeetComponent,
+      {
+        initialState,
+        class: "modal-lg modal-dialog-centered",
+        keyboard: true,
+        backdrop: "static",
+      }
+    );
+
+    // Suscribirse al resultado del modal
+    this.bsModalEditar.content = initialState;
+    this.bsModalEditar.onHidden?.subscribe((result: any) => {
+      if (result && result.title) {
+        this.actualizarEventoExistente(event, result);
+      }
+    });
+  }
+
+  // Método para agregar nuevo evento
+  private agregarNuevoEvento(eventData: CreateMeetingEvent): void {
+    const newEvent: MeetingEvent = {
+      id: this.createEventId(),
+      title: eventData.title,
+      start: eventData.start,
+      end: eventData.end,
+      room: eventData.room,
+      description: eventData.description,
+      attendees: eventData.attendees,
+      organizer: eventData.organizer,
+      priority: eventData.priority,
+      backgroundColor: this.getEventColor(eventData.priority),
+      borderColor: this.getEventBorderColor(eventData.priority),
+      textColor: this.getEventTextColor(eventData.priority),
+      classNames: ['bootstrap-event', `event-${this.getEventType(eventData.priority)}`]
+    };
+
+    // Agregar evento al calendario
+    const calendarApi = this.calendarOptions.events as any;
+    if (calendarApi) {
+      calendarApi.push(newEvent);
+    }
+  }
+
+  // Método para actualizar evento existente
+  private actualizarEventoExistente(event: any, updatedData: EditMeetingEvent): void {
+    // Actualizar propiedades del evento
+    event.setProp('title', updatedData.title);
+    event.setExtendedProp('room', updatedData.room);
+    event.setExtendedProp('description', updatedData.description);
+    event.setExtendedProp('attendees', updatedData.attendees);
+    event.setExtendedProp('organizer', updatedData.organizer);
+    event.setExtendedProp('priority', updatedData.priority);
+    event.setStart(updatedData.start);
+    event.setEnd(updatedData.end);
+
+    // Actualizar colores
+    event.setProp('backgroundColor', this.getEventColor(updatedData.priority));
+    event.setProp('borderColor', this.getEventBorderColor(updatedData.priority));
+    event.setProp('textColor', this.getEventTextColor(updatedData.priority));
   }
 
   // Método para personalizar la visualización del evento
@@ -320,17 +298,8 @@ export class CreacionMeetingComponent implements OnInit {
     }
   }
 
-  // Métodos auxiliares
-  private formatDateTimeForInput(date: Date): string {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
-    return `${year}-${month}-${day}T${hours}:${minutes}`;
-  }
-
-  private getEventColor(priority: string): string {
+  // Métodos auxiliares para colores
+  private getEventColor(priority?: string): string {
     switch (priority) {
       case 'high': return 'rgba(220, 53, 69, 0.3)';
       case 'medium': return 'rgba(40, 167, 69, 0.3)';
@@ -339,7 +308,7 @@ export class CreacionMeetingComponent implements OnInit {
     }
   }
 
-  private getEventBorderColor(priority: string): string {
+  private getEventBorderColor(priority?: string): string {
     switch (priority) {
       case 'high': return 'rgba(200, 35, 51, 0.5)';
       case 'medium': return 'rgba(30, 126, 52, 0.5)';
@@ -348,7 +317,7 @@ export class CreacionMeetingComponent implements OnInit {
     }
   }
 
-  private getEventTextColor(priority: string): string {
+  private getEventTextColor(priority?: string): string {
     switch (priority) {
       case 'high': return '#c82333';
       case 'medium': return '#1e7e34';
@@ -357,7 +326,7 @@ export class CreacionMeetingComponent implements OnInit {
     }
   }
 
-  private getEventType(priority: string): string {
+  private getEventType(priority?: string): string {
     switch (priority) {
       case 'high': return 'danger';
       case 'medium': return 'success';

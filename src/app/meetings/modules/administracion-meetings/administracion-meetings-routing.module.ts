@@ -1,12 +1,13 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { CreacionMeetingComponent } from './creacion-meeting/creacion-meeting.component';
+
 import { AuthGuardService } from 'src/app/utils/auth-guard.service';
+import { CalendarMeetComponent } from './screens/calendar-meet/calendar-meet.component';
 
 const routes: Routes = [
   {
     path: "",
-    component: CreacionMeetingComponent,
+    component: CalendarMeetComponent,
     canActivate: [AuthGuardService],
     canLoad: [AuthGuardService],
   },
