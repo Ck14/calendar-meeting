@@ -1,91 +1,32 @@
-<div class="container-fluid calendar-container">
-    <div class="row">
-        <div class="col-12">
-            <div class="calendar-header text-center mb-4">
-                <h2 class="display-4 text-primary fw-light">Calendario de Reuniones</h2>
-                <p class="lead text-muted">Gestiona y programa tus reuniones de manera profesional</p>
-            </div>
-        </div>
-    </div>
+<div class="calendar-minimal">
+    <header class="calendar-header">
+        <h1>Minfin Meetings</h1>
+        <p>Gestiona tus reuniones</p>
+    </header>
 
-    <div class="row">
-        <div class="col-12">
-            <div class="card shadow-lg border-0 rounded-3">
-                <div class="card-body p-4">
-                    <div class="calendar-wrapper">
-                        <full-calendar [options]="calendarOptions"></full-calendar>
-                    </div>
-                </div>
-            </div>
+    <main class="calendar-main">
+        <div class="calendar-wrapper">
+            <full-calendar [options]="calendarOptions"></full-calendar>
         </div>
-    </div>
+    </main>
 
-    <div class="row mt-4">
-        <div class="col-12">
-            <div class="card shadow border-0 rounded-3">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">
-                        <i class="bi bi-info-circle me-2"></i>
-                        Información del Calendario
-                    </h5>
+    <aside class="calendar-info">
+        <div class="info-section">
+            <h3>Tipos de reunión</h3>
+            <div class="legend">
+                <div class="legend-item">
+                    <span class="dot planning"></span>
+                    <span>Planificación</span>
                 </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h6 class="text-primary">Funcionalidades</h6>
-                            <ul class="list-unstyled">
-                                <li class="mb-2">
-                                    <i class="bi bi-check-circle-fill text-success me-2"></i>
-                                    Crear reuniones arrastrando en el calendario
-                                </li>
-                                <li class="mb-2">
-                                    <i class="bi bi-check-circle-fill text-success me-2"></i>
-                                    Editar eventos existentes
-                                </li>
-                                <li class="mb-2">
-                                    <i class="bi bi-check-circle-fill text-success me-2"></i>
-                                    Vista diaria, semanal y mensual
-                                </li>
-                                <li class="mb-2">
-                                    <i class="bi bi-check-circle-fill text-success me-2"></i>
-                                    Indicador de hora actual
-                                </li>
-                                <li class="mb-2">
-                                    <i class="bi bi-check-circle-fill text-success me-2"></i>
-                                    Información detallada de reuniones
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="col-md-6">
-                            <h6 class="text-primary">Leyenda</h6>
-                            <div class="d-flex flex-column gap-2">
-                                <div class="d-flex align-items-center">
-                                    <div class="badge bg-primary me-2" style="width: 20px; height: 20px;"></div>
-                                    <span class="small">Reuniones de Planificación</span>
-                                </div>
-                                <div class="d-flex align-items-center">
-                                    <div class="badge bg-success me-2" style="width: 20px; height: 20px;"></div>
-                                    <span class="small">Revisión de Proyectos</span>
-                                </div>
-                                <div class="d-flex align-items-center">
-                                    <div class="badge bg-danger me-2" style="width: 20px; height: 20px;"></div>
-                                    <span class="small">Presentaciones Ejecutivas</span>
-                                </div>
-                                <div class="d-flex align-items-center mt-2">
-                                    <span class="small text-muted">
-                                        <i class="bi bi-geo-alt me-1"></i> Sala de reunión
-                                    </span>
-                                </div>
-                                <div class="d-flex align-items-center">
-                                    <span class="small text-muted">
-                                        🔴🟡🟢 Prioridad (Alta/Media/Baja)
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="legend-item">
+                    <span class="dot review"></span>
+                    <span>Revisión</span>
+                </div>
+                <div class="legend-item">
+                    <span class="dot presentation"></span>
+                    <span>Presentación</span>
                 </div>
             </div>
         </div>
-    </div>
+    </aside>
 </div>

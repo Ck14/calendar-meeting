@@ -59,6 +59,7 @@ export class CalendarMeetComponent implements OnInit {
     height: 'auto',
     editable: true,
     selectable: true,
+    eventResizableFromStart: true,
     nowIndicator: true,
     now: new Date(),
     buttonText: {
@@ -81,13 +82,23 @@ export class CalendarMeetComponent implements OnInit {
     slotMinTime: '00:00:00',
     slotMaxTime: '24:00:00',
     scrollTime: '06:00:00',
-    slotDuration: '01:00:00',
+    slotDuration: '00:30:00',
     expandRows: true,
     allDaySlot: false,
-    slotEventOverlap: false,
-    eventOverlap: false,
+    slotEventOverlap: true,
     eventDisplay: 'block',
     eventMinHeight: 20,
+    eventConstraint: {
+      start: '00:00',
+      end: '24:00',
+      dows: [0, 1, 2, 3, 4, 5, 6]
+    },
+    eventOverlap: function (stillEvent: any, movingEvent: any) {
+      return true; // Permite que todos los eventos se traslapen
+    },
+    slotLaneClassNames: 'fc-slot-lane',
+    eventClassNames: 'fc-event-custom',
+    dayCellClassNames: 'fc-day-cell',
     events: [
       {
         id: '1',
@@ -99,10 +110,10 @@ export class CalendarMeetComponent implements OnInit {
         attendees: ['Juan Pérez', 'María García', 'Carlos López'],
         organizer: 'Juan Pérez',
         priority: 'high',
-        backgroundColor: 'rgba(0, 123, 255, 0.3)',
-        borderColor: 'rgba(0, 86, 179, 0.5)',
-        textColor: '#0056b3',
-        classNames: ['bootstrap-event', 'event-primary']
+        backgroundColor: 'rgba(52, 152, 219, 0.9)',
+        borderColor: 'rgba(31, 95, 139, 0.9)',
+        textColor: 'white',
+        classNames: ['fc-event-custom', 'event-primary']
       },
       {
         id: '2',
@@ -114,10 +125,10 @@ export class CalendarMeetComponent implements OnInit {
         attendees: ['Ana Rodríguez', 'Luis Martínez'],
         organizer: 'Ana Rodríguez',
         priority: 'medium',
-        backgroundColor: 'rgba(40, 167, 69, 0.3)',
-        borderColor: 'rgba(30, 126, 52, 0.5)',
-        textColor: '#1e7e34',
-        classNames: ['bootstrap-event', 'event-success']
+        backgroundColor: 'rgba(52, 152, 219, 0.9)',
+        borderColor: 'rgba(31, 95, 139, 0.9)',
+        textColor: 'white',
+        classNames: ['fc-event-custom', 'event-success']
       },
       {
         id: '3',
@@ -129,10 +140,40 @@ export class CalendarMeetComponent implements OnInit {
         attendees: ['Directores Ejecutivos', 'Gerentes de Área'],
         organizer: 'CEO',
         priority: 'high',
-        backgroundColor: 'rgba(220, 53, 69, 0.3)',
-        borderColor: 'rgba(200, 35, 51, 0.5)',
-        textColor: '#c82333',
-        classNames: ['bootstrap-event', 'event-danger']
+        backgroundColor: 'rgba(52, 152, 219, 0.9)',
+        borderColor: 'rgba(31, 95, 139, 0.9)',
+        textColor: 'white',
+        classNames: ['fc-event-custom', 'event-danger']
+      },
+      {
+        id: '4',
+        title: 'Reunión de Equipo',
+        start: new Date(new Date().setHours(10, 30, 0, 0)),
+        end: new Date(new Date().setHours(11, 30, 0, 0)),
+        room: 'Sala de Reuniones 2',
+        description: 'Reunión diaria del equipo de desarrollo',
+        attendees: ['Desarrolladores', 'QA', 'Product Owner'],
+        organizer: 'Tech Lead',
+        priority: 'medium',
+        backgroundColor: 'rgba(52, 152, 219, 0.9)',
+        borderColor: 'rgba(31, 95, 139, 0.9)',
+        textColor: 'white',
+        classNames: ['fc-event-custom', 'event-warning']
+      },
+      {
+        id: '5',
+        title: 'Entrevista de Trabajo',
+        start: new Date(new Date().setHours(11, 0, 0, 0)),
+        end: new Date(new Date().setHours(12, 0, 0, 0)),
+        room: 'Sala Ejecutiva',
+        description: 'Entrevista para posición de Senior Developer',
+        attendees: ['HR Manager', 'Tech Lead', 'Candidato'],
+        organizer: 'HR Manager',
+        priority: 'high',
+        backgroundColor: 'rgba(52, 152, 219, 0.9)',
+        borderColor: 'rgba(31, 95, 139, 0.9)',
+        textColor: 'white',
+        classNames: ['fc-event-custom', 'event-info']
       }
     ],
     select: (arg) => {
@@ -144,8 +185,12 @@ export class CalendarMeetComponent implements OnInit {
     eventDidMount: (arg) => {
       this.customizeEventDisplay(arg.event);
     },
-    dayCellClassNames: 'bootstrap-day-cell',
-    eventClassNames: 'bootstrap-event'
+    eventResize: (arg) => {
+      this.handleEventResize(arg);
+    },
+    eventDrop: (arg) => {
+      this.handleEventDrop(arg);
+    }
   };
 
   constructor(private modalService: BsModalService) { }
@@ -290,39 +335,48 @@ export class CalendarMeetComponent implements OnInit {
 
       eventElement.setAttribute('title', tooltipText);
 
-      // Asegurar que el evento tenga la altura correcta
+      // Asegurar que el evento tenga la altura correcta basada en su duración
       const eventDuration = event.end.getTime() - event.start.getTime();
       const minutes = eventDuration / (1000 * 60);
-      const height = Math.max(20, minutes * 0.5); // 0.5px por minuto
-      eventElement.style.minHeight = `${height}px`;
+
+      // Calcular altura basada en la duración del evento
+      if (event.view.type.includes('timeGrid')) {
+        // Para vistas de tiempo, usar altura proporcional
+        const height = Math.max(30, minutes * 1.2); // 1.2px por minuto
+        eventElement.style.height = `${height}px`;
+        eventElement.style.minHeight = `${height}px`;
+      } else {
+        // Para vistas de día, altura mínima
+        eventElement.style.minHeight = '20px';
+      }
     }
   }
 
   // Métodos auxiliares para colores
   private getEventColor(priority?: string): string {
     switch (priority) {
-      case 'high': return 'rgba(220, 53, 69, 0.3)';
-      case 'medium': return 'rgba(40, 167, 69, 0.3)';
-      case 'low': return 'rgba(255, 193, 7, 0.3)';
-      default: return 'rgba(0, 123, 255, 0.3)';
+      case 'high': return 'rgba(52, 152, 219, 0.9)';
+      case 'medium': return 'rgba(52, 152, 219, 0.9)';
+      case 'low': return 'rgba(52, 152, 219, 0.9)';
+      default: return 'rgba(52, 152, 219, 0.9)';
     }
   }
 
   private getEventBorderColor(priority?: string): string {
     switch (priority) {
-      case 'high': return 'rgba(200, 35, 51, 0.5)';
-      case 'medium': return 'rgba(30, 126, 52, 0.5)';
-      case 'low': return 'rgba(224, 168, 0, 0.5)';
-      default: return 'rgba(0, 86, 179, 0.5)';
+      case 'high': return 'rgba(31, 95, 139, 0.9)';
+      case 'medium': return 'rgba(31, 95, 139, 0.9)';
+      case 'low': return 'rgba(31, 95, 139, 0.9)';
+      default: return 'rgba(31, 95, 139, 0.9)';
     }
   }
 
   private getEventTextColor(priority?: string): string {
     switch (priority) {
-      case 'high': return '#c82333';
-      case 'medium': return '#1e7e34';
-      case 'low': return '#856404';
-      default: return '#0056b3';
+      case 'high': return 'white';
+      case 'medium': return 'white';
+      case 'low': return 'white';
+      default: return 'white';
     }
   }
 
@@ -342,9 +396,9 @@ export class CalendarMeetComponent implements OnInit {
       calendarApi.push({
         id: this.createEventId(),
         ...evento,
-        backgroundColor: 'rgba(0, 123, 255, 0.3)',
-        borderColor: 'rgba(0, 86, 179, 0.5)',
-        textColor: '#0056b3',
+        backgroundColor: 'rgba(52, 152, 219, 0.9)',
+        borderColor: 'rgba(31, 95, 139, 0.9)',
+        textColor: 'white',
         classNames: ['bootstrap-event', 'event-primary']
       });
     }
@@ -353,5 +407,33 @@ export class CalendarMeetComponent implements OnInit {
   // Método para obtener eventos
   obtenerEventos(): MeetingEvent[] {
     return this.calendarOptions.events as MeetingEvent[];
+  }
+
+  // Método para manejar el redimensionamiento de eventos
+  private handleEventResize(arg: any): void {
+    const event = arg.event;
+    const newStart = event.start;
+    const newEnd = event.end;
+
+    console.log(`Evento redimensionado: ${event.title}`);
+    console.log(`Nuevo inicio: ${newStart}`);
+    console.log(`Nuevo fin: ${newEnd}`);
+
+    // Aquí puedes agregar lógica adicional para guardar los cambios
+    // Por ejemplo, actualizar en base de datos, notificar a otros usuarios, etc.
+  }
+
+  // Método para manejar el arrastre de eventos
+  private handleEventDrop(arg: any): void {
+    const event = arg.event;
+    const newStart = event.start;
+    const newEnd = event.end;
+
+    console.log(`Evento movido: ${event.title}`);
+    console.log(`Nuevo inicio: ${newStart}`);
+    console.log(`Nuevo fin: ${newEnd}`);
+
+    // Aquí puedes agregar lógica adicional para guardar los cambios
+    // Por ejemplo, actualizar en base de datos, notificar a otros usuarios, etc.
   }
 }
