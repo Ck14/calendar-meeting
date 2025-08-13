@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CalendarOptions, EventInput } from '@fullcalendar/core';
+import { CalendarOptions, EventInput, CalendarApi } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
@@ -185,24 +185,28 @@ export class CalendarMeetComponent implements OnInit {
     eventDidMount: (arg) => {
       this.customizeEventDisplay(arg.event);
     },
-    eventResize: (arg) => {
+    eventResize: (arg) => { // Added event resize callback
       this.handleEventResize(arg);
     },
-    eventDrop: (arg) => {
+    eventDrop: (arg) => { // Added event drop callback
       this.handleEventDrop(arg);
+    },
+    datesSet: (arg) => {
+      // Capturar el calendarApi y detectar traslapes cuando cambian las fechas
+      this.calendarApi = arg.view.calendar;
+      this.detectAndStyleOverlappingEvents();
     }
   };
+
+  private calendarApi: CalendarApi | null = null;
 
   constructor(private modalService: BsModalService) { }
 
   ngOnInit(): void {
+    // Detectar traslapes iniciales
     setTimeout(() => {
-      this.calendarOptions = {
-        ...this.calendarOptions,
-        height: 'auto',
-        expandRows: true
-      };
-    }, 100);
+      this.detectAndStyleOverlappingEvents();
+    }, 500);
   }
 
   private createEventId(): string {
@@ -419,6 +423,11 @@ export class CalendarMeetComponent implements OnInit {
     console.log(`Nuevo inicio: ${newStart}`);
     console.log(`Nuevo fin: ${newEnd}`);
 
+    // Detectar traslapes después del redimensionamiento
+    setTimeout(() => {
+      this.detectAndStyleOverlappingEvents();
+    }, 100);
+
     // Aquí puedes agregar lógica adicional para guardar los cambios
     // Por ejemplo, actualizar en base de datos, notificar a otros usuarios, etc.
   }
@@ -433,7 +442,78 @@ export class CalendarMeetComponent implements OnInit {
     console.log(`Nuevo inicio: ${newStart}`);
     console.log(`Nuevo fin: ${newEnd}`);
 
+    // Detectar traslapes después del movimiento
+    setTimeout(() => {
+      this.detectAndStyleOverlappingEvents();
+    }, 100);
+
     // Aquí puedes agregar lógica adicional para guardar los cambios
     // Por ejemplo, actualizar en base de datos, notificar a otros usuarios, etc.
+  }
+
+  // Método para detectar eventos traslapados y aplicar estilos
+  private detectAndStyleOverlappingEvents(): void {
+    const events = this.calendarOptions.events as MeetingEvent[];
+
+    // Limpiar estilos previos
+    events.forEach(event => {
+      if (event.classNames) {
+        event.classNames = event.classNames.filter(className =>
+          !className.includes('overlapping-')
+        );
+      }
+    });
+
+    // Detectar traslapes
+    for (let i = 0; i < events.length; i++) {
+      for (let j = i + 1; j < events.length; j++) {
+        const eventA = events[i];
+        const eventB = events[j];
+
+        if (this.eventsOverlap(eventA, eventB)) {
+          // Marcar ambos eventos como traslapados
+          this.addOverlappingClass(eventA, 'overlapping-primary');
+          this.addOverlappingClass(eventB, 'overlapping-secondary');
+        }
+      }
+    }
+
+    // Refrescar el calendario para aplicar los cambios
+    if (this.calendarApi) {
+      this.calendarApi.refetchEvents();
+    }
+  }
+
+  // Método para verificar si dos eventos se traslapan
+  private eventsOverlap(eventA: MeetingEvent, eventB: MeetingEvent): boolean {
+    const startA = new Date(eventA.start);
+    const endA = new Date(eventA.end);
+    const startB = new Date(eventB.start);
+    const endB = new Date(eventB.end);
+
+    // Verificar si hay traslape
+    return startA < endB && startB < endA;
+  }
+
+  // Método para agregar clase de traslape
+  private addOverlappingClass(event: MeetingEvent, className: string): void {
+    if (!event.classNames) {
+      event.classNames = [];
+    }
+    if (!event.classNames.includes(className)) {
+      event.classNames.push(className);
+    }
+  }
+
+  // Método para limpiar estilos de traslape
+  private clearOverlappingStyles(): void {
+    const events = this.calendarOptions.events as MeetingEvent[];
+    events.forEach(event => {
+      if (event.classNames) {
+        event.classNames = event.classNames.filter(className =>
+          !className.includes('overlapping-')
+        );
+      }
+    });
   }
 }
