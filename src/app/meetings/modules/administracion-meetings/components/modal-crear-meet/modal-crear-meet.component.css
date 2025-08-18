@@ -152,3 +152,93 @@
 .suggestions-container::-webkit-scrollbar-thumb:hover {
   background: #a8a8a8;
 }
+
+/* Estilos para los badges de participantes seleccionados */
+.selected-participants {
+  margin-top: 0.75rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.participant-badge {
+  display: inline-flex;
+  align-items: center;
+  background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+  border: 1px solid #2196f3;
+  border-radius: 16px;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.8rem;
+  color: #1976d2;
+  box-shadow: 0 1px 3px rgba(33, 150, 243, 0.15);
+  transition: all 0.2s ease;
+  max-width: 100%;
+}
+
+.participant-badge:hover {
+  box-shadow: 0 4px 8px rgba(33, 150, 243, 0.25);
+  transform: translateY(-1px);
+}
+
+.badge-name {
+  font-weight: 500;
+  margin-right: 0.25rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 120px;
+}
+
+.badge-email {
+  font-size: 0.7rem;
+  opacity: 0.8;
+  font-style: italic;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100px;
+}
+
+.badge-remove {
+  background: none;
+  border: none;
+  color: #f44336;
+  cursor: pointer;
+  padding: 0.1rem;
+  margin-left: 0.375rem;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  font-size: 0.65rem;
+}
+
+.badge-remove:hover {
+  background-color: #ffebee;
+  color: #d32f2f;
+  transform: scale(1.1);
+}
+
+.badge-remove:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(244, 67, 54, 0.25);
+}
+
+/* Responsive para badges */
+@media (max-width: 768px) {
+  .participant-badge {
+    font-size: 0.75rem;
+    padding: 0.2rem 0.4rem;
+  }
+
+  .badge-name {
+    max-width: 80px;
+  }
+
+  .badge-email {
+    max-width: 60px;
+  }
+}

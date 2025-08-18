@@ -54,7 +54,8 @@
                     <div class="position-relative">
                         <input type="text" class="form-control" formControlName="attendees"
                             (input)="onAttendeesInput($event)" (keydown)="onAttendeesKeyDown($event)"
-                            (blur)="onAttendeesBlur()" placeholder="Escribir nombre o correo para autocompletar" />
+                            (blur)="onAttendeesBlur()" (paste)="onAttendeesClear()"
+                            placeholder="Escribir nombre o correo para autocompletar" />
 
                         <!-- Sugerencias de autocompletado -->
                         <div class="suggestions-container" *ngIf="showSuggestions && filteredParticipants.length > 0">
@@ -69,6 +70,20 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Badges de participantes seleccionados -->
+                    <div class="selected-participants" *ngIf="selectedParticipants.length > 0">
+                        <div class="participant-badge" *ngFor="let participante of selectedParticipants">
+                            <span class="badge-name">{{ participante.nombre || participante.correo }}</span>
+                            <span class="badge-email" *ngIf="participante.correo && participante.nombre">{{
+                                participante.correo }}</span>
+                            <button type="button" class="badge-remove" (click)="removeParticipant(participante)">
+                                <span style="vertical-align: middle;  color: var(--bs-info);" style="font-size: 16px;"
+                                    class="material-icons">close</span>
+                            </button>
+                        </div>
+                    </div>
+
                     <div class="form-text">Escriba el nombre o correo del participante para ver sugerencias</div>
                 </div>
             </div>

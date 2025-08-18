@@ -47,6 +47,7 @@ export class ModalCrearMeetComponent implements OnInit {
   showSuggestions: boolean = false;
   selectedParticipantIndex: number = -1;
   currentInputValue: string = '';
+  selectedParticipants: IParticipanteModel[] = [];
 
   constructor(
     public bsModalRef: BsModalRef,
@@ -194,8 +195,8 @@ export class ModalCrearMeetComponent implements OnInit {
   }
 
   /**
-   * Filtra los participantes basado en el texto ingresado
-   */
+* Filtra los participantes basado en el texto ingresado
+*/
   filterParticipants(searchText: string): void {
     if (!searchText || searchText.trim() === '') {
       this.filteredParticipants = [];
@@ -209,7 +210,37 @@ export class ModalCrearMeetComponent implements OnInit {
       const nombre = participante.nombre?.toLowerCase() || '';
       const correo = participante.correo?.toLowerCase() || '';
 
-      return nombre.includes(searchLower) || correo.includes(searchLower);
+      // Verificar si coincide con el correo
+      if (correo.includes(searchLower)) {
+        return true;
+      }
+
+      // Verificar si coincide con el nombre completo
+      if (nombre.includes(searchLower)) {
+        return true;
+      }
+
+      // Búsqueda inteligente por múltiples palabras
+      const palabrasBusqueda = searchLower.split(' ').filter(palabra => palabra.length > 0);
+      const palabrasNombre = nombre.split(' ').filter(palabra => palabra.length > 0);
+
+      // Si solo hay una palabra de búsqueda, buscar en cualquier palabra del nombre
+      if (palabrasBusqueda.length === 1) {
+        return palabrasNombre.some(palabraNombre =>
+          palabraNombre.startsWith(palabrasBusqueda[0]) || palabraNombre.includes(palabrasBusqueda[0])
+        );
+      }
+
+      // Si hay múltiples palabras de búsqueda, verificar que todas estén en el nombre
+      if (palabrasBusqueda.length > 1) {
+        return palabrasBusqueda.every(palabraBusqueda =>
+          palabrasNombre.some(palabraNombre =>
+            palabraNombre.startsWith(palabraBusqueda) || palabraNombre.includes(palabraBusqueda)
+          )
+        );
+      }
+
+      return false;
     });
 
     this.showSuggestions = this.filteredParticipants.length > 0;
@@ -217,11 +248,18 @@ export class ModalCrearMeetComponent implements OnInit {
   }
 
   /**
-   * Maneja el evento de input en el campo attendees
-   */
+ * Maneja el evento de input en el campo attendees
+ */
   onAttendeesInput(event: any): void {
     const value = event.target.value;
     this.currentInputValue = value;
+
+    // Si el campo está vacío, limpiar participantes seleccionados
+    if (!value || value.trim() === '') {
+      this.selectedParticipants = [];
+      this.hideSuggestions();
+      return;
+    }
 
     // Extraer la última palabra que se está escribiendo (después de la última coma)
     const lastCommaIndex = value.lastIndexOf(',');
@@ -261,27 +299,24 @@ export class ModalCrearMeetComponent implements OnInit {
   }
 
   /**
-   * Selecciona un participante de las sugerencias
-   */
+ * Selecciona un participante de las sugerencias
+ */
   selectParticipant(participante: IParticipanteModel): void {
-    const currentValue = this.attendees?.value || '';
-    const displayName = participante.nombre || participante.correo || '';
+    // Verificar si el participante ya está seleccionado
+    const isAlreadySelected = this.selectedParticipants.some(p =>
+      p.nombre === participante.nombre && p.correo === participante.correo
+    );
 
-    // Si el campo está vacío, simplemente agregar el nombre
-    if (!currentValue || currentValue.trim() === '') {
-      this.attendees?.setValue(displayName);
-    } else {
-      // Si ya hay contenido, agregar después de una coma
-      const lastCommaIndex = currentValue.lastIndexOf(',');
-      if (lastCommaIndex === -1) {
-        // No hay comas, reemplazar todo el contenido
-        this.attendees?.setValue(displayName);
-      } else {
-        // Hay comas, agregar después de la última coma
-        const beforeLastComma = currentValue.substring(0, lastCommaIndex + 1);
-        this.attendees?.setValue(beforeLastComma + ' ' + displayName);
-      }
+    if (isAlreadySelected) {
+      this.hideSuggestions();
+      return;
     }
+
+    // Agregar el participante a la lista de seleccionados
+    this.selectedParticipants.push(participante);
+
+    // Actualizar el valor del campo con los participantes seleccionados
+    this.updateAttendeesField();
 
     this.hideSuggestions();
     this.currentInputValue = '';
@@ -294,6 +329,24 @@ export class ModalCrearMeetComponent implements OnInit {
         input.setSelectionRange(input.value.length, input.value.length);
       }
     }, 0);
+  }
+
+  /**
+   * Actualiza el campo de participantes con los seleccionados
+   */
+  private updateAttendeesField(): void {
+    const displayNames = this.selectedParticipants.map(p => p.nombre || p.correo || '');
+    this.attendees?.setValue(displayNames.join(', ') + ', ');
+  }
+
+  /**
+   * Elimina un participante de la lista de seleccionados
+   */
+  removeParticipant(participante: IParticipanteModel): void {
+    this.selectedParticipants = this.selectedParticipants.filter(p =>
+      !(p.nombre === participante.nombre && p.correo === participante.correo)
+    );
+    this.updateAttendeesField();
   }
 
   /**
@@ -311,6 +364,15 @@ export class ModalCrearMeetComponent implements OnInit {
     setTimeout(() => {
       this.hideSuggestions();
     }, 150);
+  }
+
+  /**
+   * Maneja cuando se borra el contenido del campo
+   */
+  onAttendeesClear(): void {
+    this.selectedParticipants = [];
+    this.currentInputValue = '';
+    this.hideSuggestions();
   }
 
   /**
