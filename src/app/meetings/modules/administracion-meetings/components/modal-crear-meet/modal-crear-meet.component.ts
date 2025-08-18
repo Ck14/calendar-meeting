@@ -4,7 +4,7 @@ import { BsModalRef } from 'ngx-bootstrap/modal';
 import { ModalCrearMeetService } from './modal-crear-meet.service';
 import { ISalaModel } from 'src/app/interfaces/meetings/salaModelo';
 import { Confirm, Loading } from 'notiflix';
-import { forkJoin } from 'rxjs';
+import { forkJoin, of } from 'rxjs';
 import { IPrioridadModel } from 'src/app/interfaces/meetings/prioridadModelo';
 import { IMeetModelo } from 'src/app/interfaces/meetings/meetModel';
 import { IParticipanteModel } from 'src/app/interfaces/meetings/participanteModelo';
@@ -41,6 +41,12 @@ export class ModalCrearMeetComponent implements OnInit {
   salas: ISalaModel[] = [];
   prioridades: IPrioridadModel[] = [];
   participantes: IParticipanteModel[] = [];
+
+  // Propiedades para el autocompletado
+  filteredParticipants: IParticipanteModel[] = [];
+  showSuggestions: boolean = false;
+  selectedParticipantIndex: number = -1;
+  currentInputValue: string = '';
 
   constructor(
     public bsModalRef: BsModalRef,
@@ -80,22 +86,39 @@ export class ModalCrearMeetComponent implements OnInit {
 
 
   cargarCatalogos() {
+    // Verificar si ya tenemos datos en caché
+    const salasCache = this.modalCrearMeetService.obtenerSalasCache();
+    const prioridadesCache = this.modalCrearMeetService.obtenerPrioridadesCache();
+    const participantesCache = this.modalCrearMeetService.obtenerParticipantesCache();
+
+    // Si todos los datos están en caché, los usamos directamente
+    if (salasCache && prioridadesCache && participantesCache) {
+      this.salas = salasCache;
+      this.prioridades = prioridadesCache;
+      this.participantes = participantesCache;
+      return;
+    }
+
+    // Si no están todos en caché, mostramos loading y cargamos solo los que faltan
     Loading.standard("Obteniendo catalogos...");
 
-    let salas = this.modalCrearMeetService.obtenerCategorias();
-    let prioridades = this.modalCrearMeetService.obtenerPrioridades();
-    let participantes = this.modalCrearMeetService.obtenerParticipantes();
-
-
-    forkJoin([salas, prioridades, participantes]).subscribe({
+    // Cargar todos los datos (el servicio maneja el caché internamente)
+    forkJoin([
+      this.modalCrearMeetService.obtenerCategorias(),
+      this.modalCrearMeetService.obtenerPrioridades(),
+      this.modalCrearMeetService.obtenerParticipantes()
+    ]).subscribe({
       next: (result) => {
-        console.log(result);
+        console.log('Datos cargados:', result);
         this.salas = result[0];
         this.prioridades = result[1];
         this.participantes = result[2];
         Loading.remove();
       },
-      error: (error) => { },
+      error: (error) => {
+        console.error('Error al cargar catálogos:', error);
+        Loading.remove();
+      },
       complete() { },
     });
   }
@@ -170,6 +193,132 @@ export class ModalCrearMeetComponent implements OnInit {
     }
   }
 
+  /**
+   * Filtra los participantes basado en el texto ingresado
+   */
+  filterParticipants(searchText: string): void {
+    if (!searchText || searchText.trim() === '') {
+      this.filteredParticipants = [];
+      this.showSuggestions = false;
+      return;
+    }
+
+    const searchLower = searchText.toLowerCase().trim();
+
+    this.filteredParticipants = this.participantes.filter(participante => {
+      const nombre = participante.nombre?.toLowerCase() || '';
+      const correo = participante.correo?.toLowerCase() || '';
+
+      return nombre.includes(searchLower) || correo.includes(searchLower);
+    });
+
+    this.showSuggestions = this.filteredParticipants.length > 0;
+    this.selectedParticipantIndex = -1;
+  }
+
+  /**
+   * Maneja el evento de input en el campo attendees
+   */
+  onAttendeesInput(event: any): void {
+    const value = event.target.value;
+    this.currentInputValue = value;
+
+    // Extraer la última palabra que se está escribiendo (después de la última coma)
+    const lastCommaIndex = value.lastIndexOf(',');
+    const searchText = lastCommaIndex === -1 ? value : value.substring(lastCommaIndex + 1).trim();
+
+    this.filterParticipants(searchText);
+  }
+
+  /**
+   * Maneja la navegación con teclado en las sugerencias
+   */
+  onAttendeesKeyDown(event: KeyboardEvent): void {
+    if (!this.showSuggestions) return;
+
+    switch (event.key) {
+      case 'ArrowDown':
+        event.preventDefault();
+        this.selectedParticipantIndex = Math.min(
+          this.selectedParticipantIndex + 1,
+          this.filteredParticipants.length - 1
+        );
+        break;
+      case 'ArrowUp':
+        event.preventDefault();
+        this.selectedParticipantIndex = Math.max(this.selectedParticipantIndex - 1, -1);
+        break;
+      case 'Enter':
+        event.preventDefault();
+        if (this.selectedParticipantIndex >= 0) {
+          this.selectParticipant(this.filteredParticipants[this.selectedParticipantIndex]);
+        }
+        break;
+      case 'Escape':
+        this.hideSuggestions();
+        break;
+    }
+  }
+
+  /**
+   * Selecciona un participante de las sugerencias
+   */
+  selectParticipant(participante: IParticipanteModel): void {
+    const currentValue = this.attendees?.value || '';
+    const displayName = participante.nombre || participante.correo || '';
+
+    // Si el campo está vacío, simplemente agregar el nombre
+    if (!currentValue || currentValue.trim() === '') {
+      this.attendees?.setValue(displayName);
+    } else {
+      // Si ya hay contenido, agregar después de una coma
+      const lastCommaIndex = currentValue.lastIndexOf(',');
+      if (lastCommaIndex === -1) {
+        // No hay comas, reemplazar todo el contenido
+        this.attendees?.setValue(displayName);
+      } else {
+        // Hay comas, agregar después de la última coma
+        const beforeLastComma = currentValue.substring(0, lastCommaIndex + 1);
+        this.attendees?.setValue(beforeLastComma + ' ' + displayName);
+      }
+    }
+
+    this.hideSuggestions();
+    this.currentInputValue = '';
+
+    // Enfocar el input después de la selección
+    setTimeout(() => {
+      const input = document.querySelector('input[formControlName="attendees"]') as HTMLInputElement;
+      if (input) {
+        input.focus();
+        input.setSelectionRange(input.value.length, input.value.length);
+      }
+    }, 0);
+  }
+
+  /**
+   * Oculta las sugerencias
+   */
+  hideSuggestions(): void {
+    this.showSuggestions = false;
+    this.selectedParticipantIndex = -1;
+  }
+
+  /**
+   * Maneja el evento blur del campo attendees
+   */
+  onAttendeesBlur(): void {
+    setTimeout(() => {
+      this.hideSuggestions();
+    }, 150);
+  }
+
+  /**
+   * Obtiene la clase CSS para resaltar la sugerencia seleccionada
+   */
+  getSuggestionClass(index: number): string {
+    return index === this.selectedParticipantIndex ? 'suggestion-selected' : '';
+  }
 
   public get title() {
     return this.formMeeting.get("title");
