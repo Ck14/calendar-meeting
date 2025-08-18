@@ -8,8 +8,8 @@ const routes: Routes = [
   {
     path: "",
     component: CalendarMeetComponent,
-    canActivate: [AuthGuardService],
-    canLoad: [AuthGuardService],
+    //canActivate: [AuthGuardService],
+    //canLoad: [AuthGuardService],
   },
 ];
 

@@ -1,5 +1,11 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BsModalRef } from 'ngx-bootstrap/modal';
+import { ModalCrearMeetService } from './modal-crear-meet.service';
+import { ISalaModel } from 'src/app/interfaces/meetings/salaModelo';
+import { Confirm, Loading } from 'notiflix';
+import { forkJoin } from 'rxjs';
+import { IPrioridadModel } from 'src/app/interfaces/meetings/prioridadModelo';
 
 // Interfaz para los datos del modal
 export interface ModalCrearMeetData {
@@ -30,85 +36,139 @@ export class ModalCrearMeetComponent implements OnInit {
 
   // Datos del modal
   tituloModal: string = '';
-  startDate: Date = new Date();
-  endDate: Date = new Date();
+
+  // FormGroup para el formulario
+  formMeeting: FormGroup;
 
   // Lista de salas disponibles
-  availableRooms = [
-    'Sala de Conferencias A',
-    'Sala de Conferencias B',
-    'Sala de Reuniones 1',
-    'Sala de Reuniones 2',
-    'Sala Ejecutiva',
-    'Auditorio Principal',
-    'Sala de Capacitación'
-  ];
+  salas: ISalaModel[] = [];
+  prioridades: IPrioridadModel[] = [];
 
-  // Datos del formulario
-  modalData = {
-    title: '',
-    start: '',
-    end: '',
-    room: '',
-    description: '',
-    attendees: '',
-    organizer: 'Usuario Actual',
-    priority: 'medium'
-  };
-
-  constructor(public bsModalRef: BsModalRef) { }
+  constructor(
+    public bsModalRef: BsModalRef,
+    private fb: FormBuilder,
+    private modalCrearMeetService: ModalCrearMeetService
+  ) {
+    this.formMeeting = this.fb.group({
+      title: ['', [Validators.required]],
+      start: ['', [Validators.required]],
+      end: ['', [Validators.required]],
+      room: [''],
+      description: [''],
+      attendees: [''],
+      organizer: [''],
+      priority: ['']
+    });
+  }
 
   ngOnInit(): void {
-    // Formatear las fechas para los inputs datetime-local
-    this.modalData.start = this.formatDateTimeForInput(this.startDate);
-    this.modalData.end = this.formatDateTimeForInput(this.endDate);
+
+    Confirm.init({
+      width: "35%",
+      borderRadius: "5px",
+      titleMaxLength: 200,
+      titleColor: "#212529",
+      messageColor: "#212529",
+      plainText: false,
+      messageMaxLength: 500,
+      okButtonBackground: "#0ab39c",
+      cancelButtonColor: "#f06548",
+      cancelButtonBackground: "#fff",
+    });
+    // Inicializar el formulario con fechas vacías
+    // Las fechas se pueden establecer desde el componente padre si es necesario
+    this.cargarCatalogos();
   }
 
-  // Método para guardar evento
-  saveEvent(): void {
-    if (!this.modalData.title || !this.modalData.start || !this.modalData.end) {
-      alert('Por favor complete los campos obligatorios');
-      return;
+
+  cargarCatalogos() {
+    Loading.standard("Obteniendo catalogos...");
+
+    let salas = this.modalCrearMeetService.obtenerCategorias();
+    let prioridades = this.modalCrearMeetService.obtenerPrioridades();
+
+
+    forkJoin([salas, prioridades]).subscribe({
+      next: (result) => {
+        console.log(result);
+        this.salas = result[0];
+        this.prioridades = result[1];
+        Loading.remove();
+      },
+      error: (error) => { },
+      complete() { },
+    });
+  }
+
+
+  public confirmSave(): void {
+    Confirm.show(
+      "¿Confirma creación de la reunión?",
+      `<div style="text-align: left;">Título de la reunión: <b>${this.title?.value}</b> </div>
+       <div style="text-align: left;">Prioridad: <b>${this.priority?.value}</b> </div>
+       <div style="text-align: left;">Fecha y Hora de Inicio: <b>${this.start?.value ? new Date(this.start.value).toLocaleString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : ''}</b> </div>
+       <div style="text-align: left;">Fecha y Hora de Fin: <b>${this.end?.value ? new Date(this.end.value).toLocaleString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : ''}</b> </div>
+       <div style="text-align: left;">Sala de Reunión: <b>${this.room?.value}</b> </div>
+       <div>&nbsp;</div>       
+      `,
+      "Si",
+      "No",
+      () => {
+        this.saveMeeting();
+      },
+      () => { }
+    );
+  } // end
+
+
+  public saveMeeting(): void {
+    Loading.standard("Guardando reunión...");
+
+    let meeting = {
+      title: this.title?.value,
+      priority: this.priority?.value,
+      start: this.start?.value,
+      end: this.end?.value,
+      room: this.room?.value,
+      description: this.description?.value,
+      attendees: this.attendees?.value,
+      organizer: this.organizer?.value,
     }
 
-    // Convertir las fechas de string a Date objects
-    const startDate = new Date(this.modalData.start);
-    const endDate = new Date(this.modalData.end);
-
-    // Validar que la fecha de fin sea posterior a la de inicio
-    if (endDate <= startDate) {
-      alert('La fecha de fin debe ser posterior a la fecha de inicio');
-      return;
-    }
-
-    const newEvent: MeetingEvent = {
-      title: this.modalData.title,
-      start: startDate,
-      end: endDate,
-      room: this.modalData.room || undefined,
-      description: this.modalData.description || undefined,
-      attendees: this.modalData.attendees ? this.modalData.attendees.split(',').map(a => a.trim()) : undefined,
-      organizer: this.modalData.organizer,
-      priority: this.modalData.priority as 'low' | 'medium' | 'high'
-    };
-
-    // Cerrar modal y retornar el evento creado
-    this.bsModalRef.hide();
-    this.bsModalRef.content = newEvent;
+    console.log(meeting);
   }
 
-  // Método para cancelar
-  cancel(): void {
-    this.bsModalRef.hide();
+
+  public get title() {
+    return this.formMeeting.get("title");
   }
 
-  // Método auxiliar para formatear fecha
-  private formatDateTimeForInput(date: Date): string {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
-    return `${year}-${month}-${day}T${hours}:${minutes}`;
+  public get start() {
+    return this.formMeeting.get("start");
+  }
+
+  public get end() {
+    return this.formMeeting.get("end");
+  }
+
+
+  public get room() {
+    return this.formMeeting.get("room");
+  }
+
+  public get description() {
+    return this.formMeeting.get("description");
+  }
+
+  public get attendees() {
+    return this.formMeeting.get("attendees");
+  }
+
+  public get organizer() {
+    return this.formMeeting.get("organizer");
+  }
+
+  public get priority() {
+    return this.formMeeting.get("priority");
   }
 }

@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { ModalModule } from 'ngx-bootstrap/modal';
 
@@ -19,6 +19,7 @@ import { CalendarMeetComponent } from './screens/calendar-meet/calendar-meet.com
   imports: [
     CommonModule,
     FormsModule,
+    ReactiveFormsModule,
     AdministracionMeetingsRoutingModule,
     FullCalendarModule,
     ModalModule.forRoot()

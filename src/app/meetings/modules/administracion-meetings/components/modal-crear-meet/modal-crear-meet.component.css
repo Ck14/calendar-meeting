@@ -1,4 +1,9 @@
 /* Estilos para el modal de crear eventos */
+.modal-minfin {
+  border-radius: 0.5rem;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
 .modal-header {
   background: linear-gradient(135deg, #f8f9fa, #e9ecef);
   border-bottom: 1px solid #dee2e6;
@@ -16,6 +21,12 @@
 .form-label {
   font-weight: 500;
   color: #495057;
+}
+
+.form-label.required::after {
+  content: " *";
+  color: #dc3545;
+  font-weight: bold;
 }
 
 .form-control, .form-select {
@@ -43,6 +54,23 @@
 .btn:hover {
   transform: translateY(-1px);
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+}
+
+.btn-success {
+  background-color: #28a745;
+  border-color: #28a745;
+}
+
+.btn-soft-danger {
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
+  color: #721c24;
+}
+
+.btn-soft-danger:hover {
+  background-color: #f1b0b7;
+  border-color: #ed969e;
+  color: #491217;
 }
 
 .form-text {
