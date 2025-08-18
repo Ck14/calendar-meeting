@@ -153,6 +153,26 @@
   background: #a8a8a8;
 }
 
+/* Estilos para la opción de correo personalizado */
+.custom-email-option {
+  background-color: #f8f9fa;
+  border-left: 3px solid #28a745;
+}
+
+.custom-email-option:hover {
+  background-color: #e8f5e8 !important;
+}
+
+.custom-email-option .suggestion-name {
+  color: #28a745;
+  font-weight: 600;
+}
+
+.custom-email-option .suggestion-email {
+  color: #6c757d;
+  font-style: normal;
+}
+
 /* Estilos para los badges de participantes seleccionados */
 .selected-participants {
   margin-top: 0.75rem;

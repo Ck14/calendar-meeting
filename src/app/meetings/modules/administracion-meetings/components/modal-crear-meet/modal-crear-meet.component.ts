@@ -248,8 +248,41 @@ export class ModalCrearMeetComponent implements OnInit {
   }
 
   /**
- * Maneja el evento de input en el campo attendees
- */
+* Agrega un correo personalizado cuando no se encuentra coincidencia
+*/
+  addCustomEmail(email: string): void {
+    // Usar directamente el email que se pasa como parámetro
+    const newEmail = email.trim();
+
+    // Verificar si el correo ya está en la lista de seleccionados
+    const isAlreadySelected = this.selectedParticipants.some(p =>
+      p.correo === newEmail || p.nombre === newEmail
+    );
+
+    if (isAlreadySelected || !newEmail) {
+      return;
+    }
+
+    // Crear un participante personalizado
+    const customParticipant: IParticipanteModel = {
+      nombre: newEmail,
+      correo: newEmail
+    };
+
+    // Agregar a la lista de seleccionados
+    this.selectedParticipants.push(customParticipant);
+
+    // Actualizar el campo
+    this.updateAttendeesField();
+
+    // Limpiar el campo de búsqueda
+    this.currentInputValue = '';
+    this.hideSuggestions();
+  }
+
+  /**
+* Maneja el evento de input en el campo attendees
+*/
   onAttendeesInput(event: any): void {
     const value = event.target.value;
     this.currentInputValue = value;
@@ -265,31 +298,41 @@ export class ModalCrearMeetComponent implements OnInit {
     const lastCommaIndex = value.lastIndexOf(',');
     const searchText = lastCommaIndex === -1 ? value : value.substring(lastCommaIndex + 1).trim();
 
-    this.filterParticipants(searchText);
+    // Solo buscar si hay texto después de la última coma y no está vacío
+    if (searchText && searchText.trim() !== '') {
+      this.filterParticipants(searchText);
+    } else {
+      this.hideSuggestions();
+    }
   }
 
   /**
    * Maneja la navegación con teclado en las sugerencias
    */
   onAttendeesKeyDown(event: KeyboardEvent): void {
-    if (!this.showSuggestions) return;
-
     switch (event.key) {
       case 'ArrowDown':
-        event.preventDefault();
-        this.selectedParticipantIndex = Math.min(
-          this.selectedParticipantIndex + 1,
-          this.filteredParticipants.length - 1
-        );
+        if (this.showSuggestions) {
+          event.preventDefault();
+          this.selectedParticipantIndex = Math.min(
+            this.selectedParticipantIndex + 1,
+            this.filteredParticipants.length - 1
+          );
+        }
         break;
       case 'ArrowUp':
-        event.preventDefault();
-        this.selectedParticipantIndex = Math.max(this.selectedParticipantIndex - 1, -1);
+        if (this.showSuggestions) {
+          event.preventDefault();
+          this.selectedParticipantIndex = Math.max(this.selectedParticipantIndex - 1, -1);
+        }
         break;
       case 'Enter':
         event.preventDefault();
-        if (this.selectedParticipantIndex >= 0) {
+        if (this.showSuggestions && this.selectedParticipantIndex >= 0) {
           this.selectParticipant(this.filteredParticipants[this.selectedParticipantIndex]);
+        } else if (this.getCurrentSearchText()) {
+          // Si no hay sugerencias pero hay texto, agregar como correo personalizado
+          this.addCustomEmail(this.getCurrentSearchText());
         }
         break;
       case 'Escape':
@@ -373,6 +416,20 @@ export class ModalCrearMeetComponent implements OnInit {
     this.selectedParticipants = [];
     this.currentInputValue = '';
     this.hideSuggestions();
+  }
+
+  /**
+   * Obtiene el texto actual de búsqueda (después de la última coma)
+   */
+  getCurrentSearchText(): string {
+    const value = this.attendees?.value || '';
+    const lastCommaIndex = value.lastIndexOf(',');
+    const searchText = lastCommaIndex === -1 ? value.trim() : value.substring(lastCommaIndex + 1).trim();
+
+    // Solo devolver si hay texto y no está vacío
+    const result = searchText && searchText.length > 0 ? searchText : '';
+    console.log('getCurrentSearchText:', { value, lastCommaIndex, searchText, result });
+    return result;
   }
 
   /**

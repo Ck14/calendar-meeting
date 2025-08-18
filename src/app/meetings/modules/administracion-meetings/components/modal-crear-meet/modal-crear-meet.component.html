@@ -69,6 +69,20 @@
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Opción para agregar correo personalizado cuando no hay coincidencias -->
+                        <div class="suggestions-container" *ngIf="getCurrentSearchText() && !showSuggestions">
+                            <div class="suggestions-list">
+                                <div class="suggestion-item custom-email-option"
+                                    (click)="addCustomEmail(getCurrentSearchText())">
+                                    <div class="suggestion-name">
+                                        <i class="fas fa-plus-circle" style="color: #28a745; margin-right: 8px;"></i>
+                                        Agregar "{{ getCurrentSearchText() }}" como participante
+                                    </div>
+                                    <div class="suggestion-email">Presiona Enter o haz clic para agregar</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Badges de participantes seleccionados -->
