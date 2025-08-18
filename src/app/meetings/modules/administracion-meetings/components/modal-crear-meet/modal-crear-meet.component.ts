@@ -6,13 +6,10 @@ import { ISalaModel } from 'src/app/interfaces/meetings/salaModelo';
 import { Confirm, Loading } from 'notiflix';
 import { forkJoin } from 'rxjs';
 import { IPrioridadModel } from 'src/app/interfaces/meetings/prioridadModelo';
+import { IMeetModelo } from 'src/app/interfaces/meetings/meetModel';
+import { IParticipanteModel } from 'src/app/interfaces/meetings/participanteModelo';
 
-// Interfaz para los datos del modal
-export interface ModalCrearMeetData {
-  tituloModal: string;
-  startDate: Date;
-  endDate: Date;
-}
+
 
 // Interfaz para el evento creado
 export interface MeetingEvent {
@@ -43,6 +40,7 @@ export class ModalCrearMeetComponent implements OnInit {
   // Lista de salas disponibles
   salas: ISalaModel[] = [];
   prioridades: IPrioridadModel[] = [];
+  participantes: IParticipanteModel[] = [];
 
   constructor(
     public bsModalRef: BsModalRef,
@@ -86,13 +84,15 @@ export class ModalCrearMeetComponent implements OnInit {
 
     let salas = this.modalCrearMeetService.obtenerCategorias();
     let prioridades = this.modalCrearMeetService.obtenerPrioridades();
+    let participantes = this.modalCrearMeetService.obtenerParticipantes();
 
 
-    forkJoin([salas, prioridades]).subscribe({
+    forkJoin([salas, prioridades, participantes]).subscribe({
       next: (result) => {
         console.log(result);
         this.salas = result[0];
         this.prioridades = result[1];
+        this.participantes = result[2];
         Loading.remove();
       },
       error: (error) => { },
@@ -124,18 +124,50 @@ export class ModalCrearMeetComponent implements OnInit {
   public saveMeeting(): void {
     Loading.standard("Guardando reunión...");
 
-    let meeting = {
-      title: this.title?.value,
-      priority: this.priority?.value,
-      start: this.start?.value,
-      end: this.end?.value,
-      room: this.room?.value,
-      description: this.description?.value,
-      attendees: this.attendees?.value,
-      organizer: this.organizer?.value,
+    // Extraer solo la hora del datetime-local
+    const horaInicio = this.start?.value ? this.extractTimeFromDateTime(this.start.value) : undefined;
+    const horaFin = this.end?.value ? this.extractTimeFromDateTime(this.end.value) : undefined;
+
+    let meeting: IMeetModelo = {
+      titulo: this.title?.value,
+      descripcion: this.description?.value,
+      fechaInicio: this.start?.value,
+      horaInicio: horaInicio,
+      fechaFin: this.end?.value,
+      horaFin: horaFin,
+      idSala: +this.room?.value,
+      idPrioridad: +this.priority?.value,
+      idEstado: 1,
+      idTipoMeet: 1
     }
 
     console.log(meeting);
+  }
+
+  /**
+ * Extrae solo la hora de un string datetime-local (formato: YYYY-MM-DDTHH:MM)
+ * @param dateTimeString - String en formato datetime-local
+ * @returns Date con solo la hora (fecha actual + hora extraída)
+ */
+  private extractTimeFromDateTime(dateTimeString: string): Date | undefined {
+    if (!dateTimeString) return undefined;
+
+    try {
+      // El formato datetime-local es YYYY-MM-DDTHH:MM
+      // Extraemos la parte después de la T (que es la hora)
+      const timePart = dateTimeString.split('T')[1];
+      if (!timePart) return undefined;
+
+      // Creamos una fecha con la hora extraída (usando la fecha actual)
+      const [hours, minutes] = timePart.split(':').map(Number);
+      const today = new Date();
+      today.setHours(hours, minutes, 0, 0);
+
+      return today;
+    } catch (error) {
+      console.error('Error al extraer la hora:', error);
+      return undefined;
+    }
   }
 
 

@@ -5,7 +5,7 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import listPlugin from '@fullcalendar/list';
 import { BsModalService } from 'ngx-bootstrap/modal';
-import { ModalCrearMeetComponent, ModalCrearMeetData, MeetingEvent as CreateMeetingEvent } from '../../components/modal-crear-meet/modal-crear-meet.component';
+import { ModalCrearMeetComponent, MeetingEvent as CreateMeetingEvent } from '../../components/modal-crear-meet/modal-crear-meet.component';
 import { ModalEditarMeetComponent, ModalEditarMeetData, MeetingEvent as EditMeetingEvent } from '../../components/modal-editar-meet/modal-editar-meet.component';
 
 // Interfaz extendida para eventos con datos adicionales
@@ -215,24 +215,17 @@ export class CalendarMeetComponent implements OnInit {
 
   // Método para abrir modal de crear evento
   abrirModalCrearEvento(arg: any): void {
-    const initialState: ModalCrearMeetData = {
-      tituloModal: 'Crear Nueva Reunión',
-      startDate: new Date(arg.startStr),
-      endDate: new Date(arg.endStr)
-    };
 
     this.bsModalCrear = this.modalService.show(
       ModalCrearMeetComponent,
       {
-        initialState,
         class: "modal-lg modal-dialog-centered",
         keyboard: true,
         backdrop: "static",
       }
     );
 
-    // Suscribirse al resultado del modal
-    this.bsModalCrear.content = initialState;
+    // Suscribirse al resultado del modal    
     this.bsModalCrear.onHidden?.subscribe((result: any) => {
       if (result && result.title) {
         this.agregarNuevoEvento(result);
