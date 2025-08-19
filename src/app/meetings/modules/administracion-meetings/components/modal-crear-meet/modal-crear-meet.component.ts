@@ -3,11 +3,12 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { ModalCrearMeetService } from './modal-crear-meet.service';
 import { ISalaModel } from 'src/app/interfaces/meetings/salaModelo';
-import { Confirm, Loading } from 'notiflix';
+import { Confirm, Loading, Notify } from 'notiflix';
 import { forkJoin, of } from 'rxjs';
 import { IPrioridadModel } from 'src/app/interfaces/meetings/prioridadModelo';
 import { IMeetModelo } from 'src/app/interfaces/meetings/meetModel';
 import { IParticipanteModel } from 'src/app/interfaces/meetings/participanteModelo';
+import { ValidacionesService } from '../../services/validaciones.service';
 
 
 
@@ -52,17 +53,23 @@ export class ModalCrearMeetComponent implements OnInit {
   constructor(
     public bsModalRef: BsModalRef,
     private fb: FormBuilder,
-    private modalCrearMeetService: ModalCrearMeetService
+    private modalCrearMeetService: ModalCrearMeetService,
+    private validacionesService: ValidacionesService
   ) {
     this.formMeeting = this.fb.group({
       title: ['', [Validators.required]],
       start: ['', [Validators.required]],
       end: ['', [Validators.required]],
-      room: [''],
+      room: ['', [Validators.required]],
       description: [''],
-      attendees: [''],
+      attendees: ['', [Validators.required]],
       organizer: [''],
       priority: ['']
+    }, {
+      // Ejemplo de uso del validador de rango de fechas y horas
+      // También se puede usar: this.validacionesService.rangoHorasValidator('horaInicio', 'horaFinalizacion')
+      // o: this.validacionesService.rangoFechasValidator('fechaInicio', 'fechaFin')
+      validators: this.validacionesService.rangoFechaHoraValidator('start', 'end')
     });
   }
 
@@ -126,6 +133,16 @@ export class ModalCrearMeetComponent implements OnInit {
 
 
   public confirmSave(): void {
+
+
+    if (!this.formMeeting.valid) {
+      this.formMeeting.markAllAsTouched();
+      this.formMeeting.markAsDirty();
+      return Notify.failure("Por favor, revise los campos resaltados y complete correctamente la información solicitada.");
+    }
+
+
+
     Confirm.show(
       "¿Confirma creación de la reunión?",
       `<div style="text-align: left;">Título de la reunión: <b>${this.title?.value}</b> </div>
@@ -156,16 +173,28 @@ export class ModalCrearMeetComponent implements OnInit {
       titulo: this.title?.value,
       descripcion: this.description?.value,
       fechaInicio: this.start?.value,
-      horaInicio: horaInicio,
       fechaFin: this.end?.value,
-      horaFin: horaFin,
       idSala: +this.room?.value,
       idPrioridad: +this.priority?.value,
       idEstado: 1,
-      idTipoMeet: 1
+      idTipoMeet: 1,
+      invitados: this.selectedParticipants.map(p => p.correo || p.nombre || '')
     }
 
     console.log(meeting);
+
+    this.modalCrearMeetService.insertarMeet(meeting).subscribe({
+      next: (response) => {
+        console.log(response);
+        Loading.remove();
+      },
+      error: (error) => {
+        console.error('Error al guardar la reunión:', error);
+        Loading.remove();
+      }
+    });
+
+
   }
 
   /**
@@ -419,17 +448,15 @@ export class ModalCrearMeetComponent implements OnInit {
   }
 
   /**
-   * Obtiene el texto actual de búsqueda (después de la última coma)
-   */
+ * Obtiene el texto actual de búsqueda (después de la última coma)
+ */
   getCurrentSearchText(): string {
     const value = this.attendees?.value || '';
     const lastCommaIndex = value.lastIndexOf(',');
     const searchText = lastCommaIndex === -1 ? value.trim() : value.substring(lastCommaIndex + 1).trim();
 
     // Solo devolver si hay texto y no está vacío
-    const result = searchText && searchText.length > 0 ? searchText : '';
-    console.log('getCurrentSearchText:', { value, lastCommaIndex, searchText, result });
-    return result;
+    return searchText && searchText.length > 0 ? searchText : '';
   }
 
   /**
@@ -470,5 +497,12 @@ export class ModalCrearMeetComponent implements OnInit {
 
   public get priority() {
     return this.formMeeting.get("priority");
+  }
+
+  /**
+   * Verifica si hay error en el rango de fechas del formulario
+   */
+  public get hasRangoFechaHoraError(): boolean {
+    return this.formMeeting.hasError('rangoFechaHoraInvalido');
   }
 }

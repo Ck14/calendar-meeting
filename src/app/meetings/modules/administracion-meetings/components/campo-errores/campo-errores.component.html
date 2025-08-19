@@ -1,0 +1,12 @@
+<div *ngIf="shouldShowErrors()" class="alert alert-danger shadow-sm mt-1">
+    <ul class="mb-0">
+        <li *ngIf="hasError('required')">El campo es obligatorio.</li>
+        <li *ngIf="hasError('rangoFechaHoraInvalido')">La fecha y hora de finalización debe ser posterior a la fecha y
+            hora de inicio.</li>
+        <li *ngIf="hasError('rangoHorasInvalido')">La hora de finalización debe ser posterior a la hora de inicio.</li>
+        <li *ngIf="hasError('rangoFechasInvalido')">La fecha de finalización debe ser posterior a la fecha de inicio.
+        </li>
+
+
+    </ul>
+</div>

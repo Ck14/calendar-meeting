@@ -8,6 +8,7 @@
                 <div class="col-lg-8">
                     <label class="form-label required">Título de la Reunión</label>
                     <input type="text" class="form-control" formControlName="title" />
+                    <app-campo-errores [control]="title"></app-campo-errores>
                 </div>
                 <div class="col-lg-4">
                     <label class="form-label">Prioridad</label>
@@ -16,6 +17,7 @@
                         <option *ngFor="let prioridad of prioridades" value="{{prioridad.idPrioridad}}">
                             {{prioridad.nombrePrioridad}}</option>
                     </select>
+                    <app-campo-errores [control]="priority"></app-campo-errores>
                 </div>
             </div>
             <br>
@@ -23,12 +25,22 @@
                 <div class="col-lg-6">
                     <label class="form-label required">Fecha y Hora de Inicio</label>
                     <input type="datetime-local" class="form-control" formControlName="start" />
+                    <app-campo-errores [control]="start"></app-campo-errores>
                 </div>
                 <div class="col-lg-6">
                     <label class="form-label required">Fecha y Hora de Fin</label>
                     <input type="datetime-local" class="form-control" formControlName="end" />
+                    <app-campo-errores [control]="end"></app-campo-errores>
+                    <app-campo-errores *ngIf="hasRangoFechaHoraError" [control]="formMeeting"></app-campo-errores>
                 </div>
             </div>
+            <!-- Mensaje de error para rango de fechas del formulario -->
+            <!-- <div class="row g-3" >
+                <div class="col-lg-12">
+                    
+                </div>
+            </div> -->
+
             <br>
             <div class="row g-3">
                 <div class="col-lg-12">
@@ -37,6 +49,7 @@
                         <option value="" [disabled]="true">Seleccionar sala...</option>
                         <option *ngFor="let sala of salas" value="{{sala.idSala}}">{{sala.nombreSala}}</option>
                     </select>
+                    <app-campo-errores [control]="room"></app-campo-errores>
                 </div>
             </div>
             <br>
@@ -45,6 +58,7 @@
                     <label class="form-label">Descripción</label>
                     <textarea class="form-control" rows="3" formControlName="description"
                         placeholder="Descripción de la reunión..."></textarea>
+                    <app-campo-errores [control]="description"></app-campo-errores>
                 </div>
             </div>
             <br>
@@ -98,7 +112,10 @@
                         </div>
                     </div>
 
-                    <div class="form-text">Escriba el nombre o correo del participante para ver sugerencias</div>
+                    <div class="form-text text-muted" style="font-size: smaller;">Escriba el nombre o correo del
+                        participante para ver
+                        sugerencias
+                    </div>
                 </div>
             </div>
             <br>
@@ -106,6 +123,7 @@
                 <div class="col-lg-12">
                     <label class="form-label">Organizador</label>
                     <input type="text" class="form-control" formControlName="organizer" />
+                    <app-campo-errores [control]="organizer"></app-campo-errores>
                 </div>
             </div>
         </form>

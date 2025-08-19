@@ -5,6 +5,7 @@ import { IParticipanteModel } from 'src/app/interfaces/meetings/participanteMode
 import { IPrioridadModel } from 'src/app/interfaces/meetings/prioridadModelo';
 import { ISalaModel } from 'src/app/interfaces/meetings/salaModelo';
 import { CacheService } from '../../services/cache.service';
+import { IMeetModelo } from 'src/app/interfaces/meetings/meetModel';
 
 @Injectable({
   providedIn: 'root'
@@ -102,4 +103,12 @@ export class ModalCrearMeetService {
   estanCargadosParticipantes(): boolean {
     return this.cacheService.has(this.PARTICIPANTES_CACHE_KEY);
   }
+
+  insertarMeet(meet: IMeetModelo): Observable<number> {
+    console.log(meet);
+    const url = `api/meet`;
+    return this.http.post<number>(url, meet);
+  } // end
+
+
 }
