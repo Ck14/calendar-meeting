@@ -9,6 +9,7 @@ import { ModalCrearMeetComponent } from './components/modal-crear-meet/modal-cre
 import { ModalEditarMeetComponent } from './components/modal-editar-meet/modal-editar-meet.component';
 import { CalendarMeetComponent } from './screens/calendar-meet/calendar-meet.component';
 import { CampoErroresComponent } from './components/campo-errores/campo-errores.component';
+import { CalendarLoadingComponent } from './components/calendar-loading/calendar-loading.component';
 
 
 @NgModule({
@@ -17,6 +18,7 @@ import { CampoErroresComponent } from './components/campo-errores/campo-errores.
     ModalCrearMeetComponent,
     ModalEditarMeetComponent,
     CampoErroresComponent,
+    CalendarLoadingComponent,
   ],
   imports: [
     CommonModule,

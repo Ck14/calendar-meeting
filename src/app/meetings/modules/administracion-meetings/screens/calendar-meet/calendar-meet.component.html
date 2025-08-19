@@ -5,7 +5,12 @@
     </header>
 
     <main class="calendar-main">
-        <div class="calendar-wrapper">
+        <div class="calendar-wrapper" style="position: relative;">
+            <!-- Componente de loading -->
+            <app-calendar-loading [mostrar]="isLoading"
+                [mensaje]="'Cargando reuniones para ' + obtenerNombreVista() + '...'">
+            </app-calendar-loading>
+
             <full-calendar [options]="calendarOptions"></full-calendar>
         </div>
     </main>
@@ -26,6 +31,34 @@
                     <span class="dot presentation"></span>
                     <span>Presentación</span>
                 </div>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h3>Prioridades</h3>
+            <div class="legend">
+                <div class="legend-item">
+                    <span class="dot priority-low"></span>
+                    <span>Baja</span>
+                </div>
+                <div class="legend-item">
+                    <span class="dot priority-medium"></span>
+                    <span>Media</span>
+                </div>
+                <div class="legend-item">
+                    <span class="dot priority-high"></span>
+                    <span>Alta</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h3>Vista actual</h3>
+            <div class="current-view-info">
+                <p><strong>{{ obtenerNombreVista() }}</strong></p>
+                <p class="date-range">
+                    {{ currentStartDate | date:'shortDate' }} - {{ currentEndDate | date:'shortDate' }}
+                </p>
             </div>
         </div>
     </aside>

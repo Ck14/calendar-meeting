@@ -1,875 +1,912 @@
 /* Estilos minimalistas para el calendario */
 :host {
-    display: block;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    color: #333;
-    background: #fafafa;
-    min-height: 100vh;
+  display: block;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: #333;
+  background: #fafafa;
+  min-height: 100vh;
 }
 
 .calendar-minimal {
-    max-width: 1600px;
-    margin: 0 auto;
-    padding: 2rem;
-    display: grid;
-    grid-template-columns: 1fr 250px;
-    gap: 3rem;
-    align-items: start;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 2rem;
+  display: grid;
+  grid-template-columns: 1fr 250px;
+  gap: 3rem;
+  align-items: start;
 }
 
 /* Header minimalista */
 .calendar-header {
-    grid-column: 1 / -1;
-    text-align: center;
-    margin-bottom: 2rem;
+  grid-column: 1 / -1;
+  text-align: center;
+  margin-bottom: 2rem;
 }
 
 .calendar-header h1 {
-    font-size: 2.5rem;
-    font-weight: 300;
-    margin: 0 0 0.5rem 0;
-    color: #2c3e50;
-    letter-spacing: -0.02em;
+  font-size: 2.5rem;
+  font-weight: 300;
+  margin: 0 0 0.5rem 0;
+  color: #2c3e50;
+  letter-spacing: -0.02em;
 }
 
 .calendar-header p {
-    font-size: 1.1rem;
-    color: #7f8c8d;
-    margin: 0;
-    font-weight: 400;
+  font-size: 1.1rem;
+  color: #7f8c8d;
+  margin: 0;
+  font-weight: 400;
 }
 
 /* Contenedor principal del calendario */
 .calendar-main {
-    background: white;
-    border-radius: 16px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-    overflow: hidden;
-    transition: all 0.3s ease;
-    min-height: 80vh;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  min-height: 80vh;
 }
 
 .calendar-main:hover {
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
 }
 
 .calendar-wrapper {
-    padding: 2rem;
-    height: 100%;
+  padding: 2rem;
+  height: 100%;
 }
 
 /* Sidebar de información */
 .calendar-info {
-    background: white;
-    border-radius: 16px;
-    padding: 2rem;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-    height: fit-content;
-    position: sticky;
-    top: 2rem;
+  background: white;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  height: fit-content;
+  position: sticky;
+  top: 2rem;
+}
+
+.info-section {
+  margin-bottom: 2rem;
+}
+
+.info-section:last-child {
+  margin-bottom: 0;
 }
 
 .info-section h3 {
-    font-size: 1.2rem;
-    font-weight: 500;
-    margin: 0 0 1.5rem 0;
-    color: #2c3e50;
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin: 0 0 1.5rem 0;
+  color: #2c3e50;
 }
 
 .legend {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .legend-item {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    font-size: 0.9rem;
-    color: #5a6c7d;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.9rem;
+  color: #5a6c7d;
 }
 
 .dot {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    flex-shrink: 0;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
 }
 
 .dot.planning {
-    background: #3498db;
+  background: #3498db;
 }
 
 .dot.review {
-    background: #2ecc71;
+  background: #2ecc71;
 }
 
 .dot.presentation {
-    background: #e74c3c;
+  background: #e74c3c;
+}
+
+/* Colores de prioridad - NUEVOS */
+.dot.priority-low {
+  background: #28a745;
+}
+
+.dot.priority-medium {
+  background: #ffc107;
+}
+
+.dot.priority-high {
+  background: #dc3545;
+}
+
+/* Información de vista actual - NUEVO */
+.current-view-info {
+  background: #f8f9fa;
+  padding: 1rem;
+  border-radius: 8px;
+  border-left: 4px solid #3498db;
+}
+
+.current-view-info p {
+  margin: 0.5rem 0;
+  font-size: 0.9rem;
+}
+
+.current-view-info p:first-child {
+  margin-top: 0;
+}
+
+.current-view-info p:last-child {
+  margin-bottom: 0;
+}
+
+.date-range {
+  color: #6c757d;
+  font-size: 0.8rem;
 }
 
 /* Estilos del FullCalendar */
 :host ::ng-deep .fc {
-    font-family: inherit;
-    border: none;
-    background: transparent;
-    height: 100%;
+  font-family: inherit;
+  border: none;
+  background: transparent;
+  height: 100%;
 }
 
 /* Header del calendario */
 :host ::ng-deep .fc-header-toolbar {
-    background: transparent;
-    padding: 0 0 2rem 0;
-    margin: 0;
-    border: none;
+  background: transparent;
+  padding: 0 0 2rem 0;
+  margin: 0;
+  border: none;
 }
 
 :host ::ng-deep .fc-toolbar-title {
-    font-size: 1.8rem;
-    font-weight: 500;
-    color: #2c3e50;
+  font-size: 1.8rem;
+  font-weight: 500;
+  color: #2c3e50;
 }
 
 /* Botones del calendario */
 :host ::ng-deep .fc-button {
-    background: #f8f9fa !important;
-    border: 1px solid #e9ecef !important;
-    border-radius: 8px !important;
-    padding: 0.6rem 1.2rem !important;
-    font-weight: 500 !important;
-    color: #5a6c7d !important;
-    transition: all 0.2s ease !important;
-    box-shadow: none !important;
-    font-size: 0.9rem !important;
+  background: #f8f9fa !important;
+  border: 1px solid #e9ecef !important;
+  border-radius: 8px !important;
+  padding: 0.6rem 1.2rem !important;
+  font-weight: 500 !important;
+  color: #5a6c7d !important;
+  transition: all 0.2s ease !important;
+  box-shadow: none !important;
+  font-size: 0.9rem !important;
 }
 
 :host ::ng-deep .fc-button:hover {
-    background: #e9ecef !important;
-    border-color: #dee2e6 !important;
-    transform: translateY(-1px);
+  background: #e9ecef !important;
+  border-color: #dee2e6 !important;
+  transform: translateY(-1px);
 }
 
 :host ::ng-deep .fc-button:active {
-    transform: translateY(0);
+  transform: translateY(0);
 }
 
 :host ::ng-deep .fc-button.fc-button-active {
-    background: #3498db !important;
-    color: white !important;
-    border-color: #3498db !important;
+  background: #3498db !important;
+  color: white !important;
+  border-color: #3498db !important;
 }
 
 /* Días del calendario */
 :host ::ng-deep .fc-daygrid-day {
-    border: 1px solid #f1f3f4;
-    transition: background-color 0.2s ease;
-    min-height: 120px;
+  border: 1px solid #f1f3f4;
+  transition: background-color 0.2s ease;
+  min-height: 120px;
 }
 
 :host ::ng-deep .fc-daygrid-day:hover {
-    background-color: #f8f9fa;
+  background-color: #f8f9fa;
 }
 
 :host ::ng-deep .fc-day-today {
-    background-color: rgba(52, 152, 219, 0.05) !important;
-    border-color: #3498db !important;
+  background-color: rgba(52, 152, 219, 0.05) !important;
+  border-color: #3498db !important;
 }
 
 /* Eventos del calendario - configuración principal */
 :host ::ng-deep .fc-event {
-    border: none !important;
-    border-radius: 8px !important;
-    padding: 0.3rem 0.6rem !important;
-    font-weight: 600 !important;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
-    transition: all 0.2s ease !important;
-    margin: 1px 0 !important;
-    color: white !important;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
-    position: relative !important;
-    z-index: 1 !important;
-    min-height: 20px !important;
-    height: auto !important;
+  border: none !important;
+  border-radius: 8px !important;
+  padding: 0.3rem 0.6rem !important;
+  font-weight: 600 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+  transition: all 0.2s ease !important;
+  margin: 1px 0 !important;
+  color: white !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+  position: relative !important;
+  z-index: 1 !important;
+  min-height: 20px !important;
+  height: auto !important;
 }
 
 :host ::ng-deep .fc-event:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25) !important;
-    z-index: 10 !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25) !important;
+  z-index: 10 !important;
 }
 
 /* Eventos en vista de tiempo - asegurar que ocupen el espacio correcto */
 :host ::ng-deep .fc-timegrid-event {
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    bottom: 0 !important;
-    margin: 1px !important;
-    height: auto !important;
-    min-height: 20px !important;
-    background: linear-gradient(135deg, #3498db, #2980b9) !important;
-    color: white !important;
-    border-left: 4px solid #1f5f8b !important;
-    border: none !important;
-    border-radius: 8px !important;
-    padding: 0.3rem 0.6rem !important;
-    font-weight: 600 !important;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
-    transition: all 0.2s ease !important;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  margin: 1px !important;
+  height: auto !important;
+  min-height: 20px !important;
+  background: linear-gradient(135deg, #3498db, #2980b9) !important;
+  color: white !important;
+  border-left: 4px solid #1f5f8b !important;
+  border: none !important;
+  border-radius: 8px !important;
+  padding: 0.3rem 0.6rem !important;
+  font-weight: 600 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+  transition: all 0.2s ease !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
 }
 
 :host ::ng-deep .fc-timegrid-event:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25) !important;
 }
 
 /* Eventos traslapados - visualización mejorada */
 :host ::ng-deep .fc-event.fc-event-overlap {
-    margin-left: 8px !important;
-    margin-right: 8px !important;
-    width: calc(100% - 16px) !important;
-    border-left: 4px solid rgba(255, 255, 255, 0.3) !important;
+  margin-left: 8px !important;
+  margin-right: 8px !important;
+  width: calc(100% - 16px) !important;
+  border-left: 4px solid rgba(255, 255, 255, 0.3) !important;
 }
 
 /* Eventos en vista de tiempo que se traslapan */
 :host ::ng-deep .fc-timegrid-event.fc-event-overlap {
-    margin-left: 4px !important;
-    margin-right: 4px !important;
-    width: calc(100% - 8px) !important;
-    border-left: 4px solid rgba(255, 255, 255, 0.3) !important;
+  margin-left: 8px !important;
+  margin-right: 8px !important;
+  width: calc(100% - 16px) !important;
+  border-left: 4px solid rgba(255, 255, 255, 0.3) !important;
 }
 
 /* Efecto de profundidad para eventos traslapados - uno dentro de otro */
 :host ::ng-deep .fc-event:nth-child(1) {
-    z-index: 1 !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    width: 100% !important;
+  z-index: 1 !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  width: 100% !important;
 }
 
 :host ::ng-deep .fc-event:nth-child(2) {
-    z-index: 2 !important;
-    margin-left: 8px !important;
-    margin-right: 8px !important;
-    width: calc(100% - 16px) !important;
+  z-index: 2 !important;
+  margin-left: 8px !important;
+  margin-right: 8px !important;
+  width: calc(100% - 16px) !important;
 }
 
 :host ::ng-deep .fc-event:nth-child(3) {
-    z-index: 3 !important;
-    margin-left: 16px !important;
-    margin-right: 16px !important;
-    width: calc(100% - 32px) !important;
+  z-index: 3 !important;
+  margin-left: 16px !important;
+  margin-right: 16px !important;
+  width: calc(100% - 32px) !important;
 }
 
 :host ::ng-deep .fc-event:nth-child(4) {
-    z-index: 4 !important;
-    margin-left: 24px !important;
-    margin-right: 24px !important;
-    width: calc(100% - 48px) !important;
+  z-index: 4 !important;
+  margin-left: 24px !important;
+  margin-right: 24px !important;
+  width: calc(100% - 48px) !important;
 }
 
 :host ::ng-deep .fc-event:nth-child(5) {
-    z-index: 5 !important;
-    margin-left: 32px !important;
-    margin-right: 32px !important;
-    width: calc(100% - 64px) !important;
+  z-index: 5 !important;
+  margin-left: 32px !important;
+  margin-right: 32px !important;
+  width: calc(100% - 64px) !important;
 }
 
 /* Eventos traslapados con transparencia sutil */
 :host ::ng-deep .fc-event-overlap {
-    opacity: 0.95 !important;
+  opacity: 0.95 !important;
 }
 
 :host ::ng-deep .fc-event-overlap:hover {
-    opacity: 1 !important;
+  opacity: 1 !important;
 }
 
 /* Eventos siendo arrastrados - transparencia */
 :host ::ng-deep .fc-event.fc-event-dragging {
-    opacity: 0.7 !important;
-    transform: rotate(2deg) !important;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3) !important;
-    z-index: 1000 !important;
+  opacity: 0.7 !important;
+  transform: rotate(2deg) !important;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3) !important;
+  z-index: 1000 !important;
 }
 
 /* Eventos siendo redimensionados - misma transparencia que al arrastrar */
 :host ::ng-deep .fc-event.fc-event-resizing {
-    opacity: 0.7 !important;
-    transform: scale(1.02) !important;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3) !important;
-    z-index: 1000 !important;
-    border: 2px dashed rgba(255, 255, 255, 0.8) !important;
+  opacity: 0.7 !important;
+  transform: scale(1.02) !important;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3) !important;
+  z-index: 1000 !important;
+  border: 2px dashed rgba(255, 255, 255, 0.8) !important;
 }
 
 /* Eventos siendo seleccionados para redimensionar */
 :host ::ng-deep .fc-event.fc-event-selected {
-    opacity: 0.8 !important;
-    border: 2px solid rgba(255, 255, 255, 0.9) !important;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25) !important;
+  opacity: 0.8 !important;
+  border: 2px solid rgba(255, 255, 255, 0.9) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25) !important;
 }
 
 /* Mejorar la visualización de eventos en días con múltiples eventos */
 :host ::ng-deep .fc-daygrid-day-events {
-    min-height: 20px !important;
+  min-height: 20px !important;
 }
 
 :host ::ng-deep .fc-daygrid-event-dot {
-    border-width: 0 !important;
-    width: 100% !important;
-    height: auto !important;
-    margin: 1px 0 !important;
+  border-width: 0 !important;
+  width: 100% !important;
+  height: auto !important;
+  margin: 1px 0 !important;
 }
 
 /* Indicador visual de eventos traslapados */
 :host ::ng-deep .fc-event-overlap::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: rgba(255, 255, 255, 0.4);
-    border-radius: 8px 8px 0 0;
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 8px 8px 0 0;
 }
 
 /* Estilos del título y tiempo de eventos */
 :host ::ng-deep .fc-event-title {
-    font-weight: 700 !important;
-    font-size: 0.9rem !important;
-    color: white !important;
+  font-weight: 700 !important;
+  font-size: 0.9rem !important;
+  color: white !important;
 }
 
 :host ::ng-deep .fc-event-time {
-    font-size: 0.8rem !important;
-    opacity: 0.95 !important;
-    font-weight: 500 !important;
-    color: white !important;
+  font-size: 0.8rem !important;
+  opacity: 0.95 !important;
+  font-weight: 500 !important;
+  color: white !important;
 }
 
 /* Eventos con colores específicos - usando el celeste de los controles */
 :host ::ng-deep .event-primary {
-    background: linear-gradient(135deg, #3498db, #2980b9) !important;
-    color: white !important;
-    border-left: 4px solid #1f5f8b !important;
+  background: linear-gradient(135deg, #3498db, #2980b9) !important;
+  color: white !important;
+  border-left: 4px solid #1f5f8b !important;
 }
 
 :host ::ng-deep .event-success {
-    background: linear-gradient(135deg, #3498db, #2980b9) !important;
-    color: white !important;
-    border-left: 4px solid #1f5f8b !important;
+  background: linear-gradient(135deg, #3498db, #2980b9) !important;
+  color: white !important;
+  border-left: 4px solid #1f5f8b !important;
 }
 
 :host ::ng-deep .event-danger {
-    background: linear-gradient(135deg, #3498db, #2980b9) !important;
-    color: white !important;
-    border-left: 4px solid #1f5f8b !important;
+  background: linear-gradient(135deg, #3498db, #2980b9) !important;
+  color: white !important;
+  border-left: 4px solid #1f5f8b !important;
 }
 
 :host ::ng-deep .event-warning {
-    background: linear-gradient(135deg, #3498db, #2980b9) !important;
-    color: white !important;
-    border-left: 4px solid #1f5f8b !important;
+  background: linear-gradient(135deg, #3498db, #2980b9) !important;
+  color: white !important;
+  border-left: 4px solid #1f5f8b !important;
 }
 
 :host ::ng-deep .event-info {
-    background: linear-gradient(135deg, #3498db, #2980b9) !important;
-    color: white !important;
-    border-left: 4px solid #1f5f8b !important;
+  background: linear-gradient(135deg, #3498db, #2980b9) !important;
+  color: white !important;
+  border-left: 4px solid #1f5f8b !important;
 }
 
 /* Eventos por defecto con el celeste de los controles */
-:host ::ng-deep .fc-event:not(.event-primary):not(.event-success):not(.event-danger):not(.event-warning):not(.event-info) {
-    background: linear-gradient(135deg, #3498db, #2980b9) !important;
-    color: white !important;
-    border-left: 4px solid #1f5f8b !important;
+:host
+  ::ng-deep
+  .fc-event:not(.event-primary):not(.event-success):not(.event-danger):not(
+    .event-warning
+  ):not(.event-info) {
+  background: linear-gradient(135deg, #3498db, #2980b9) !important;
+  color: white !important;
+  border-left: 4px solid #1f5f8b !important;
 }
 
 /* Estilos para eventos traslapados - colores diferentes */
 :host ::ng-deep .fc-event.overlapping-primary {
-    background: linear-gradient(135deg, #e74c3c, #c0392b) !important;
-    color: white !important;
-    border-left: 4px solid #a93226 !important;
-    box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3) !important;
+  background: linear-gradient(135deg, #e74c3c, #c0392b) !important;
+  color: white !important;
+  border-left: 4px solid #a93226 !important;
+  box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3) !important;
 }
 
 :host ::ng-deep .fc-event.overlapping-secondary {
-    background: linear-gradient(135deg, #f39c12, #e67e22) !important;
-    color: white !important;
-    border-left: 4px solid #d68910 !important;
-    box-shadow: 0 2px 8px rgba(243, 156, 18, 0.3) !important;
+  background: linear-gradient(135deg, #f39c12, #e67e22) !important;
+  color: white !important;
+  border-left: 4px solid #d68910 !important;
+  box-shadow: 0 2px 8px rgba(243, 156, 18, 0.3) !important;
 }
 
 /* Hover mejorado para eventos traslapados */
 :host ::ng-deep .fc-event.overlapping-primary:hover {
-    background: linear-gradient(135deg, #c0392b, #a93226) !important;
-    box-shadow: 0 4px 16px rgba(231, 76, 60, 0.4) !important;
+  background: linear-gradient(135deg, #c0392b, #a93226) !important;
+  box-shadow: 0 4px 16px rgba(231, 76, 60, 0.4) !important;
 }
 
 :host ::ng-deep .fc-event.overlapping-secondary:hover {
-    background: linear-gradient(135deg, #e67e22, #d68910) !important;
-    box-shadow: 0 4px 16px rgba(243, 156, 18, 0.4) !important;
+  background: linear-gradient(135deg, #e67e22, #d68910) !important;
+  box-shadow: 0 4px 16px rgba(243, 156, 18, 0.4) !important;
 }
 
 /* Indicador visual de conflicto para eventos traslapados */
 :host ::ng-deep .fc-event.overlapping-primary::before,
 :host ::ng-deep .fc-event.overlapping-secondary::before {
-    content: '⚠️' !important;
-    position: absolute !important;
-    top: -8px !important;
-    right: -8px !important;
-    font-size: 16px !important;
-    z-index: 1000 !important;
-    filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.5)) !important;
+  content: "⚠️" !important;
+  position: absolute !important;
+  top: -8px !important;
+  right: -8px !important;
+  font-size: 16px !important;
+  z-index: 1000 !important;
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.5)) !important;
 }
 
 /* Estilos adicionales para eventos traslapados */
 :host ::ng-deep .fc-event.overlapping-primary,
 :host ::ng-deep .fc-event.overlapping-secondary {
-    position: relative !important;
-    animation: pulse-warning 2s infinite !important;
+  position: relative !important;
+  animation: pulse-warning 2s infinite !important;
 }
 
 /* Animación de pulso para eventos con conflicto */
 @keyframes pulse-warning {
-    0% {
-        box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3) !important;
-    }
-    50% {
-        box-shadow: 0 2px 8px rgba(231, 76, 60, 0.6) !important;
-    }
-    100% {
-        box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3) !important;
-    }
+  0% {
+    box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3) !important;
+  }
+  50% {
+    box-shadow: 0 2px 8px rgba(231, 76, 60, 0.6) !important;
+  }
+  100% {
+    box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3) !important;
+  }
 }
 
 /* Estilos para eventos traslapados en vista de tiempo */
 :host ::ng-deep .fc-timegrid-event.overlapping-primary,
 :host ::ng-deep .fc-timegrid-event.overlapping-secondary {
-    border-left: 4px solid rgba(255, 255, 255, 0.8) !important;
+  border-left: 4px solid rgba(255, 255, 255, 0.8) !important;
 }
 
 /* Mejorar la visibilidad del texto en eventos traslapados */
 :host ::ng-deep .fc-event.overlapping-primary .fc-event-title,
 :host ::ng-deep .fc-event.overlapping-secondary .fc-event-title {
-    font-weight: 800 !important;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5) !important;
+  font-weight: 800 !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5) !important;
 }
 
 :host ::ng-deep .fc-event.overlapping-primary .fc-event-time,
 :host ::ng-deep .fc-event.overlapping-secondary .fc-event-time {
-    font-weight: 600 !important;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5) !important;
+  font-weight: 600 !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5) !important;
 }
 
 /* Vista de tiempo */
 :host ::ng-deep .fc-timegrid-slot {
-    height: 70px !important;
-    border-bottom: 1px solid #f1f3f4;
+  height: 70px !important;
+  border-bottom: 1px solid #f1f3f4;
 }
 
 :host ::ng-deep .fc-timegrid-axis {
-    background: #f8f9fa;
-    border-right: 1px solid #f1f3f4;
-    color: #5a6c7d;
-    font-weight: 500;
-    font-size: 0.9rem !important;
+  background: #f8f9fa;
+  border-right: 1px solid #f1f3f4;
+  color: #5a6c7d;
+  font-weight: 500;
+  font-size: 0.9rem !important;
 }
 
 /* Indicador de hora actual */
 :host ::ng-deep .fc-timegrid-now-indicator-line {
-    background: #e74c3c !important;
-    height: 2px !important;
-    border: none !important;
-    box-shadow: 0 0 8px rgba(231, 76, 60, 0.4) !important;
+  background: #e74c3c !important;
+  height: 2px !important;
+  border: none !important;
+  box-shadow: 0 0 8px rgba(231, 76, 60, 0.4) !important;
 }
 
 :host ::ng-deep .fc-timegrid-now-indicator-arrow {
-    background: #e74c3c !important;
-    border: none !important;
-    box-shadow: 0 0 8px rgba(231, 76, 60, 0.4) !important;
-    width: 0 !important;
-    height: 0 !important;
-    border-left: 6px solid #e74c3c !important;
-    border-top: 6px solid transparent !important;
-    border-bottom: 6px solid transparent !important;
-    left: -6px !important;
-    top: -3px !important;
+  background: #e74c3c !important;
+  border: none !important;
+  box-shadow: 0 0 8px rgba(231, 76, 60, 0.4) !important;
+  width: 0 !important;
+  height: 0 !important;
+  border-left: 6px solid #e74c3c !important;
+  border-top: 6px solid transparent !important;
+  border-bottom: 6px solid transparent !important;
+  left: -6px !important;
+  top: -3px !important;
 }
 
 /* Asegurar que los eventos ocupen correctamente su espacio de tiempo */
 :host ::ng-deep .fc-timegrid-event-harness {
-    position: absolute !important;
+  position: absolute !important;
 }
 
 :host ::ng-deep .fc-timegrid-event-harness .fc-event {
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    bottom: 0 !important;
-    margin: 1px !important;
-    height: auto !important;
-    min-height: 20px !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  margin: 1px !important;
+  height: auto !important;
+  min-height: 20px !important;
 }
 
 /* Eventos en vista de día */
 :host ::ng-deep .fc-daygrid-event-harness {
-    position: relative !important;
+  position: relative !important;
 }
 
 :host ::ng-deep .fc-daygrid-event-harness .fc-event {
-    position: relative !important;
-    margin: 1px 0 !important;
-    height: auto !important;
-    min-height: 20px !important;
+  position: relative !important;
+  margin: 1px 0 !important;
+  height: auto !important;
+  min-height: 20px !important;
 }
 
 /* Asegurar que los eventos se muestren correctamente en todas las vistas */
 :host ::ng-deep .fc-event-main {
-    height: 100% !important;
-    min-height: 20px !important;
+  height: 100% !important;
+  min-height: 20px !important;
 }
 
 :host ::ng-deep .fc-event-main-frame {
-    height: 100% !important;
-    min-height: 20px !important;
+  height: 100% !important;
+  min-height: 20px !important;
 }
 
 /* Corregir el posicionamiento de eventos en vistas de tiempo */
 :host ::ng-deep .fc-timegrid-col-events {
-    position: relative !important;
+  position: relative !important;
 }
 
 :host ::ng-deep .fc-timegrid-col-events .fc-event {
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    bottom: 0 !important;
-    margin: 1px !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  margin: 1px !important;
 }
 
 /* Estilos para eventos durante interacciones */
 :host ::ng-deep .fc-event.fc-event-dragging,
 :host ::ng-deep .fc-event.fc-event-resizing {
-    cursor: move !important;
-    user-select: none !important;
-    pointer-events: none !important;
+  cursor: move !important;
+  user-select: none !important;
+  pointer-events: none !important;
 }
 
 /* Estilos para el cursor durante redimensionamiento */
 :host ::ng-deep .fc-event.fc-event-resizing .fc-event-resizer {
-    cursor: ns-resize !important;
+  cursor: ns-resize !important;
 }
 
 /* Mejorar la experiencia visual del área de redimensionamiento */
 :host ::ng-deep .fc-event::after {
-    content: '' !important;
-    position: absolute !important;
-    bottom: -4px !important;
-    left: 0 !important;
-    right: 0 !important;
-    height: 8px !important;
-    cursor: ns-resize !important;
-    z-index: 999 !important;
-    pointer-events: auto !important;
-    background: transparent !important;
-    border-radius: 4px !important;
-    transition: all 0.2s ease !important;
+  content: "" !important;
+  position: absolute !important;
+  bottom: -4px !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 8px !important;
+  cursor: ns-resize !important;
+  z-index: 999 !important;
+  pointer-events: auto !important;
+  background: transparent !important;
+  border-radius: 4px !important;
+  transition: all 0.2s ease !important;
 }
 
 /* Indicador visual mejorado cuando se está redimensionando */
 :host ::ng-deep .fc-event.fc-event-resizing::after {
-    background: rgba(52, 152, 219, 0.2) !important;
-    border: 2px dashed rgba(52, 152, 219, 0.6) !important;
-    height: 10px !important;
-    bottom: -5px !important;
-    box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3) !important;
+  background: rgba(52, 152, 219, 0.2) !important;
+  border: 2px dashed rgba(52, 152, 219, 0.6) !important;
+  height: 10px !important;
+  bottom: -5px !important;
+  box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3) !important;
 }
 
 /* Hover en el área de redimensionamiento del borde inferior */
 :host ::ng-deep .fc-event:hover::after {
-    background: rgba(52, 152, 219, 0.1) !important;
-    border: 1px dashed rgba(52, 152, 219, 0.3) !important;
+  background: rgba(52, 152, 219, 0.1) !important;
+  border: 1px dashed rgba(52, 152, 219, 0.3) !important;
 }
 
 /* Estilos para eventos traslapados - área de redimensionamiento mejorada */
 :host ::ng-deep .fc-event.fc-event-overlap::after {
-    z-index: 1000 !important;
-    height: 10px !important;
-    bottom: -5px !important;
+  z-index: 1000 !important;
+  height: 10px !important;
+  bottom: -5px !important;
 }
 
 /* Hover mejorado para eventos traslapados */
 :host ::ng-deep .fc-event.fc-event-overlap:hover::after {
-    background: rgba(52, 152, 219, 0.15) !important;
-    border: 1px dashed rgba(52, 152, 219, 0.4) !important;
+  background: rgba(52, 152, 219, 0.15) !important;
+  border: 1px dashed rgba(52, 152, 219, 0.4) !important;
 }
 
 /* Estilos para eventos activos durante redimensionamiento */
 :host ::ng-deep .fc-event.fc-event-resizing .fc-event-resizer {
-    background: rgba(52, 152, 219, 0.9) !important;
-    border-color: rgba(255, 255, 255, 1) !important;
-    transform: scale(1.2) !important;
-    box-shadow: 0 4px 16px rgba(52, 152, 219, 0.5) !important;
+  background: rgba(52, 152, 219, 0.9) !important;
+  border-color: rgba(255, 255, 255, 1) !important;
+  transform: scale(1.2) !important;
+  box-shadow: 0 4px 16px rgba(52, 152, 219, 0.5) !important;
 }
 
 /* Estilos específicos para el redimensionamiento - resizers */
 :host ::ng-deep .fc-event-resizer {
-    background: rgba(255, 255, 255, 0.95) !important;
-    border: 2px solid rgba(52, 152, 219, 0.9) !important;
-    border-radius: 6px !important;
-    width: 12px !important;
-    height: 12px !important;
-    cursor: ns-resize !important;
-    z-index: 1001 !important;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
-    transition: all 0.2s ease !important;
-    position: absolute !important;
+  background: rgba(255, 255, 255, 0.95) !important;
+  border: 2px solid rgba(52, 152, 219, 0.9) !important;
+  border-radius: 6px !important;
+  width: 12px !important;
+  height: 12px !important;
+  cursor: ns-resize !important;
+  z-index: 1001 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+  transition: all 0.2s ease !important;
+  position: absolute !important;
 }
 
 :host ::ng-deep .fc-event-resizer:hover {
-    background: rgba(255, 255, 255, 1) !important;
-    border-color: rgba(52, 152, 219, 1) !important;
-    transform: scale(1.3) !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
-    z-index: 1002 !important;
+  background: rgba(255, 255, 255, 1) !important;
+  border-color: rgba(52, 152, 219, 1) !important;
+  transform: scale(1.3) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+  z-index: 1002 !important;
 }
 
 /* Estilos para el cursor durante redimensionamiento */
 :host ::ng-deep .fc-event.fc-event-resizing .fc-event-resizer {
-    cursor: ns-resize !important;
+  cursor: ns-resize !important;
 }
 
 /* Estilos para eventos durante la selección */
 :host ::ng-deep .fc-event.fc-event-selected {
-    outline: 2px solid rgba(52, 152, 219, 0.8) !important;
-    outline-offset: 2px !important;
+  outline: 2px solid rgba(52, 152, 219, 0.8) !important;
+  outline-offset: 2px !important;
 }
 
 /* Transiciones suaves para todos los estados */
 :host ::ng-deep .fc-event {
-    transition: all 0.2s ease, opacity 0.15s ease, transform 0.15s ease !important;
+  transition: all 0.2s ease, opacity 0.15s ease, transform 0.15s ease !important;
 }
 
 /* Estilos para el área de redimensionamiento - mejorados para accesibilidad */
 :host ::ng-deep .fc-event-resizer-start {
-    top: -8px !important;
-    left: 50% !important;
-    transform: translateX(-50%) !important;
-    z-index: 1001 !important;
+  top: -8px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  z-index: 1001 !important;
 }
 
 :host ::ng-deep .fc-event-resizer-end {
-    bottom: -8px !important;
-    left: 50% !important;
-    transform: translateX(-50%) !important;
-    z-index: 1001 !important;
+  bottom: -8px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  z-index: 1001 !important;
 }
 
 /* Mejorar la accesibilidad cuando los eventos están traslapados */
 :host ::ng-deep .fc-event.fc-event-overlap .fc-event-resizer {
-    z-index: 1003 !important;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3) !important;
+  z-index: 1003 !important;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3) !important;
 }
 
 :host ::ng-deep .fc-event.fc-event-overlap .fc-event-resizer:hover {
-    z-index: 1004 !important;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4) !important;
+  z-index: 1004 !important;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4) !important;
 }
 
 /* Asegurar que los resizers sean visibles en eventos traslapados */
 :host ::ng-deep .fc-event:nth-child(2) .fc-event-resizer {
-    z-index: 1004 !important;
+  z-index: 1004 !important;
 }
 
 :host ::ng-deep .fc-event:nth-child(3) .fc-event-resizer {
-    z-index: 1005 !important;
+  z-index: 1005 !important;
 }
 
 :host ::ng-deep .fc-event:nth-child(4) .fc-event-resizer {
-    z-index: 1006 !important;
+  z-index: 1006 !important;
 }
 
 :host ::ng-deep .fc-event:nth-child(5) .fc-event-resizer {
-    z-index: 1007 !important;
+  z-index: 1007 !important;
 }
 
 /* Estilos adicionales para mejorar la accesibilidad */
 :host ::ng-deep .fc-event-resizer::before {
-    content: '⋮' !important;
-    position: absolute !important;
-    top: 50% !important;
-    left: 50% !important;
-    transform: translate(-50%, -50%) !important;
-    color: rgba(52, 152, 219, 0.9) !important;
-    font-size: 8px !important;
-    font-weight: bold !important;
-    line-height: 1 !important;
+  content: "⋮" !important;
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  color: rgba(52, 152, 219, 0.9) !important;
+  font-size: 8px !important;
+  font-weight: bold !important;
+  line-height: 1 !important;
 }
 
 :host ::ng-deep .fc-event-resizer:hover::before {
-    color: rgba(52, 152, 219, 1) !important;
+  color: rgba(52, 152, 219, 1) !important;
 }
 
 /* Asegurar que los resizers sean siempre clickeables */
 :host ::ng-deep .fc-event-resizer {
-    pointer-events: auto !important;
-    user-select: none !important;
+  pointer-events: auto !important;
+  user-select: none !important;
 }
 
 /* Mejorar la visibilidad en eventos con colores similares */
 :host ::ng-deep .fc-event .fc-event-resizer {
-    filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.3)) !important;
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.3)) !important;
 }
 
 /* Estilos para eventos que están muy juntos - mejorar accesibilidad */
 :host ::ng-deep .fc-event + .fc-event .fc-event-resizer-start {
-    top: -10px !important;
-    z-index: 1008 !important;
+  top: -10px !important;
+  z-index: 1008 !important;
 }
 
 :host ::ng-deep .fc-event + .fc-event .fc-event-resizer-end {
-    bottom: -10px !important;
-    z-index: 1008 !important;
+  bottom: -10px !important;
+  z-index: 1008 !important;
 }
 
 /* Asegurar que los resizers sean siempre accesibles */
 :host ::ng-deep .fc-event-resizer {
-    min-width: 12px !important;
-    min-height: 12px !important;
-    max-width: 16px !important;
-    max-height: 16px !important;
+  min-width: 12px !important;
+  min-height: 12px !important;
+  max-width: 16px !important;
+  max-height: 16px !important;
 }
 
 /* Mejorar la visibilidad en eventos traslapados */
 :host ::ng-deep .fc-event.fc-event-overlap .fc-event-resizer {
-    background: rgba(255, 255, 255, 1) !important;
-    border-width: 3px !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+  background: rgba(255, 255, 255, 1) !important;
+  border-width: 3px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
 }
 
 /* Estilos para eventos en diferentes capas */
 :host ::ng-deep .fc-event:nth-child(1) .fc-event-resizer {
-    z-index: 1001 !important;
+  z-index: 1001 !important;
 }
 
 :host ::ng-deep .fc-event:nth-child(2) .fc-event-resizer {
-    z-index: 1004 !important;
+  z-index: 1004 !important;
 }
 
 :host ::ng-deep .fc-event:nth-child(3) .fc-event-resizer {
-    z-index: 1005 !important;
+  z-index: 1005 !important;
 }
 
 :host ::ng-deep .fc-event:nth-child(4) .fc-event-resizer {
-    z-index: 1006 !important;
+  z-index: 1006 !important;
 }
 
 :host ::ng-deep .fc-event:nth-child(5) .fc-event-resizer {
-    z-index: 1007 !important;
+  z-index: 1007 !important;
 }
 
 /* Hover mejorado para todos los resizers */
 :host ::ng-deep .fc-event-resizer:hover {
-    background: rgba(255, 255, 255, 1) !important;
-    border-color: rgba(52, 152, 219, 1) !important;
-    transform: scale(1.4) !important;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4) !important;
-    z-index: 1010 !important;
+  background: rgba(255, 255, 255, 1) !important;
+  border-color: rgba(52, 152, 219, 1) !important;
+  transform: scale(1.4) !important;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4) !important;
+  z-index: 1010 !important;
 }
 
 /* Indicador visual mejorado para resizers */
 :host ::ng-deep .fc-event-resizer::after {
-    content: '' !important;
-    position: absolute !important;
-    top: -2px !important;
-    left: -2px !important;
-    right: -2px !important;
-    bottom: -2px !important;
-    border: 1px solid rgba(52, 152, 219, 0.3) !important;
-    border-radius: 8px !important;
-    pointer-events: none !important;
+  content: "" !important;
+  position: absolute !important;
+  top: -2px !important;
+  left: -2px !important;
+  right: -2px !important;
+  bottom: -2px !important;
+  border: 1px solid rgba(52, 152, 219, 0.3) !important;
+  border-radius: 8px !important;
+  pointer-events: none !important;
 }
 
 /* Mejorar la accesibilidad en dispositivos táctiles */
 @media (hover: none) and (pointer: coarse) {
-    :host ::ng-deep .fc-event-resizer {
-        width: 16px !important;
-        height: 16px !important;
-        border-width: 3px !important;
-    }
-    
-    :host ::ng-deep .fc-event-resizer-start {
-        top: -12px !important;
-    }
-    
-    :host ::ng-deep .fc-event-resizer-end {
-        bottom: -12px !important;
-    }
+  :host ::ng-deep .fc-event-resizer {
+    width: 16px !important;
+    height: 16px !important;
+    border-width: 3px !important;
+  }
+
+  :host ::ng-deep .fc-event-resizer-start {
+    top: -12px !important;
+  }
+
+  :host ::ng-deep .fc-event-resizer-end {
+    bottom: -12px !important;
+  }
 }
 
 /* Responsive */
 @media (max-width: 1200px) {
-    .calendar-minimal {
-        grid-template-columns: 1fr;
-        gap: 2rem;
-    }
-    
-    .calendar-info {
-        position: static;
-        order: -1;
-    }
+  .calendar-minimal {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .calendar-info {
+    position: static;
+    order: -1;
+  }
 }
 
 @media (max-width: 768px) {
-    .calendar-minimal {
-        padding: 1rem;
-        gap: 1.5rem;
-    }
-    
-    .calendar-header h1 {
-        font-size: 2rem;
-    }
-    
-    .calendar-header p {
-        font-size: 1rem;
-    }
-    
-    .calendar-wrapper {
-        padding: 1rem;
-    }
-    
-    :host ::ng-deep .fc-header-toolbar {
-        flex-direction: column;
-        gap: 1rem;
-    }
-    
-    :host ::ng-deep .fc-toolbar-chunk {
-        display: flex;
-        justify-content: center;
-        flex-wrap: wrap;
-        gap: 0.5rem;
-    }
-}
+  .calendar-minimal {
+    padding: 1rem;
+    gap: 1.5rem;
+  }
 
-/* Animaciones suaves */
-.calendar-main,
-.calendar-info {
-    animation: fadeInUp 0.6s ease-out;
-}
+  .calendar-header h1 {
+    font-size: 2rem;
+  }
 
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+  .calendar-header p {
+    font-size: 1rem;
+  }
+
+  .calendar-wrapper {
+    padding: 1rem;
+  }
+
+  :host ::ng-deep .fc-header-toolbar {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  :host ::ng-deep .fc-toolbar-chunk {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .calendar-info {
+    padding: 1.5rem;
+  }
 }
-  

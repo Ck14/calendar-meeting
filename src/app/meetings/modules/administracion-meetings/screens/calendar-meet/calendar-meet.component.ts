@@ -7,6 +7,7 @@ import listPlugin from '@fullcalendar/list';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { ModalCrearMeetComponent, MeetingEvent as CreateMeetingEvent } from '../../components/modal-crear-meet/modal-crear-meet.component';
 import { ModalEditarMeetComponent, ModalEditarMeetData, MeetingEvent as EditMeetingEvent } from '../../components/modal-editar-meet/modal-editar-meet.component';
+import { CalendarMeetingsService, ICalendarMeeting } from '../../services/calendar-meetings.service';
 
 // Interfaz extendida para eventos con datos adicionales
 interface MeetingEvent extends EventInput {
@@ -35,6 +36,12 @@ export class CalendarMeetComponent implements OnInit {
   // Referencias a los modales
   bsModalCrear: any;
   bsModalEditar: any;
+
+  // Estado del calendario
+  isLoading: boolean = false;
+  currentView: string = 'timeGridDay';
+  currentStartDate: Date = new Date();
+  currentEndDate: Date = new Date();
 
   // Lista de salas disponibles
   availableRooms = [
@@ -99,83 +106,7 @@ export class CalendarMeetComponent implements OnInit {
     slotLaneClassNames: 'fc-slot-lane',
     eventClassNames: 'fc-event-custom',
     dayCellClassNames: 'fc-day-cell',
-    events: [
-      {
-        id: '1',
-        title: 'Reunión de Planificación',
-        start: new Date(new Date().setHours(10, 0, 0, 0)),
-        end: new Date(new Date().setHours(11, 30, 0, 0)),
-        room: 'Sala de Conferencias A',
-        description: 'Reunión semanal de planificación de proyectos',
-        attendees: ['Juan Pérez', 'María García', 'Carlos López'],
-        organizer: 'Juan Pérez',
-        priority: 'high',
-        backgroundColor: 'rgba(52, 152, 219, 0.9)',
-        borderColor: 'rgba(31, 95, 139, 0.9)',
-        textColor: 'white',
-        classNames: ['fc-event-custom', 'event-primary']
-      },
-      {
-        id: '2',
-        title: 'Revisión de Proyectos',
-        start: new Date(new Date().setHours(14, 0, 0, 0)),
-        end: new Date(new Date().setHours(15, 0, 0, 0)),
-        room: 'Sala de Reuniones 1',
-        description: 'Revisión mensual de proyectos en curso',
-        attendees: ['Ana Rodríguez', 'Luis Martínez'],
-        organizer: 'Ana Rodríguez',
-        priority: 'medium',
-        backgroundColor: 'rgba(52, 152, 219, 0.9)',
-        borderColor: 'rgba(31, 95, 139, 0.9)',
-        textColor: 'white',
-        classNames: ['fc-event-custom', 'event-success']
-      },
-      {
-        id: '3',
-        title: 'Presentación Ejecutiva',
-        start: new Date(new Date().setHours(9, 0, 0, 0)),
-        end: new Date(new Date().setHours(12, 0, 0, 0)),
-        room: 'Auditorio Principal',
-        description: 'Presentación de resultados trimestrales',
-        attendees: ['Directores Ejecutivos', 'Gerentes de Área'],
-        organizer: 'CEO',
-        priority: 'high',
-        backgroundColor: 'rgba(52, 152, 219, 0.9)',
-        borderColor: 'rgba(31, 95, 139, 0.9)',
-        textColor: 'white',
-        classNames: ['fc-event-custom', 'event-danger']
-      },
-      {
-        id: '4',
-        title: 'Reunión de Equipo',
-        start: new Date(new Date().setHours(10, 30, 0, 0)),
-        end: new Date(new Date().setHours(11, 30, 0, 0)),
-        room: 'Sala de Reuniones 2',
-        description: 'Reunión diaria del equipo de desarrollo',
-        attendees: ['Desarrolladores', 'QA', 'Product Owner'],
-        organizer: 'Tech Lead',
-        priority: 'medium',
-        backgroundColor: 'rgba(52, 152, 219, 0.9)',
-        borderColor: 'rgba(31, 95, 139, 0.9)',
-        textColor: 'white',
-        classNames: ['fc-event-custom', 'event-warning']
-      },
-      {
-        id: '5',
-        title: 'Entrevista de Trabajo',
-        start: new Date(new Date().setHours(11, 0, 0, 0)),
-        end: new Date(new Date().setHours(12, 0, 0, 0)),
-        room: 'Sala Ejecutiva',
-        description: 'Entrevista para posición de Senior Developer',
-        attendees: ['HR Manager', 'Tech Lead', 'Candidato'],
-        organizer: 'HR Manager',
-        priority: 'high',
-        backgroundColor: 'rgba(52, 152, 219, 0.9)',
-        borderColor: 'rgba(31, 95, 139, 0.9)',
-        textColor: 'white',
-        classNames: ['fc-event-custom', 'event-info']
-      }
-    ],
+    events: [], // Los eventos se cargarán dinámicamente
     select: (arg) => {
       this.abrirModalCrearEvento(arg);
     },
@@ -194,15 +125,29 @@ export class CalendarMeetComponent implements OnInit {
     datesSet: (arg) => {
       // Capturar el calendarApi y detectar traslapes cuando cambian las fechas
       this.calendarApi = arg.view.calendar;
+      this.currentView = arg.view.type;
+      this.currentStartDate = arg.start;
+      this.currentEndDate = arg.end;
+
+      // Cargar eventos para la nueva vista
+      this.cargarEventosPorVista();
+
+      // Detectar traslapes
       this.detectAndStyleOverlappingEvents();
     }
   };
 
   private calendarApi: CalendarApi | null = null;
 
-  constructor(private modalService: BsModalService) { }
+  constructor(
+    private modalService: BsModalService,
+    private calendarMeetingsService: CalendarMeetingsService
+  ) { }
 
   ngOnInit(): void {
+    // Cargar eventos iniciales
+    this.cargarEventosPorVista();
+
     // Detectar traslapes iniciales
     setTimeout(() => {
       this.detectAndStyleOverlappingEvents();
@@ -446,6 +391,107 @@ export class CalendarMeetComponent implements OnInit {
 
     // Aquí puedes agregar lógica adicional para guardar los cambios
     // Por ejemplo, actualizar en base de datos, notificar a otros usuarios, etc.
+  }
+
+  /**
+   * Carga eventos según la vista actual del calendario
+   */
+  private cargarEventosPorVista(): void {
+    this.isLoading = true;
+
+    this.calendarMeetingsService.obtenerReunionesPorRango(
+      this.currentStartDate,
+      this.currentEndDate,
+      this.currentView
+    ).subscribe({
+      next: (reuniones) => {
+        const eventos = this.convertirReunionesAEventos(reuniones);
+        this.actualizarEventosCalendario(eventos);
+        this.isLoading = false;
+      },
+      error: (error) => {
+        console.error('Error al cargar reuniones:', error);
+        this.isLoading = false;
+        // Aquí podrías mostrar una notificación de error
+      }
+    });
+  }
+
+  /**
+   * Convierte las reuniones del backend a eventos del calendario
+   */
+  private convertirReunionesAEventos(reuniones: ICalendarMeeting[]): MeetingEvent[] {
+    return reuniones.map(reunion => ({
+      id: reunion.id?.toString(),
+      title: reunion.titulo,
+      start: reunion.fechaInicio,
+      end: reunion.fechaFin || reunion.fechaInicio,
+      room: reunion.sala || this.obtenerNombreSala(reunion.idSala),
+      description: reunion.descripcion,
+      attendees: reunion.invitados,
+      organizer: reunion.organizadores?.[0] || '',
+      priority: this.obtenerPrioridad(reunion.idPrioridad),
+      backgroundColor: this.calendarMeetingsService.obtenerColorPorPrioridad(reunion.idPrioridad),
+      borderColor: this.calendarMeetingsService.obtenerColorBordePorPrioridad(reunion.idPrioridad),
+      textColor: 'white',
+      classNames: ['fc-event-custom', `event-${this.calendarMeetingsService.obtenerClasePrioridad(reunion.idPrioridad)}`]
+    }));
+  }
+
+  /**
+   * Actualiza los eventos del calendario
+   */
+  private actualizarEventosCalendario(eventos: MeetingEvent[]): void {
+    if (this.calendarApi) {
+      // Limpiar eventos existentes
+      this.calendarApi.removeAllEvents();
+      // Agregar nuevos eventos
+      this.calendarApi.addEventSource(eventos);
+    }
+  }
+
+  /**
+   * Obtiene el nombre de la sala por ID
+   */
+  private obtenerNombreSala(idSala: number): string {
+    const salas = [
+      'Sala de Conferencias A',
+      'Sala de Conferencias B',
+      'Sala de Reuniones 1',
+      'Sala de Reuniones 2',
+      'Sala Ejecutiva',
+      'Auditorio Principal',
+      'Sala de Capacitación'
+    ];
+    return salas[idSala - 1] || 'Sala no especificada';
+  }
+
+  /**
+   * Obtiene la prioridad en formato legible
+   */
+  private obtenerPrioridad(idPrioridad: number): 'low' | 'medium' | 'high' {
+    switch (idPrioridad) {
+      case 1: return 'low';
+      case 2: return 'medium';
+      case 3: return 'high';
+      default: return 'medium';
+    }
+  }
+
+  /**
+   * Obtiene el nombre legible de la vista actual
+   */
+  obtenerNombreVista(): string {
+    switch (this.currentView) {
+      case 'timeGridDay':
+        return 'Día';
+      case 'timeGridWeek':
+        return 'Semana';
+      case 'dayGridMonth':
+        return 'Mes';
+      default:
+        return 'Vista';
+    }
   }
 
   // Método para detectar eventos traslapados y aplicar estilos
