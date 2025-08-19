@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { ModalCrearMeetService } from './modal-crear-meet.service';
@@ -66,7 +66,8 @@ export class ModalCrearMeetComponent implements OnInit {
     public bsModalRef: BsModalRef,
     private fb: FormBuilder,
     private modalCrearMeetService: ModalCrearMeetService,
-    private validacionesService: ValidacionesService
+    private validacionesService: ValidacionesService,
+    private cdr: ChangeDetectorRef
   ) {
     this.formMeeting = this.fb.group({
       title: ['', [Validators.required]],
@@ -241,6 +242,11 @@ export class ModalCrearMeetComponent implements OnInit {
     this.salaDisponible = false;
     this.meetsOcupandoSala = [];
 
+    console.log('🔄 INICIANDO VALIDACIÓN');
+    console.log('Sala ID:', salaId);
+    console.log('Fecha inicio:', fechaInicio);
+    console.log('Fecha fin:', fechaFin);
+
     const validacionSala: IValidarSalaModel = {
       idSala: +salaId,
       fechaInicio: fechaInicio,
@@ -251,14 +257,24 @@ export class ModalCrearMeetComponent implements OnInit {
       next: (meetsOcupados: IMeetModelo[]) => {
         this.isValidatingSala = false;
         this.meetsOcupandoSala = meetsOcupados;
-        console.log(this.meetsOcupandoSala);
         this.salaDisponible = meetsOcupados.length === 0;
+
+        console.log('✅ SALA VALIDADA');
+        console.log('Sala disponible:', this.salaDisponible);
+        console.log('Meets ocupados:', meetsOcupados.length);
+        console.log('Room value:', this.room?.value);
+        console.log('IsValidatingSala:', this.isValidatingSala);
+        console.log('Condición check:', this.room?.value && this.salaDisponible && !this.isValidatingSala);
+
+        // Forzar detección de cambios
+        this.cdr.detectChanges();
       },
       error: (error) => {
         console.error('Error al validar la sala:', error);
         this.isValidatingSala = false;
         this.salaDisponible = false;
         this.meetsOcupandoSala = [];
+        this.cdr.detectChanges();
       }
     });
   }
@@ -280,6 +296,18 @@ export class ModalCrearMeetComponent implements OnInit {
     if (this.room?.value) {
       this.onSalaChange();
     }
+  }
+
+  /**
+   * Método temporal para debug
+   */
+  debugEstado(): void {
+    console.log('=== DEBUG ESTADO ACTUAL ===');
+    console.log('Room value:', this.room?.value);
+    console.log('Sala disponible:', this.salaDisponible);
+    console.log('IsValidatingSala:', this.isValidatingSala);
+    console.log('Meets ocupados:', this.meetsOcupandoSala.length);
+    console.log('==========================');
   }
 
   /**

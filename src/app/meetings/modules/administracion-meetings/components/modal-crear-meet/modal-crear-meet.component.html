@@ -53,35 +53,34 @@
                             <option *ngFor="let sala of salas" value="{{sala.idSala}}">{{sala.nombreSala}}</option>
                         </select>
 
-                        <!-- Indicador de validación de sala -->
-                        <div class="sala-validation-indicator" *ngIf="room?.value && !isValidatingSala">
-                            <!-- Check verde cuando la sala está disponible -->
-                            <div class="validation-success" *ngIf="salaDisponible">
-                                <i class="fas fa-check-circle text-success"></i>
-                                <span class="validation-text text-success">Sala disponible</span>
-                            </div>
-
-                            <!-- Badge de error cuando la sala está ocupada -->
-                            <div class="validation-error" *ngIf="!salaDisponible && meetsOcupandoSala.length > 0">
-                                <i class="fas fa-exclamation-triangle text-danger"></i>
-                                <span class="validation-text text-danger">Sala ocupada ({{ meetsOcupandoSala.length }}
-                                    reunión{{ meetsOcupandoSala.length > 1 ? 'es' : '' }})</span>
-                                <div class="ocupacion-details">
-                                    <div *ngFor="let meet of meetsOcupandoSala" class="meet-ocupacion">
-                                        <small class="text-muted">
-                                            <strong>{{ meet.titulo }}</strong><br>
-                                            {{ meet.fechaInicio | date:'dd/MM/yyyy HH:mm' }} -
-                                            {{ meet.fechaFin | date:'dd/MM/yyyy HH:mm' }}
-                                        </small>
-                                    </div>
-                                </div>
-                            </div>
+                        <!-- Check verde dentro del input cuando la sala está disponible -->
+                        <div class="input-check-success" *ngIf="room?.value && salaDisponible">
+                            <span class="material-icons">check</span>
                         </div>
 
                         <!-- Loading mientras valida -->
-                        <div class="sala-validation-loading" *ngIf="isValidatingSala">
-                            <i class="fas fa-spinner fa-spin text-primary"></i>
-                            <span class="validation-text text-primary">Validando disponibilidad...</span>
+                        <div class="sala-validation-loading" *ngIf="room?.value && isValidatingSala">
+                            <span class="material-icons">sync</span>
+                        </div>
+                    </div>
+
+                    <!-- Badge de error separado del input -->
+                    <div class="sala-ocupada-badge"
+                        *ngIf="room?.value && !salaDisponible && meetsOcupandoSala.length > 0 && !isValidatingSala">
+                        <div class="badge-header">
+                            <i class="fas fa-times-circle"></i>
+                            <span class="badge-title">Sala ocupada ({{ meetsOcupandoSala.length }} reunión{{
+                                meetsOcupandoSala.length > 1 ? 'es' : '' }})</span>
+                        </div>
+                        <div class="ocupacion-details">
+                            <div *ngFor="let meet of meetsOcupandoSala" class="meet-ocupacion">
+                                <div class="meet-title">{{ meet.titulo }}</div>
+                                <div class="meet-time">
+                                    <i class="far fa-clock"></i>
+                                    {{ meet.fechaInicio | date:'dd/MM/yyyy HH:mm' }} - {{ meet.fechaFin |
+                                    date:'dd/MM/yyyy HH:mm' }}
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <app-campo-errores [control]="room"></app-campo-errores>
