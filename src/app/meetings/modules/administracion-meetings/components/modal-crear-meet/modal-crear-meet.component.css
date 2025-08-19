@@ -200,6 +200,25 @@
   transform: translateY(-1px);
 }
 
+.organizer-badge {
+  display: inline-flex;
+  align-items: center;
+  background: linear-gradient(135deg, #e8f5e8, #d4edda);
+  border: 1px solid #28a745;
+  border-radius: 16px;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.8rem;
+  color: #155724;
+  box-shadow: 0 1px 3px rgba(40, 167, 69, 0.15);
+  transition: all 0.2s ease;
+  max-width: 100%;
+}
+
+.organizer-badge:hover {
+  box-shadow: 0 4px 8px rgba(40, 167, 69, 0.25);
+  transform: translateY(-1px);
+}
+
 .badge-name {
   font-weight: 500;
   margin-right: 0.25rem;

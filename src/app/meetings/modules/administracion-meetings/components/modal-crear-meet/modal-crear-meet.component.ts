@@ -43,12 +43,19 @@ export class ModalCrearMeetComponent implements OnInit {
   prioridades: IPrioridadModel[] = [];
   participantes: IParticipanteModel[] = [];
 
-  // Propiedades para el autocompletado
+  // Propiedades para el autocompletado de participantes
   filteredParticipants: IParticipanteModel[] = [];
   showSuggestions: boolean = false;
   selectedParticipantIndex: number = -1;
   currentInputValue: string = '';
   selectedParticipants: IParticipanteModel[] = [];
+
+  // Propiedades para el autocompletado de organizadores
+  filteredOrganizers: IParticipanteModel[] = [];
+  showOrganizerSuggestions: boolean = false;
+  selectedOrganizerIndex: number = -1;
+  currentOrganizerInputValue: string = '';
+  selectedOrganizers: IParticipanteModel[] = [];
 
   constructor(
     public bsModalRef: BsModalRef,
@@ -63,7 +70,7 @@ export class ModalCrearMeetComponent implements OnInit {
       room: ['', [Validators.required]],
       description: [''],
       attendees: ['', [Validators.required, this.validacionesService.participantesRequeridosValidator()]],
-      organizer: [''],
+      organizer: ['', [Validators.required, this.validacionesService.participantesRequeridosValidator()]],
       priority: ['']
     }, {
       // Ejemplo de uso del validador de rango de fechas y horas
@@ -91,8 +98,9 @@ export class ModalCrearMeetComponent implements OnInit {
     // Las fechas se pueden establecer desde el componente padre si es necesario
     this.cargarCatalogos();
 
-    // Inicializar el campo attendees
+    // Inicializar los campos
     this.updateAttendeesField();
+    this.updateOrganizerField();
   }
 
 
@@ -137,8 +145,9 @@ export class ModalCrearMeetComponent implements OnInit {
 
   public confirmSave(): void {
 
-    // Forzar validación del campo attendees
+    // Forzar validación de los campos
     this.updateAttendeesField();
+    this.updateOrganizerField();
 
     if (!this.formMeeting.valid) {
       this.formMeeting.markAllAsTouched();
@@ -183,7 +192,8 @@ export class ModalCrearMeetComponent implements OnInit {
       idPrioridad: +this.priority?.value,
       idEstado: 1,
       idTipoMeet: 1,
-      invitados: this.selectedParticipants.map(p => p.correo || p.nombre || '')
+      invitados: this.selectedParticipants.map(p => p.correo || p.nombre || ''),
+      organizadores: this.selectedOrganizers.map(p => p.correo || p.nombre || '')
     }
 
     console.log(meeting);
@@ -282,6 +292,59 @@ export class ModalCrearMeetComponent implements OnInit {
   }
 
   /**
+* Filtra los organizadores basado en el texto ingresado
+*/
+  filterOrganizers(searchText: string): void {
+    if (!searchText || searchText.trim() === '') {
+      this.filteredOrganizers = [];
+      this.showOrganizerSuggestions = false;
+      return;
+    }
+
+    const searchLower = searchText.toLowerCase().trim();
+
+    this.filteredOrganizers = this.participantes.filter(participante => {
+      const nombre = participante.nombre?.toLowerCase() || '';
+      const correo = participante.correo?.toLowerCase() || '';
+
+      // Verificar si coincide con el correo
+      if (correo.includes(searchLower)) {
+        return true;
+      }
+
+      // Verificar si coincide con el nombre completo
+      if (nombre.includes(searchLower)) {
+        return true;
+      }
+
+      // Búsqueda inteligente por múltiples palabras
+      const palabrasBusqueda = searchLower.split(' ').filter(palabra => palabra.length > 0);
+      const palabrasNombre = nombre.split(' ').filter(palabra => palabra.length > 0);
+
+      // Si solo hay una palabra de búsqueda, buscar en cualquier palabra del nombre
+      if (palabrasBusqueda.length === 1) {
+        return palabrasNombre.some(palabraNombre =>
+          palabraNombre.startsWith(palabrasBusqueda[0]) || palabraNombre.includes(palabrasBusqueda[0])
+        );
+      }
+
+      // Si hay múltiples palabras de búsqueda, verificar que todas estén en el nombre
+      if (palabrasBusqueda.length > 1) {
+        return palabrasBusqueda.every(palabraBusqueda =>
+          palabrasNombre.some(palabraNombre =>
+            palabraNombre.startsWith(palabraBusqueda) || palabraNombre.includes(palabraBusqueda)
+          )
+        );
+      }
+
+      return false;
+    });
+
+    this.showOrganizerSuggestions = this.filteredOrganizers.length > 0;
+    this.selectedOrganizerIndex = -1;
+  }
+
+  /**
 * Agrega un correo personalizado cuando no se encuentra coincidencia
 */
   addCustomEmail(email: string): void {
@@ -315,6 +378,39 @@ export class ModalCrearMeetComponent implements OnInit {
   }
 
   /**
+* Agrega un correo personalizado de organizador cuando no se encuentra coincidencia
+*/
+  addCustomOrganizerEmail(email: string): void {
+    // Usar directamente el email que se pasa como parámetro
+    const newEmail = email.trim();
+
+    // Verificar si el correo ya está en la lista de seleccionados
+    const isAlreadySelected = this.selectedOrganizers.some(p =>
+      p.correo === newEmail || p.nombre === newEmail
+    );
+
+    if (isAlreadySelected || !newEmail) {
+      return;
+    }
+
+    // Crear un organizador personalizado
+    const customOrganizer: IParticipanteModel = {
+      nombre: newEmail,
+      correo: newEmail
+    };
+
+    // Agregar a la lista de seleccionados
+    this.selectedOrganizers.push(customOrganizer);
+
+    // Actualizar el campo
+    this.updateOrganizerField();
+
+    // Limpiar el campo de búsqueda
+    this.currentOrganizerInputValue = '';
+    this.hideOrganizerSuggestions();
+  }
+
+  /**
 * Maneja el evento de input en el campo attendees
 */
   onAttendeesInput(event: any): void {
@@ -337,6 +433,32 @@ export class ModalCrearMeetComponent implements OnInit {
       this.filterParticipants(searchText);
     } else {
       this.hideSuggestions();
+    }
+  }
+
+  /**
+* Maneja el evento de input en el campo organizer
+*/
+  onOrganizerInput(event: any): void {
+    const value = event.target.value;
+    this.currentOrganizerInputValue = value;
+
+    // Si el campo está vacío, limpiar organizadores seleccionados
+    if (!value || value.trim() === '') {
+      this.selectedOrganizers = [];
+      this.hideOrganizerSuggestions();
+      return;
+    }
+
+    // Extraer la última palabra que se está escribiendo (después de la última coma)
+    const lastCommaIndex = value.lastIndexOf(',');
+    const searchText = lastCommaIndex === -1 ? value : value.substring(lastCommaIndex + 1).trim();
+
+    // Solo buscar si hay texto después de la última coma y no está vacío
+    if (searchText && searchText.trim() !== '') {
+      this.filterOrganizers(searchText);
+    } else {
+      this.hideOrganizerSuggestions();
     }
   }
 
@@ -376,6 +498,41 @@ export class ModalCrearMeetComponent implements OnInit {
   }
 
   /**
+   * Maneja la navegación con teclado en las sugerencias de organizadores
+   */
+  onOrganizerKeyDown(event: KeyboardEvent): void {
+    switch (event.key) {
+      case 'ArrowDown':
+        if (this.showOrganizerSuggestions) {
+          event.preventDefault();
+          this.selectedOrganizerIndex = Math.min(
+            this.selectedOrganizerIndex + 1,
+            this.filteredOrganizers.length - 1
+          );
+        }
+        break;
+      case 'ArrowUp':
+        if (this.showOrganizerSuggestions) {
+          event.preventDefault();
+          this.selectedOrganizerIndex = Math.max(this.selectedOrganizerIndex - 1, -1);
+        }
+        break;
+      case 'Enter':
+        event.preventDefault();
+        if (this.showOrganizerSuggestions && this.selectedOrganizerIndex >= 0) {
+          this.selectOrganizer(this.filteredOrganizers[this.selectedOrganizerIndex]);
+        } else if (this.getCurrentOrganizerSearchText()) {
+          // Si no hay sugerencias pero hay texto, agregar como correo personalizado
+          this.addCustomOrganizerEmail(this.getCurrentOrganizerSearchText());
+        }
+        break;
+      case 'Escape':
+        this.hideOrganizerSuggestions();
+        break;
+    }
+  }
+
+  /**
  * Selecciona un participante de las sugerencias
  */
   selectParticipant(participante: IParticipanteModel): void {
@@ -409,8 +566,41 @@ export class ModalCrearMeetComponent implements OnInit {
   }
 
   /**
-* Actualiza el campo de participantes con los seleccionados
-*/
+ * Selecciona un organizador de las sugerencias
+ */
+  selectOrganizer(organizador: IParticipanteModel): void {
+    // Verificar si el organizador ya está seleccionado
+    const isAlreadySelected = this.selectedOrganizers.some(p =>
+      p.nombre === organizador.nombre && p.correo === organizador.correo
+    );
+
+    if (isAlreadySelected) {
+      this.hideOrganizerSuggestions();
+      return;
+    }
+
+    // Agregar el organizador a la lista de seleccionados
+    this.selectedOrganizers.push(organizador);
+
+    // Actualizar el valor del campo con los organizadores seleccionados
+    this.updateOrganizerField();
+
+    this.hideOrganizerSuggestions();
+    this.currentOrganizerInputValue = '';
+
+    // Enfocar el input después de la selección
+    setTimeout(() => {
+      const input = document.querySelector('input[formControlName="organizer"]') as HTMLInputElement;
+      if (input) {
+        input.focus();
+        input.setSelectionRange(input.value.length, input.value.length);
+      }
+    }, 0);
+  }
+
+  /**
+ * Actualiza el campo de participantes con los seleccionados
+ */
   private updateAttendeesField(): void {
     if (this.selectedParticipants.length === 0) {
       this.attendees?.setValue('');
@@ -420,6 +610,20 @@ export class ModalCrearMeetComponent implements OnInit {
       this.attendees?.setValue(value);
     }
     this.attendees?.updateValueAndValidity();
+  }
+
+  /**
+  * Actualiza el campo de organizadores con los seleccionados
+  */
+  private updateOrganizerField(): void {
+    if (this.selectedOrganizers.length === 0) {
+      this.organizer?.setValue('');
+    } else {
+      const displayNames = this.selectedOrganizers.map(p => p.nombre || p.correo || '');
+      const value = displayNames.join(', ') + ', ';
+      this.organizer?.setValue(value);
+    }
+    this.organizer?.updateValueAndValidity();
   }
 
   /**
@@ -433,6 +637,16 @@ export class ModalCrearMeetComponent implements OnInit {
   }
 
   /**
+   * Elimina un organizador de la lista de seleccionados
+   */
+  removeOrganizer(organizador: IParticipanteModel): void {
+    this.selectedOrganizers = this.selectedOrganizers.filter(p =>
+      !(p.nombre === organizador.nombre && p.correo === organizador.correo)
+    );
+    this.updateOrganizerField();
+  }
+
+  /**
    * Oculta las sugerencias
    */
   hideSuggestions(): void {
@@ -441,8 +655,16 @@ export class ModalCrearMeetComponent implements OnInit {
   }
 
   /**
-   * Maneja el evento blur del campo attendees
+   * Oculta las sugerencias de organizadores
    */
+  hideOrganizerSuggestions(): void {
+    this.showOrganizerSuggestions = false;
+    this.selectedOrganizerIndex = -1;
+  }
+
+  /**
+ * Maneja el evento blur del campo attendees
+ */
   onAttendeesBlur(): void {
     setTimeout(() => {
       this.hideSuggestions();
@@ -450,13 +672,32 @@ export class ModalCrearMeetComponent implements OnInit {
   }
 
   /**
- * Maneja cuando se borra el contenido del campo
- */
+   * Maneja el evento blur del campo organizer
+   */
+  onOrganizerBlur(): void {
+    setTimeout(() => {
+      this.hideOrganizerSuggestions();
+    }, 150);
+  }
+
+  /**
+   * Maneja cuando se borra el contenido del campo
+   */
   onAttendeesClear(): void {
     this.selectedParticipants = [];
     this.currentInputValue = '';
     this.hideSuggestions();
     this.updateAttendeesField();
+  }
+
+  /**
+   * Maneja cuando se borra el contenido del campo organizer
+   */
+  onOrganizerClear(): void {
+    this.selectedOrganizers = [];
+    this.currentOrganizerInputValue = '';
+    this.hideOrganizerSuggestions();
+    this.updateOrganizerField();
   }
 
   /**
@@ -472,10 +713,29 @@ export class ModalCrearMeetComponent implements OnInit {
   }
 
   /**
+ * Obtiene el texto actual de búsqueda para organizadores (después de la última coma)
+ */
+  getCurrentOrganizerSearchText(): string {
+    const value = this.organizer?.value || '';
+    const lastCommaIndex = value.lastIndexOf(',');
+    const searchText = lastCommaIndex === -1 ? value.trim() : value.substring(lastCommaIndex + 1).trim();
+
+    // Solo devolver si hay texto y no está vacío
+    return searchText && searchText.length > 0 ? searchText : '';
+  }
+
+  /**
    * Obtiene la clase CSS para resaltar la sugerencia seleccionada
    */
   getSuggestionClass(index: number): string {
     return index === this.selectedParticipantIndex ? 'suggestion-selected' : '';
+  }
+
+  /**
+   * Obtiene la clase CSS para resaltar la sugerencia de organizador seleccionada
+   */
+  getOrganizerSuggestionClass(index: number): string {
+    return index === this.selectedOrganizerIndex ? 'suggestion-selected' : '';
   }
 
   public get title() {

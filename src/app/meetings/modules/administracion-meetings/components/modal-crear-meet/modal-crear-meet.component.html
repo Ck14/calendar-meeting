@@ -123,7 +123,58 @@
             <div class="row g-3">
                 <div class="col-lg-12">
                     <label class="form-label">Organizador</label>
-                    <input type="text" class="form-control" formControlName="organizer" />
+                    <div class="position-relative">
+                        <input type="text" class="form-control" formControlName="organizer"
+                            (input)="onOrganizerInput($event)" (keydown)="onOrganizerKeyDown($event)"
+                            (blur)="onOrganizerBlur()" (paste)="onOrganizerClear()"
+                            placeholder="Escribir nombre o correo para autocompletar" />
+
+                        <!-- Sugerencias de autocompletado para organizadores -->
+                        <div class="suggestions-container"
+                            *ngIf="showOrganizerSuggestions && filteredOrganizers.length > 0">
+                            <div class="suggestions-list">
+                                <div class="suggestion-item"
+                                    *ngFor="let organizador of filteredOrganizers; let i = index"
+                                    [class]="getOrganizerSuggestionClass(i)" (click)="selectOrganizer(organizador)">
+                                    <div class="suggestion-name">{{ organizador.nombre || 'Sin nombre' }}</div>
+                                    <div class="suggestion-email" *ngIf="organizador.correo">{{ organizador.correo }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Opción para agregar correo personalizado cuando no hay coincidencias -->
+                        <div class="suggestions-container"
+                            *ngIf="getCurrentOrganizerSearchText() && !showOrganizerSuggestions">
+                            <div class="suggestions-list">
+                                <div class="suggestion-item custom-email-option"
+                                    (click)="addCustomOrganizerEmail(getCurrentOrganizerSearchText())">
+                                    <div class="suggestion-name">
+                                        <i class="fas fa-plus-circle" style="color: #28a745; margin-right: 8px;"></i>
+                                        Agregar "{{ getCurrentOrganizerSearchText() }}" como organizador
+                                    </div>
+                                    <div class="suggestion-email">Presiona Enter o haz clic para agregar</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Badges de organizadores seleccionados -->
+                    <div class="selected-participants" *ngIf="selectedOrganizers.length > 0">
+                        <div class="organizer-badge" *ngFor="let organizador of selectedOrganizers">
+                            <span class="badge-name">{{ organizador.nombre || organizador.correo }}</span>
+                            <span class="badge-email" *ngIf="organizador.correo && organizador.nombre">{{
+                                organizador.correo }}</span>
+                            <button type="button" class="badge-remove" (click)="removeOrganizer(organizador)">
+                                <span style="vertical-align: middle;  color: var(--bs-info);" style="font-size: 16px;"
+                                    class="material-icons">close</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-text text-muted" style="font-size: smaller;">Escriba el nombre o correo del
+                        organizador para ver sugerencias
+                    </div>
                     <app-campo-errores [control]="organizer"></app-campo-errores>
                 </div>
             </div>
