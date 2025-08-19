@@ -35,6 +35,9 @@ export class ModalCrearMeetComponent implements OnInit {
   // Datos del modal
   tituloModal: string = '';
 
+  // Datos del calendario (se reciben a través de BsModalRef)
+  calendarData: any = null;
+
   // FormGroup para el formulario
   formMeeting: FormGroup;
 
@@ -69,6 +72,11 @@ export class ModalCrearMeetComponent implements OnInit {
     private validacionesService: ValidacionesService,
     private cdr: ChangeDetectorRef
   ) {
+    // Obtener los datos del calendario si existen
+    if (this.bsModalRef.content && (this.bsModalRef.content as any).calendarData) {
+      this.calendarData = (this.bsModalRef.content as any).calendarData;
+    }
+
     this.formMeeting = this.fb.group({
       title: ['', [Validators.required]],
       start: ['', [Validators.required]],
@@ -100,6 +108,10 @@ export class ModalCrearMeetComponent implements OnInit {
       cancelButtonColor: "#f06548",
       cancelButtonBackground: "#fff",
     });
+
+    // Inicializar fechas si vienen del calendario
+    this.inicializarFechasDesdeCalendario();
+
     // Inicializar el formulario con fechas vacías
     // Las fechas se pueden establecer desde el componente padre si es necesario
     this.cargarCatalogos();
@@ -107,6 +119,51 @@ export class ModalCrearMeetComponent implements OnInit {
     // Inicializar los campos
     this.updateAttendeesField();
     this.updateOrganizerField();
+
+    // Asegurar que la prioridad por defecto esté establecida después de cargar catálogos
+    setTimeout(() => {
+      if (this.prioridades.length > 0 && !this.priority?.value) {
+        this.establecerPrioridadPorDefecto();
+      }
+    }, 100);
+  }
+
+  /**
+   * Inicializa las fechas del formulario con los datos recibidos del calendario
+   */
+  private inicializarFechasDesdeCalendario(): void {
+    if (this.calendarData && this.calendarData.startStr && this.calendarData.endStr) {
+      console.log('📅 Inicializando fechas desde calendario:', this.calendarData);
+
+      // Convertir las fechas del calendario al formato datetime-local
+      const startDate = new Date(this.calendarData.startStr);
+      const endDate = new Date(this.calendarData.endStr);
+
+      // Formatear para datetime-local (YYYY-MM-DDTHH:mm)
+      const startFormatted = this.formatDateForDateTimeLocal(startDate);
+      const endFormatted = this.formatDateForDateTimeLocal(endDate);
+
+      // Establecer solo las fechas en el formulario, preservando otros valores
+      this.formMeeting.patchValue({
+        start: startFormatted,
+        end: endFormatted
+      });
+
+      console.log('✅ Fechas inicializadas:', { start: startFormatted, end: endFormatted });
+    }
+  }
+
+  /**
+   * Formatea una fecha para el input datetime-local
+   */
+  private formatDateForDateTimeLocal(date: Date): string {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
   }
 
 
@@ -121,6 +178,9 @@ export class ModalCrearMeetComponent implements OnInit {
       this.salas = salasCache;
       this.prioridades = prioridadesCache;
       this.participantes = participantesCache;
+
+      // Establecer la primera prioridad como seleccionada por defecto
+      this.establecerPrioridadPorDefecto();
       return;
     }
 
@@ -138,6 +198,10 @@ export class ModalCrearMeetComponent implements OnInit {
         this.salas = result[0];
         this.prioridades = result[1];
         this.participantes = result[2];
+
+        // Establecer la primera prioridad como seleccionada por defecto
+        this.establecerPrioridadPorDefecto();
+
         Loading.remove();
       },
       error: (error) => {
@@ -148,6 +212,36 @@ export class ModalCrearMeetComponent implements OnInit {
     });
   }
 
+  /**
+   * Establece la primera prioridad como seleccionada por defecto
+   */
+  private establecerPrioridadPorDefecto(): void {
+    if (this.prioridades && this.prioridades.length > 0) {
+      const primeraPrioridad = this.prioridades[0];
+      if (primeraPrioridad && primeraPrioridad.idPrioridad) {
+        this.formMeeting.patchValue({
+          priority: primeraPrioridad.idPrioridad.toString()
+        });
+        console.log('✅ Prioridad por defecto establecida:', primeraPrioridad.nombrePrioridad);
+      }
+    }
+  }
+
+  /**
+   * Obtiene el nombre de la prioridad basado en el ID
+   */
+  private obtenerNombrePrioridad(idPrioridad: number): string {
+    const prioridad = this.prioridades.find(p => p.idPrioridad === idPrioridad);
+    return prioridad?.nombrePrioridad || 'No especificada';
+  }
+
+  /**
+   * Obtiene el nombre de la sala basado en el ID
+   */
+  private obtenerNombreSala(idSala: number): string {
+    const sala = this.salas.find(s => s.idSala === idSala);
+    return sala?.nombreSala || 'No especificada';
+  }
 
   public confirmSave(): void {
 
@@ -166,15 +260,17 @@ export class ModalCrearMeetComponent implements OnInit {
       return;
     }
 
-
+    // Obtener nombres descriptivos para el confirm
+    const nombrePrioridad = this.obtenerNombrePrioridad(+this.priority?.value);
+    const nombreSala = this.obtenerNombreSala(+this.room?.value);
 
     Confirm.show(
       "¿Confirma creación de la reunión?",
       `<div style="text-align: left;">Título de la reunión: <b>${this.title?.value}</b> </div>
-       <div style="text-align: left;">Prioridad: <b>${this.priority?.value}</b> </div>
+       <div style="text-align: left;">Prioridad: <b>${nombrePrioridad}</b> </div>
        <div style="text-align: left;">Fecha y Hora de Inicio: <b>${this.start?.value ? new Date(this.start.value).toLocaleString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : ''}</b> </div>
        <div style="text-align: left;">Fecha y Hora de Fin: <b>${this.end?.value ? new Date(this.end.value).toLocaleString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : ''}</b> </div>
-       <div style="text-align: left;">Sala de Reunión: <b>${this.room?.value}</b> </div>
+       <div style="text-align: left;">Sala de Reunión: <b>${nombreSala}</b> </div>
        <div>&nbsp;</div>       
       `,
       "Si",

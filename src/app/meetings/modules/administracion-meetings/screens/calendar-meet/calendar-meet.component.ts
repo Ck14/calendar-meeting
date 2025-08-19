@@ -215,10 +215,14 @@ export class CalendarMeetComponent implements OnInit {
 
   // Método para abrir modal de crear evento
   abrirModalCrearEvento(arg: any): void {
+    console.log('📅 Datos del calendario recibidos:', arg);
 
     this.bsModalCrear = this.modalService.show(
       ModalCrearMeetComponent,
       {
+        initialState: {
+          calendarData: arg
+        },
         class: "modal-lg modal-dialog-centered",
         keyboard: true,
         backdrop: "static",
