@@ -6,7 +6,7 @@ import { ISalaModel } from 'src/app/interfaces/meetings/salaModelo';
 import { Confirm, Loading, Notify } from 'notiflix';
 import { forkJoin, of } from 'rxjs';
 import { IPrioridadModel } from 'src/app/interfaces/meetings/prioridadModelo';
-import { IMeetModelo } from 'src/app/interfaces/meetings/meetModel';
+import { IMeetModelo, IValidarSalaModel } from 'src/app/interfaces/meetings/meetModel';
 import { IParticipanteModel } from 'src/app/interfaces/meetings/participanteModelo';
 import { ValidacionesService } from '../../services/validaciones.service';
 
@@ -56,6 +56,11 @@ export class ModalCrearMeetComponent implements OnInit {
   selectedOrganizerIndex: number = -1;
   currentOrganizerInputValue: string = '';
   selectedOrganizers: IParticipanteModel[] = [];
+
+  // Propiedades para validación de sala
+  isValidatingSala: boolean = false;
+  salaDisponible: boolean = false;
+  meetsOcupandoSala: IMeetModelo[] = [];
 
   constructor(
     public bsModalRef: BsModalRef,
@@ -210,6 +215,71 @@ export class ModalCrearMeetComponent implements OnInit {
     });
 
 
+  }
+
+  /**
+   * Valida la disponibilidad de la sala seleccionada
+   */
+  onSalaChange(): void {
+    const salaId = this.room?.value;
+    const fechaInicio = this.start?.value;
+    const fechaFin = this.end?.value;
+
+    // Solo validar si tenemos todos los datos necesarios
+    if (!salaId || !fechaInicio || !fechaFin) {
+      this.resetSalaValidation();
+      return;
+    }
+
+    // Validar que las fechas sean válidas
+    if (new Date(fechaInicio) >= new Date(fechaFin)) {
+      this.resetSalaValidation();
+      return;
+    }
+
+    this.isValidatingSala = true;
+    this.salaDisponible = false;
+    this.meetsOcupandoSala = [];
+
+    const validacionSala: IValidarSalaModel = {
+      idSala: +salaId,
+      fechaInicio: fechaInicio,
+      fechaFin: fechaFin
+    };
+
+    this.modalCrearMeetService.validarSalaDisponible(validacionSala).subscribe({
+      next: (meetsOcupados: IMeetModelo[]) => {
+        this.isValidatingSala = false;
+        this.meetsOcupandoSala = meetsOcupados;
+        console.log(this.meetsOcupandoSala);
+        this.salaDisponible = meetsOcupados.length === 0;
+      },
+      error: (error) => {
+        console.error('Error al validar la sala:', error);
+        this.isValidatingSala = false;
+        this.salaDisponible = false;
+        this.meetsOcupandoSala = [];
+      }
+    });
+  }
+
+  /**
+   * Resetea la validación de sala
+   */
+  private resetSalaValidation(): void {
+    this.isValidatingSala = false;
+    this.salaDisponible = false;
+    this.meetsOcupandoSala = [];
+  }
+
+  /**
+   * Se ejecuta cuando cambian las fechas de inicio o fin
+   */
+  onFechaChange(): void {
+    // Si ya hay una sala seleccionada, revalidar
+    if (this.room?.value) {
+      this.onSalaChange();
+    }
   }
 
   /**

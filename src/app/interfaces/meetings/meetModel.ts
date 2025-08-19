@@ -13,3 +13,9 @@ export interface IMeetModelo {
     organizadores?: string[];
 }
 
+export interface IValidarSalaModel {
+    idSala: number;
+    fechaInicio: Date;
+    fechaFin: Date;
+}
+

@@ -5,7 +5,7 @@ import { IParticipanteModel } from 'src/app/interfaces/meetings/participanteMode
 import { IPrioridadModel } from 'src/app/interfaces/meetings/prioridadModelo';
 import { ISalaModel } from 'src/app/interfaces/meetings/salaModelo';
 import { CacheService } from '../../services/cache.service';
-import { IMeetModelo } from 'src/app/interfaces/meetings/meetModel';
+import { IMeetModelo, IValidarSalaModel } from 'src/app/interfaces/meetings/meetModel';
 
 @Injectable({
   providedIn: 'root'
@@ -110,5 +110,14 @@ export class ModalCrearMeetService {
     return this.http.post<number>(url, meet);
   } // end
 
+  /**
+   * Valida si una sala está disponible en el horario especificado
+   * @param meet - Modelo con idSala, fechaInicio y fechaFin
+   * @returns Observable<IMeetModelo[]> - Array de meets que están ocupando la sala en ese horario
+   */
+  validarSalaDisponible(meet: IValidarSalaModel): Observable<IMeetModelo[]> {
+    const url = `api/meet/salasOcupadas`;
+    return this.http.post<IMeetModelo[]>(url, meet);
+  }
 
 }
