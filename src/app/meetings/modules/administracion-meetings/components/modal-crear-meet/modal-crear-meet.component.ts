@@ -62,7 +62,7 @@ export class ModalCrearMeetComponent implements OnInit {
       end: ['', [Validators.required]],
       room: ['', [Validators.required]],
       description: [''],
-      attendees: ['', [Validators.required]],
+      attendees: ['', [Validators.required, this.validacionesService.participantesRequeridosValidator()]],
       organizer: [''],
       priority: ['']
     }, {
@@ -90,6 +90,9 @@ export class ModalCrearMeetComponent implements OnInit {
     // Inicializar el formulario con fechas vacías
     // Las fechas se pueden establecer desde el componente padre si es necesario
     this.cargarCatalogos();
+
+    // Inicializar el campo attendees
+    this.updateAttendeesField();
   }
 
 
@@ -134,6 +137,8 @@ export class ModalCrearMeetComponent implements OnInit {
 
   public confirmSave(): void {
 
+    // Forzar validación del campo attendees
+    this.updateAttendeesField();
 
     if (!this.formMeeting.valid) {
       this.formMeeting.markAllAsTouched();
@@ -404,11 +409,17 @@ export class ModalCrearMeetComponent implements OnInit {
   }
 
   /**
-   * Actualiza el campo de participantes con los seleccionados
-   */
+* Actualiza el campo de participantes con los seleccionados
+*/
   private updateAttendeesField(): void {
-    const displayNames = this.selectedParticipants.map(p => p.nombre || p.correo || '');
-    this.attendees?.setValue(displayNames.join(', ') + ', ');
+    if (this.selectedParticipants.length === 0) {
+      this.attendees?.setValue('');
+    } else {
+      const displayNames = this.selectedParticipants.map(p => p.nombre || p.correo || '');
+      const value = displayNames.join(', ') + ', ';
+      this.attendees?.setValue(value);
+    }
+    this.attendees?.updateValueAndValidity();
   }
 
   /**
@@ -439,12 +450,13 @@ export class ModalCrearMeetComponent implements OnInit {
   }
 
   /**
-   * Maneja cuando se borra el contenido del campo
-   */
+ * Maneja cuando se borra el contenido del campo
+ */
   onAttendeesClear(): void {
     this.selectedParticipants = [];
     this.currentInputValue = '';
     this.hideSuggestions();
+    this.updateAttendeesField();
   }
 
   /**

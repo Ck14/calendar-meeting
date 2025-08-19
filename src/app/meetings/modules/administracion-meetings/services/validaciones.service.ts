@@ -99,11 +99,11 @@ export class ValidacionesService {
     }
 
     /**
-     * Validador para verificar que la fecha y hora final sea mayor a la fecha y hora inicial
-     * @param fechaHoraInicioControl - Nombre del control de fecha y hora de inicio
-     * @param fechaHoraFinControl - Nombre del control de fecha y hora de fin
-     * @returns ValidatorFn que retorna error si la fecha y hora final es menor o igual a la inicial
-     */
+ * Validador para verificar que la fecha y hora final sea mayor a la fecha y hora inicial
+ * @param fechaHoraInicioControl - Nombre del control de fecha y hora de inicio
+ * @param fechaHoraFinControl - Nombre del control de fecha y hora de fin
+ * @returns ValidatorFn que retorna error si la fecha y hora final es menor o igual a la inicial
+ */
     rangoFechaHoraValidator(fechaHoraInicioControl: string, fechaHoraFinControl: string): ValidatorFn {
         return (formGroup: AbstractControl): ValidationErrors | null => {
             const fechaHoraInicio = formGroup.get(fechaHoraInicioControl);
@@ -137,6 +137,34 @@ export class ValidacionesService {
                         message: 'La fecha y hora de finalización debe ser posterior a la fecha y hora de inicio'
                     }
                 };
+            }
+
+            return null;
+        };
+    }
+
+    /**
+ * Validador para verificar que haya al menos un participante seleccionado
+ * @returns ValidatorFn que retorna error si no hay participantes seleccionados
+ */
+    participantesRequeridosValidator(): ValidatorFn {
+        return (control: AbstractControl): ValidationErrors | null => {
+            const value = control.value;
+
+            // Si el valor es una cadena, verificar que no esté vacía
+            if (typeof value === 'string') {
+                const trimmedValue = value.trim();
+                // Remover comas y espacios al final
+                const cleanValue = trimmedValue.replace(/,\s*$/, '');
+
+                // Verificar si está vacío o solo tiene comas/espacios
+                if (!cleanValue || cleanValue === '' || cleanValue === ',') {
+                    return {
+                        participantesRequeridos: {
+                            message: 'Debe agregar al menos un participante'
+                        }
+                    };
+                }
             }
 
             return null;
