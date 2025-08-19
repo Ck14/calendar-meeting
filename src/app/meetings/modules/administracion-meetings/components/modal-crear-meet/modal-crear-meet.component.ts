@@ -161,6 +161,11 @@ export class ModalCrearMeetComponent implements OnInit {
       return Notify.failure("Por favor, revise los campos resaltados y complete correctamente la información solicitada.");
     }
 
+    // Validar que la sala esté disponible antes de continuar
+    if (!this.validarSalaAntesDeGuardar()) {
+      return;
+    }
+
 
 
     Confirm.show(
@@ -308,6 +313,29 @@ export class ModalCrearMeetComponent implements OnInit {
     console.log('IsValidatingSala:', this.isValidatingSala);
     console.log('Meets ocupados:', this.meetsOcupandoSala.length);
     console.log('==========================');
+  }
+
+  /**
+   * Valida que la sala seleccionada esté disponible antes de guardar
+   */
+  private validarSalaAntesDeGuardar(): boolean {
+    if (!this.room?.value) {
+      Notify.info('Debe seleccionar una sala de reunión');
+      return false;
+    }
+
+    if (this.isValidatingSala) {
+      Notify.info('Espere mientras se valida la disponibilidad de la sala');
+      return false;
+    }
+
+    if (!this.salaDisponible && this.meetsOcupandoSala.length > 0) {
+      Notify.info('La sala seleccionada está ocupada. Debe seleccionar otra sala disponible');
+      return false;
+    }
+
+    // Si no hay sala seleccionada o la sala está disponible, permitir continuar
+    return true;
   }
 
   /**

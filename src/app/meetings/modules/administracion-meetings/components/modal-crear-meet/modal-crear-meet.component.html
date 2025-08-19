@@ -68,15 +68,14 @@
                     <div class="sala-ocupada-badge"
                         *ngIf="room?.value && !salaDisponible && meetsOcupandoSala.length > 0 && !isValidatingSala">
                         <div class="badge-header">
-                            <i class="fas fa-times-circle"></i>
-                            <span class="badge-title">Sala ocupada ({{ meetsOcupandoSala.length }} reunión{{
-                                meetsOcupandoSala.length > 1 ? 'es' : '' }})</span>
+                            <span class="material-icons">info</span>
+                            <span class="badge-title">Sala ocupada</span>
                         </div>
                         <div class="ocupacion-details">
                             <div *ngFor="let meet of meetsOcupandoSala" class="meet-ocupacion">
                                 <div class="meet-title">{{ meet.titulo }}</div>
                                 <div class="meet-time">
-                                    <i class="far fa-clock"></i>
+                                    <span class="material-icons">schedule</span>
                                     {{ meet.fechaInicio | date:'dd/MM/yyyy HH:mm' }} - {{ meet.fechaFin |
                                     date:'dd/MM/yyyy HH:mm' }}
                                 </div>
