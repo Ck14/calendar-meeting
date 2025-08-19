@@ -309,14 +309,24 @@ export class ModalCrearMeetComponent implements OnInit {
       next: (response) => {
         console.log(response);
         Loading.remove();
+
+        // Mostrar notificación de éxito con el título de la reunión
+        const tituloReunion = this.title?.value || 'la reunión';
+        Notify.success(`¡Reunión "${tituloReunion}" creada exitosamente!`);
+
+        // Cerrar el modal después de un breve delay para que se vea la notificación
+        setTimeout(() => {
+          this.bsModalRef.hide();
+        }, 1000);
       },
       error: (error) => {
         console.error('Error al guardar la reunión:', error);
         Loading.remove();
+
+        // Mostrar notificación de error
+        Notify.failure("Error al crear la reunión. Por favor, intente nuevamente.");
       }
     });
-
-
   }
 
   /**
