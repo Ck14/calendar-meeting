@@ -47,6 +47,8 @@
   overflow: hidden;
   transition: all 0.3s ease;
   min-height: 80vh;
+  display: flex;
+  flex-direction: column;
 }
 
 .calendar-main:hover {
@@ -54,8 +56,11 @@
 }
 
 .calendar-wrapper {
-  padding: 2rem;
+  padding: 0 2rem;
   height: 100%;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 
 /* Sidebar de información */
@@ -166,10 +171,13 @@
 
 /* Header del calendario */
 :host ::ng-deep .fc-header-toolbar {
-  background: transparent;
-  padding: 0 0 2rem 0;
+  background: white;
+  padding: 2rem 2rem 1rem 2rem;
   margin: 0;
   border: none;
+  border-bottom: 1px solid #f1f3f4;
+  flex-shrink: 0;
+  z-index: 10;
 }
 
 :host ::ng-deep .fc-toolbar-title {
@@ -909,4 +917,16 @@
   .calendar-info {
     padding: 1.5rem;
   }
+}
+
+/* Contenido del calendario con scroll */
+:host ::ng-deep .fc-view-harness {
+  overflow-y: auto;
+  flex: 1;
+  max-height: calc(80vh - 120px);
+}
+
+/* Asegurar que el contenido del calendario tenga scroll */
+:host ::ng-deep .fc-scroller {
+  overflow-y: auto !important;
 }
