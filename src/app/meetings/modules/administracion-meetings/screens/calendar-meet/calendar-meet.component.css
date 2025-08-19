@@ -119,15 +119,15 @@
 
 /* Colores de prioridad - NUEVOS */
 .dot.priority-low {
-  background: #28a745;
+  background: #81d4fa;
 }
 
 .dot.priority-medium {
-  background: #ffc107;
+  background: #03a9f4;
 }
 
 .dot.priority-high {
-  background: #dc3545;
+  background: #01579b;
 }
 
 /* Información de vista actual - NUEVO */
@@ -404,27 +404,27 @@
 }
 
 :host ::ng-deep .event-success {
-  background: linear-gradient(135deg, #3498db, #2980b9) !important;
-  color: white !important;
-  border-left: 4px solid #1f5f8b !important;
+  background: linear-gradient(135deg, #81d4fa, #4fc3f7) !important;
+  color: #01579b !important;
+  border-left: 4px solid #0288d1 !important;
 }
 
 :host ::ng-deep .event-danger {
-  background: linear-gradient(135deg, #3498db, #2980b9) !important;
+  background: linear-gradient(135deg, #01579b, #0d47a1) !important;
   color: white !important;
-  border-left: 4px solid #1f5f8b !important;
+  border-left: 4px solid #002171 !important;
 }
 
 :host ::ng-deep .event-warning {
-  background: linear-gradient(135deg, #3498db, #2980b9) !important;
+  background: linear-gradient(135deg, #03a9f4, #0288d1) !important;
   color: white !important;
-  border-left: 4px solid #1f5f8b !important;
+  border-left: 4px solid #0277bd !important;
 }
 
 :host ::ng-deep .event-info {
-  background: linear-gradient(135deg, #3498db, #2980b9) !important;
+  background: linear-gradient(135deg, #2196f3, #1976d2) !important;
   color: white !important;
-  border-left: 4px solid #1f5f8b !important;
+  border-left: 4px solid #1565c0 !important;
 }
 
 /* Eventos por defecto con el celeste de los controles */

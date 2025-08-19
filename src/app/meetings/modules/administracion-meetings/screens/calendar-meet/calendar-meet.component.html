@@ -16,23 +16,6 @@
     </main>
 
     <aside class="calendar-info">
-        <div class="info-section">
-            <h3>Tipos de reunión</h3>
-            <div class="legend">
-                <div class="legend-item">
-                    <span class="dot planning"></span>
-                    <span>Planificación</span>
-                </div>
-                <div class="legend-item">
-                    <span class="dot review"></span>
-                    <span>Revisión</span>
-                </div>
-                <div class="legend-item">
-                    <span class="dot presentation"></span>
-                    <span>Presentación</span>
-                </div>
-            </div>
-        </div>
 
         <div class="info-section">
             <h3>Prioridades</h3>
@@ -52,14 +35,6 @@
             </div>
         </div>
 
-        <div class="info-section">
-            <h3>Vista actual</h3>
-            <div class="current-view-info">
-                <p><strong>{{ obtenerNombreVista() }}</strong></p>
-                <p class="date-range">
-                    {{ currentStartDate | date:'shortDate' }} - {{ currentEndDate | date:'shortDate' }}
-                </p>
-            </div>
-        </div>
+
     </aside>
 </div>
