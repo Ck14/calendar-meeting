@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { CalendarOptions, EventInput, CalendarApi } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
@@ -31,7 +31,7 @@ interface MeetingEvent extends EventInput {
   templateUrl: './calendar-meet.component.html',
   styleUrls: ['./calendar-meet.component.css']
 })
-export class CalendarMeetComponent implements OnInit {
+export class CalendarMeetComponent implements OnInit, AfterViewInit {
 
   // Referencias a los modales
   bsModalCrear: any;
@@ -78,7 +78,7 @@ export class CalendarMeetComponent implements OnInit {
     },
     slotMinTime: '00:00:00',
     slotMaxTime: '24:00:00',
-    scrollTime: '06:00:00',
+    scrollTime: '08:00:00', // Se actualizará dinámicamente
     slotDuration: '00:30:00',
     expandRows: true,
     allDaySlot: false,
@@ -122,8 +122,15 @@ export class CalendarMeetComponent implements OnInit {
       // Cargar eventos para la nueva vista
       this.cargarEventosPorVista();
 
-      // Detectar traslapes
-      this.detectAndStyleOverlappingEvents();
+      // Detectar traslapes y hacer scroll a la hora actual
+      setTimeout(() => {
+        this.detectAndStyleOverlappingEvents();
+
+        // Si es vista de día o semana, hacer scroll a la hora actual
+        if (this.currentView === 'timeGridDay' || this.currentView === 'timeGridWeek') {
+          this.scrollToCurrentTime();
+        }
+      }, 300);
     }
   };
 
@@ -135,6 +142,9 @@ export class CalendarMeetComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    // Actualizar scrollTime con la hora actual
+    this.calendarOptions.scrollTime = this.getCurrentTimeForScroll();
+
     // Cargar eventos iniciales
     this.cargarEventosPorVista();
 
@@ -142,6 +152,13 @@ export class CalendarMeetComponent implements OnInit {
     setTimeout(() => {
       this.detectAndStyleOverlappingEvents();
     }, 500);
+  }
+
+  ngAfterViewInit(): void {
+    // Hacer scroll a la hora actual después de que la vista se haya renderizado
+    setTimeout(() => {
+      this.scrollToCurrentTime();
+    }, 1000);
   }
 
   private createEventId(): string {
@@ -518,5 +535,67 @@ export class CalendarMeetComponent implements OnInit {
         );
       }
     });
+  }
+
+  /**
+   * Obtiene la hora actual formateada para el scrollTime del calendario
+   */
+  private getCurrentTimeForScroll(): string {
+    const now = new Date();
+    const hours = now.getHours().toString().padStart(2, '0');
+    const minutes = now.getMinutes().toString().padStart(2, '0');
+
+    // Si es muy temprano (antes de las 6 AM), mostrar desde las 6 AM
+    if (now.getHours() < 6) {
+      return '06:00:00';
+    }
+
+    // Si es muy tarde (después de las 10 PM), mostrar desde las 10 PM
+    if (now.getHours() > 22) {
+      return '22:00:00';
+    }
+
+    // Restar 1 hora para centrar mejor la hora actual en la vista
+    const adjustedHour = Math.max(0, now.getHours() - 1);
+    return `${adjustedHour.toString().padStart(2, '0')}:${minutes}:00`;
+  }
+
+  /**
+   * Hace scroll hacia la línea de la hora actual (línea roja)
+   */
+  private scrollToCurrentTime(): void {
+    if (!this.calendarApi) {
+      return;
+    }
+
+    // Buscar la línea indicadora de la hora actual
+    const nowIndicator = document.querySelector('.fc-timegrid-now-indicator-line') as HTMLElement;
+
+    if (nowIndicator) {
+      // Scroll hacia la línea de la hora actual con una animación suave
+      nowIndicator.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+        inline: 'nearest'
+      });
+    } else {
+      // Si no se encuentra la línea, usar el método nativo de FullCalendar
+      try {
+        const now = new Date();
+        const currentTimeString = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:00`;
+
+        // Actualizar el scrollTime y refrescar la vista
+        this.calendarApi.setOption('scrollTime', currentTimeString);
+      } catch (error) {
+        console.warn('No se pudo hacer scroll a la hora actual:', error);
+      }
+    }
+  }
+
+  /**
+   * Método público para hacer scroll a la hora actual (puede ser llamado desde el template)
+   */
+  public scrollToNow(): void {
+    this.scrollToCurrentTime();
   }
 }
