@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { ModalCrearMeetService } from './modal-crear-meet.service';
@@ -40,6 +40,7 @@ export class ModalCrearMeetComponent implements OnInit {
 
   // FormGroup para el formulario
   formMeeting: FormGroup;
+  eventoGuardar = new EventEmitter();
 
   // Lista de salas disponibles
   salas: ISalaModel[] = [];
@@ -245,6 +246,8 @@ export class ModalCrearMeetComponent implements OnInit {
 
   public confirmSave(): void {
 
+
+
     // Forzar validación de los campos
     this.updateAttendeesField();
     this.updateOrganizerField();
@@ -314,10 +317,14 @@ export class ModalCrearMeetComponent implements OnInit {
         const tituloReunion = this.title?.value || 'la reunión';
         Notify.success(`¡Reunión "${tituloReunion}" creada exitosamente!`);
 
+        this.eventoGuardar.emit(true);
+        this.bsModalRef.hide();
+        Loading.remove();
+
         // Cerrar el modal después de un breve delay para que se vea la notificación
-        setTimeout(() => {
+        /* setTimeout(() => {
           this.bsModalRef.hide();
-        }, 1000);
+        }, 1000); */
       },
       error: (error) => {
         console.error('Error al guardar la reunión:', error);

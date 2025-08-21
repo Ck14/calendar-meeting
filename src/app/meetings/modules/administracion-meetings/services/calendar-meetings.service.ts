@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, of, delay } from 'rxjs';
 import { IMeetModelo } from 'src/app/interfaces/meetings/meetModel';
 
@@ -27,7 +27,16 @@ export class CalendarMeetingsService {
      */
     obtenerReunionesPorRango(startDate: Date, endDate: Date, viewType: string): Observable<ICalendarMeeting[]> {
         // Simular llamada a API con delay
-        return of(this.generarReunionesSimuladas(startDate, endDate, viewType)).pipe(delay(500));
+        // return of(this.generarReunionesSimuladas(startDate, endDate, viewType)).pipe(delay(500));
+
+        let url = `api/meet/reunionesPorRango`;
+
+        const params = new HttpParams()
+            .set('startDate', startDate.toDateString())
+            .set('endDate', endDate.toDateString());
+
+
+        return this.http.get<ICalendarMeeting[]>(url, { params });
     }
 
     /**

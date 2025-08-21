@@ -21,7 +21,7 @@
 .calendar-header {
   grid-column: 1 / -1;
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 0.1rem;
 }
 
 .calendar-header h1 {
@@ -929,4 +929,123 @@
 /* Asegurar que el contenido del calendario tenga scroll */
 :host ::ng-deep .fc-scroller {
   overflow-y: auto !important;
+}
+
+/* Personalización del scrollbar - Scrollbar más delgado y elegante */
+:host ::ng-deep .fc-scroller::-webkit-scrollbar {
+  width: 8px; /* Ancho del scrollbar */
+}
+
+:host ::ng-deep .fc-scroller::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Color del fondo del track */
+  border-radius: 4px;
+}
+
+:host ::ng-deep .fc-scroller::-webkit-scrollbar-thumb {
+  background: #c1c1c1; /* Color del thumb (barra deslizadora) */
+  border-radius: 4px;
+  transition: background 0.2s ease;
+}
+
+:host ::ng-deep .fc-scroller::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8; /* Color al hacer hover */
+}
+
+/* Personalización del scrollbar para el contenedor principal del calendario */
+:host ::ng-deep .fc-view-harness::-webkit-scrollbar {
+  width: 8px;
+}
+
+:host ::ng-deep .fc-view-harness::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+:host ::ng-deep .fc-view-harness::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+  transition: background 0.2s ease;
+}
+
+:host ::ng-deep .fc-view-harness::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Personalización del scrollbar para Firefox */
+:host ::ng-deep .fc-scroller {
+  scrollbar-width: thin; /* Scrollbar delgado para Firefox */
+  scrollbar-color: #c1c1c1 #f1f1f1; /* Color del thumb y track para Firefox */
+}
+
+:host ::ng-deep .fc-view-harness {
+  scrollbar-width: thin;
+  scrollbar-color: #c1c1c1 #f1f1f1;
+}
+
+/* Scrollbar ultra delgado (opcional) */
+:host ::ng-deep .fc-scroller.scrollbar-thin::-webkit-scrollbar {
+  width: 4px; /* Scrollbar ultra delgado */
+}
+
+:host ::ng-deep .fc-view-harness.scrollbar-thin::-webkit-scrollbar {
+  width: 4px;
+}
+
+/* Scrollbar con estilo moderno y redondeado */
+:host ::ng-deep .fc-scroller::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #3498db, #2980b9);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+:host ::ng-deep .fc-view-harness::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #3498db, #2980b9);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Clases adicionales para diferentes tamaños de scrollbar */
+.scrollbar-ultra-thin::-webkit-scrollbar {
+  width: 2px !important; /* Scrollbar ultra delgado */
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px !important; /* Scrollbar delgado */
+}
+
+.scrollbar-medium::-webkit-scrollbar {
+  width: 10px !important; /* Scrollbar mediano */
+}
+
+.scrollbar-thick::-webkit-scrollbar {
+  width: 14px !important; /* Scrollbar grueso */
+}
+
+/* Aplicar estilos a todos los elementos con scroll en el calendario */
+:host ::ng-deep .fc-scroller,
+:host ::ng-deep .fc-view-harness,
+:host ::ng-deep .fc-timegrid-body,
+:host ::ng-deep .fc-daygrid-body {
+  scrollbar-width: thin;
+  scrollbar-color: #c1c1c1 #f1f1f1;
+}
+
+/* Hover effects mejorados para el scrollbar */
+:host ::ng-deep .fc-scroller::-webkit-scrollbar-thumb:hover,
+:host ::ng-deep .fc-view-harness::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #2980b9, #1f5f8b) !important;
+  transform: scale(1.1);
+  transition: all 0.2s ease;
+}
+
+/* Scrollbar invisible por defecto, visible al hacer hover */
+:host ::ng-deep .fc-scroller::-webkit-scrollbar-thumb,
+:host ::ng-deep .fc-view-harness::-webkit-scrollbar-thumb {
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+}
+
+:host ::ng-deep .fc-scroller:hover::-webkit-scrollbar-thumb,
+:host ::ng-deep .fc-view-harness:hover::-webkit-scrollbar-thumb {
+  opacity: 1;
 }

@@ -19,7 +19,7 @@ interface MeetingEvent extends EventInput {
   description?: string;
   attendees?: string[];
   organizer?: string;
-  priority?: 'low' | 'medium' | 'high';
+  priority?: string;
   backgroundColor?: string;
   borderColor?: string;
   textColor?: string;
@@ -43,16 +43,6 @@ export class CalendarMeetComponent implements OnInit {
   currentStartDate: Date = new Date();
   currentEndDate: Date = new Date();
 
-  // Lista de salas disponibles
-  availableRooms = [
-    'Sala de Conferencias A',
-    'Sala de Conferencias B',
-    'Sala de Reuniones 1',
-    'Sala de Reuniones 2',
-    'Sala Ejecutiva',
-    'Auditorio Principal',
-    'Sala de Capacitación'
-  ];
 
   calendarOptions: CalendarOptions = {
     plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin],
@@ -174,12 +164,21 @@ export class CalendarMeetComponent implements OnInit {
       }
     );
 
+
+    this.bsModalCrear.content.eventoGuardar.subscribe({
+      next: () => {
+        this.cargarEventosPorVista();
+      },
+      error: (error: any) => { },
+      complete() { },
+    });
+
     // Suscribirse al resultado del modal    
-    this.bsModalCrear.onHidden?.subscribe((result: any) => {
+    /* this.bsModalCrear.onHidden?.subscribe((result: any) => {
       if (result && result.title) {
         this.agregarNuevoEvento(result);
       }
-    });
+    }); */
   }
 
   // Método para abrir modal de editar evento
@@ -335,20 +334,7 @@ export class CalendarMeetComponent implements OnInit {
     }
   }
 
-  // Método para agregar nueva reunión
-  agregarReunion(evento: MeetingEvent): void {
-    const calendarApi = this.calendarOptions.events as any;
-    if (calendarApi) {
-      calendarApi.push({
-        id: this.createEventId(),
-        ...evento,
-        backgroundColor: 'rgba(52, 152, 219, 0.9)',
-        borderColor: 'rgba(31, 95, 139, 0.9)',
-        textColor: 'white',
-        classNames: ['bootstrap-event', 'event-primary']
-      });
-    }
-  }
+
 
   // Método para obtener eventos
   obtenerEventos(): MeetingEvent[] {
@@ -398,7 +384,7 @@ export class CalendarMeetComponent implements OnInit {
    */
   private cargarEventosPorVista(): void {
     this.isLoading = true;
-
+    console.log('Cargando eventos por vista:', this.currentStartDate, this.currentEndDate, this.currentView);
     this.calendarMeetingsService.obtenerReunionesPorRango(
       this.currentStartDate,
       this.currentEndDate,
@@ -426,11 +412,11 @@ export class CalendarMeetComponent implements OnInit {
       title: reunion.titulo,
       start: reunion.fechaInicio,
       end: reunion.fechaFin || reunion.fechaInicio,
-      room: reunion.sala || this.obtenerNombreSala(reunion.idSala),
+      room: reunion.sala,
       description: reunion.descripcion,
       attendees: reunion.invitados,
       organizer: reunion.organizadores?.[0] || '',
-      priority: this.obtenerPrioridad(reunion.idPrioridad),
+      priority: reunion.prioridadNombre ? reunion.prioridadNombre : '',
       backgroundColor: this.calendarMeetingsService.obtenerColorPorPrioridad(reunion.idPrioridad),
       borderColor: this.calendarMeetingsService.obtenerColorBordePorPrioridad(reunion.idPrioridad),
       textColor: 'white',
@@ -450,33 +436,7 @@ export class CalendarMeetComponent implements OnInit {
     }
   }
 
-  /**
-   * Obtiene el nombre de la sala por ID
-   */
-  private obtenerNombreSala(idSala: number): string {
-    const salas = [
-      'Sala de Conferencias A',
-      'Sala de Conferencias B',
-      'Sala de Reuniones 1',
-      'Sala de Reuniones 2',
-      'Sala Ejecutiva',
-      'Auditorio Principal',
-      'Sala de Capacitación'
-    ];
-    return salas[idSala - 1] || 'Sala no especificada';
-  }
 
-  /**
-   * Obtiene la prioridad en formato legible
-   */
-  private obtenerPrioridad(idPrioridad: number): 'low' | 'medium' | 'high' {
-    switch (idPrioridad) {
-      case 1: return 'low';
-      case 2: return 'medium';
-      case 3: return 'high';
-      default: return 'medium';
-    }
-  }
 
   /**
    * Obtiene el nombre legible de la vista actual
