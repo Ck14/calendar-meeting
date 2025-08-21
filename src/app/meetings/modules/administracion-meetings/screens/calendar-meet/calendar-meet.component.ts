@@ -217,7 +217,9 @@ export class CalendarMeetComponent implements OnInit, AfterViewInit {
 
     // Suscribirse al resultado del modal
     this.bsModalEditar.content = initialState;
-    this.bsModalEditar.onHidden?.subscribe((result: any) => {
+    this.bsModalEditar.onHidden?.subscribe(() => {
+      // Verificar si hay un resultado en el content
+      const result = this.bsModalEditar.content?.result;
       if (result && result.title) {
         this.actualizarEventoExistente(event, result);
       }
@@ -251,20 +253,46 @@ export class CalendarMeetComponent implements OnInit, AfterViewInit {
 
   // Método para actualizar evento existente
   private actualizarEventoExistente(event: any, updatedData: EditMeetingEvent): void {
+    console.log('Actualizando evento:', event.id, 'con datos:', updatedData);
+
     // Actualizar propiedades del evento
     event.setProp('title', updatedData.title);
+
+    // Actualizar propiedades personalizadas - estas se almacenan directamente en el evento
+    event.room = updatedData.room;
+    event.description = updatedData.description;
+    event.attendees = updatedData.attendees;
+    event.organizer = updatedData.organizer;
+    event.priority = updatedData.priority;
+
+    // También usar extendedProps como backup
     event.setExtendedProp('room', updatedData.room);
     event.setExtendedProp('description', updatedData.description);
     event.setExtendedProp('attendees', updatedData.attendees);
     event.setExtendedProp('organizer', updatedData.organizer);
     event.setExtendedProp('priority', updatedData.priority);
+
+    // Actualizar fechas
     event.setStart(updatedData.start);
     event.setEnd(updatedData.end);
 
-    // Actualizar colores
-    event.setProp('backgroundColor', this.getEventColor(updatedData.priority));
-    event.setProp('borderColor', this.getEventBorderColor(updatedData.priority));
-    event.setProp('textColor', this.getEventTextColor(updatedData.priority));
+    // Actualizar colores basados en la nueva prioridad
+    const priorityString = this.mapPriorityToString(updatedData.priority || 'medium');
+    event.setProp('backgroundColor', this.getEventColor(priorityString));
+    event.setProp('borderColor', this.getEventBorderColor(priorityString));
+    event.setProp('textColor', this.getEventTextColor(priorityString));
+
+    console.log('Evento actualizado exitosamente');
+  }
+
+  // Método auxiliar para mapear prioridad a string
+  private mapPriorityToString(priority: 'low' | 'medium' | 'high'): string {
+    switch (priority) {
+      case 'low': return 'Baja';
+      case 'medium': return 'Media';
+      case 'high': return 'Alta';
+      default: return 'Media';
+    }
   }
 
   // Método para personalizar la visualización del evento

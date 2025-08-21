@@ -1,4 +1,9 @@
-/* Estilos para el modal de editar eventos */
+/* Estilos para el modal de editar eventos - Unificado con modal crear */
+.modal-minfin {
+  border-radius: 0.5rem;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
 .modal-header {
   background: linear-gradient(135deg, #f8f9fa, #e9ecef);
   border-bottom: 1px solid #dee2e6;
@@ -18,13 +23,21 @@
   color: #495057;
 }
 
-.form-control, .form-select {
+.form-label.required::after {
+  content: " *";
+  color: #dc3545;
+  font-weight: bold;
+}
+
+.form-control,
+.form-select {
   border-radius: 0.375rem;
   border: 1px solid #dee2e6;
   transition: all 0.3s ease;
 }
 
-.form-control:focus, .form-select:focus {
+.form-control:focus,
+.form-select:focus {
   border-color: #007bff;
   box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
 }
@@ -45,7 +58,60 @@
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
 }
 
+.btn-success {
+  background-color: #28a745;
+  border-color: #28a745;
+}
+
+.btn-soft-danger {
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
+  color: #721c24;
+}
+
+.btn-soft-danger:hover {
+  background-color: #f1b0b7;
+  border-color: #ed969e;
+  color: #491217;
+}
+
 .form-text {
   font-size: 0.875rem;
   color: #6c757d;
+}
+
+/* Estilos adicionales para mejorar la apariencia */
+.position-relative {
+  position: relative;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .modal-body {
+    padding: 1rem;
+  }
+
+  .modal-footer {
+    padding: 0.75rem 1rem;
+  }
+}
+
+/* Estilos para textareas */
+textarea.form-control {
+  resize: vertical;
+  min-height: 60px;
+}
+
+/* Mejoras visuales para inputs */
+.form-control:hover:not(:focus) {
+  border-color: #b3d7ff;
+}
+
+.form-select:hover:not(:focus) {
+  border-color: #b3d7ff;
+}
+
+/* Estilo para las etiquetas obligatorias */
+.required {
+  position: relative;
 }
