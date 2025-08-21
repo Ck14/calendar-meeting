@@ -122,17 +122,17 @@
   background: #e74c3c;
 }
 
-/* Colores de prioridad - NUEVOS */
+/* Colores de prioridad - Esquema Azul/Morado */
 .dot.priority-low {
-  background: #81d4fa;
+  background: #2196f3;
 }
 
 .dot.priority-medium {
-  background: #03a9f4;
+  background: #9c27b0;
 }
 
 .dot.priority-high {
-  background: #01579b;
+  background: #3f51b5;
 }
 
 /* Información de vista actual - NUEVO */
@@ -412,21 +412,21 @@
 }
 
 :host ::ng-deep .event-success {
-  background: linear-gradient(135deg, #81d4fa, #4fc3f7) !important;
-  color: #01579b !important;
-  border-left: 4px solid #0288d1 !important;
+  background: linear-gradient(135deg, #2196f3, #1976d2) !important;
+  color: white !important;
+  border-left: 4px solid #1565c0 !important;
 }
 
 :host ::ng-deep .event-danger {
-  background: linear-gradient(135deg, #01579b, #0d47a1) !important;
+  background: linear-gradient(135deg, #3f51b5, #303f9f) !important;
   color: white !important;
-  border-left: 4px solid #002171 !important;
+  border-left: 4px solid #283593 !important;
 }
 
 :host ::ng-deep .event-warning {
-  background: linear-gradient(135deg, #03a9f4, #0288d1) !important;
+  background: linear-gradient(135deg, #9c27b0, #7b1fa2) !important;
   color: white !important;
-  border-left: 4px solid #0277bd !important;
+  border-left: 4px solid #6a1b9a !important;
 }
 
 :host ::ng-deep .event-info {

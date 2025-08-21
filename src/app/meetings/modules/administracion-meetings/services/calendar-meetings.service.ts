@@ -62,9 +62,9 @@ export class CalendarMeetingsService {
         ];
 
         const prioridades = [
-            { id: 1, nombre: 'Baja', color: '#28a745' },
-            { id: 2, nombre: 'Media', color: '#ffc107' },
-            { id: 3, nombre: 'Alta', color: '#dc3545' }
+            { id: 1, nombre: 'Baja', color: '#2196F3' },
+            { id: 2, nombre: 'Media', color: '#9C27B0' },
+            { id: 3, nombre: 'Alta', color: '#3F51B5' }
         ];
 
         const tipos = [
@@ -283,25 +283,25 @@ export class CalendarMeetingsService {
     }
 
     /**
-     * Obtiene el color de prioridad
+     * Obtiene el color de prioridad - Esquema Azul/Morado
      */
     obtenerColorPorPrioridad(idPrioridad: number): string {
         const colores = {
-            1: '#28a745', // Baja - Verde
-            2: '#ffc107', // Media - Amarillo
-            3: '#dc3545'  // Alta - Rojo
+            1: '#2196F3', // Baja - Azul Material
+            2: '#9C27B0', // Media - Púrpura Material
+            3: '#3F51B5'  // Alta - Índigo Material
         };
         return colores[idPrioridad as keyof typeof colores] || '#6c757d';
     }
 
     /**
-     * Obtiene el color del borde por prioridad
+     * Obtiene el color del borde por prioridad - Esquema Azul/Morado
      */
     obtenerColorBordePorPrioridad(idPrioridad: number): string {
         const colores = {
-            1: '#1e7e34', // Baja - Verde oscuro
-            2: '#e0a800', // Media - Amarillo oscuro
-            3: '#c82333'  // Alta - Rojo oscuro
+            1: '#1565C0', // Baja - Azul Material oscuro
+            2: '#6A1B9A', // Media - Púrpura Material oscuro  
+            3: '#283593'  // Alta - Índigo Material oscuro
         };
         return colores[idPrioridad as keyof typeof colores] || '#495057';
     }
