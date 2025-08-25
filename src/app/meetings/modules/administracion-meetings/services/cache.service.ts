@@ -28,7 +28,7 @@ export class CacheService {
    */
   get<T>(key: string): T | null {
     const item = this.cache.get(key);
-    
+
     if (!item) {
       return null;
     }
@@ -123,8 +123,8 @@ export class CacheService {
    * Método helper para cachear observables
    */
   cacheObservable<T>(
-    key: string, 
-    observable: Observable<T>, 
+    key: string,
+    observable: Observable<T>,
     ttl?: number
   ): Observable<T> {
     // Si ya tenemos datos en caché, los devolvemos
@@ -139,7 +139,7 @@ export class CacheService {
         this.set(key, data, ttl);
       }),
       catchError(error => {
-        console.error(`Error al cargar datos para clave ${key}:`, error);
+        // console.error(`Error al cargar datos para clave ${key}:`, error);
         throw error;
       })
     );

@@ -171,7 +171,6 @@ export class CalendarMeetComponent implements OnInit, AfterViewInit {
 
   // Método para abrir modal de crear evento
   abrirModalCrearEvento(arg: any): void {
-    console.log('📅 Datos del calendario recibidos:', arg);
 
     this.bsModalCrear = this.modalService.show(
       ModalCrearMeetComponent,
@@ -201,7 +200,6 @@ export class CalendarMeetComponent implements OnInit, AfterViewInit {
       tituloModal: `Editar Reunión: ${event.title}`,
       event: event
     };
-    console.log(initialState);
 
     this.bsModalEditar = this.modalService.show(
       ModalEditarMeetComponent,
@@ -335,8 +333,6 @@ export class CalendarMeetComponent implements OnInit, AfterViewInit {
     const newEnd = event.end;
     const idMeet = event.extendedProps.idMeet;
 
-
-
     // Detectar traslapes después del redimensionamiento
     setTimeout(() => {
       this.detectAndStyleOverlappingEvents();
@@ -349,8 +345,7 @@ export class CalendarMeetComponent implements OnInit, AfterViewInit {
     const fechaInicioLocal = new Date(newStart.getTime() - (newStart.getTimezoneOffset() * 60000));
     const fechaFinLocal = new Date(newEnd.getTime() - (newEnd.getTimezoneOffset() * 60000));
 
-    console.log(`Fecha inicio local: ${fechaInicioLocal}`);
-    console.log(`Fecha fin local: ${fechaFinLocal}`);
+
 
     let meeting: IMeetModelo = {
       idMeet: idMeet,
@@ -364,7 +359,6 @@ export class CalendarMeetComponent implements OnInit, AfterViewInit {
         Loading.remove();
       },
       error: (error) => {
-        console.error('Error al guardar la reunión:', error);
         Loading.remove();
         Notify.failure("Error al actualizar la reunión. Por favor, intente nuevamente.");
       }
@@ -378,8 +372,6 @@ export class CalendarMeetComponent implements OnInit, AfterViewInit {
     const newEnd = event.end;
     const idMeet = event.extendedProps.idMeet;
 
-
-
     // Detectar traslapes después del movimiento
     setTimeout(() => {
       this.detectAndStyleOverlappingEvents();
@@ -392,8 +384,7 @@ export class CalendarMeetComponent implements OnInit, AfterViewInit {
     const fechaInicioLocal = new Date(newStart.getTime() - (newStart.getTimezoneOffset() * 60000));
     const fechaFinLocal = new Date(newEnd.getTime() - (newEnd.getTimezoneOffset() * 60000));
 
-    console.log(`Fecha inicio local: ${fechaInicioLocal}`);
-    console.log(`Fecha fin local: ${fechaFinLocal}`);
+
 
     let meeting: IMeetModelo = {
       idMeet: idMeet,
@@ -407,7 +398,6 @@ export class CalendarMeetComponent implements OnInit, AfterViewInit {
         Loading.remove();
       },
       error: (error) => {
-        console.error('Error al guardar la reunión:', error);
         Loading.remove();
         Notify.failure("Error al actualizar la reunión. Por favor, intente nuevamente.");
       }
@@ -419,21 +409,17 @@ export class CalendarMeetComponent implements OnInit, AfterViewInit {
    */
   private cargarEventosPorVista(): void {
     this.isLoading = true;
-    console.log('Cargando eventos por vista:', this.currentStartDate, this.currentEndDate, this.currentView);
     this.calendarMeetingsService.obtenerReunionesPorRango(
       this.currentStartDate,
       this.currentEndDate,
       this.currentView
     ).subscribe({
       next: (reuniones) => {
-        console.log('reuniones', reuniones);
         const eventos = this.convertirReunionesAEventos(reuniones);
-        console.log('eventos', eventos);
         this.actualizarEventosCalendario(eventos);
         this.isLoading = false;
       },
       error: (error) => {
-        console.error('Error al cargar reuniones:', error);
         this.isLoading = false;
         // Aquí podrías mostrar una notificación de error
       }
@@ -619,7 +605,7 @@ export class CalendarMeetComponent implements OnInit, AfterViewInit {
         // Actualizar el scrollTime y refrescar la vista
         this.calendarApi.setOption('scrollTime', currentTimeString);
       } catch (error) {
-        console.warn('No se pudo hacer scroll a la hora actual:', error);
+        // No se pudo hacer scroll a la hora actual
       }
     }
   }

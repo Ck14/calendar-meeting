@@ -134,7 +134,7 @@ export class ModalCrearMeetComponent implements OnInit {
    */
   private inicializarFechasDesdeCalendario(): void {
     if (this.calendarData && this.calendarData.startStr && this.calendarData.endStr) {
-      console.log('📅 Inicializando fechas desde calendario:', this.calendarData);
+      // console.log('📅 Inicializando fechas desde calendario:', this.calendarData);
 
       // Convertir las fechas del calendario al formato datetime-local
       const startDate = new Date(this.calendarData.startStr);
@@ -150,7 +150,7 @@ export class ModalCrearMeetComponent implements OnInit {
         end: endFormatted
       });
 
-      console.log('✅ Fechas inicializadas:', { start: startFormatted, end: endFormatted });
+      // console.log('✅ Fechas inicializadas:', { start: startFormatted, end: endFormatted });
     }
   }
 
@@ -195,7 +195,7 @@ export class ModalCrearMeetComponent implements OnInit {
       this.modalCrearMeetService.obtenerParticipantes()
     ]).subscribe({
       next: (result) => {
-        console.log('Datos cargados:', result);
+        // console.log('Datos cargados:', result);
         this.salas = result[0];
         this.prioridades = result[1];
         this.participantes = result[2];
@@ -206,7 +206,7 @@ export class ModalCrearMeetComponent implements OnInit {
         Loading.remove();
       },
       error: (error) => {
-        console.error('Error al cargar catálogos:', error);
+        // console.error('Error al cargar catálogos:', error);
         Loading.remove();
       },
       complete() { },
@@ -223,7 +223,7 @@ export class ModalCrearMeetComponent implements OnInit {
         this.formMeeting.patchValue({
           priority: primeraPrioridad.idPrioridad.toString()
         });
-        console.log('✅ Prioridad por defecto establecida:', primeraPrioridad.nombrePrioridad);
+        // console.log('✅ Prioridad por defecto establecida:', primeraPrioridad.nombrePrioridad);
       }
     }
   }
@@ -306,11 +306,11 @@ export class ModalCrearMeetComponent implements OnInit {
       organizadores: this.selectedOrganizers.map(p => p.correo || p.nombre || '')
     }
 
-    console.log(meeting);
+    // console.log(meeting);
 
     this.modalCrearMeetService.insertarMeet(meeting).subscribe({
       next: (response) => {
-        console.log(response);
+        // console.log(response);
         Loading.remove();
 
         // Mostrar notificación de éxito con el título de la reunión
@@ -327,7 +327,7 @@ export class ModalCrearMeetComponent implements OnInit {
         }, 1000); */
       },
       error: (error) => {
-        console.error('Error al guardar la reunión:', error);
+        // console.error('Error al guardar la reunión:', error);
         Loading.remove();
 
         // Mostrar notificación de error
@@ -360,10 +360,10 @@ export class ModalCrearMeetComponent implements OnInit {
     this.salaDisponible = false;
     this.meetsOcupandoSala = [];
 
-    console.log('🔄 INICIANDO VALIDACIÓN');
-    console.log('Sala ID:', salaId);
-    console.log('Fecha inicio:', fechaInicio);
-    console.log('Fecha fin:', fechaFin);
+    // console.log('🔄 INICIANDO VALIDACIÓN');
+    // console.log('Sala ID:', salaId);
+    // console.log('Fecha inicio:', fechaInicio);
+    // console.log('Fecha fin:', fechaFin);
 
     const validacionSala: IValidarSalaModel = {
       idSala: +salaId,
@@ -377,18 +377,18 @@ export class ModalCrearMeetComponent implements OnInit {
         this.meetsOcupandoSala = meetsOcupados;
         this.salaDisponible = meetsOcupados.length === 0;
 
-        console.log('✅ SALA VALIDADA');
-        console.log('Sala disponible:', this.salaDisponible);
-        console.log('Meets ocupados:', meetsOcupados.length);
-        console.log('Room value:', this.room?.value);
-        console.log('IsValidatingSala:', this.isValidatingSala);
-        console.log('Condición check:', this.room?.value && this.salaDisponible && !this.isValidatingSala);
+        // console.log('✅ SALA VALIDADA');
+        // console.log('Sala disponible:', this.salaDisponible);
+        // console.log('Meets ocupados:', meetsOcupados.length);
+        // console.log('Room value:', this.room?.value);
+        // console.log('IsValidatingSala:', this.isValidatingSala);
+        // console.log('Condición check:', this.room?.value && this.salaDisponible && !this.isValidatingSala);
 
         // Forzar detección de cambios
         this.cdr.detectChanges();
       },
       error: (error) => {
-        console.error('Error al validar la sala:', error);
+        // console.error('Error al validar la sala:', error);
         this.isValidatingSala = false;
         this.salaDisponible = false;
         this.meetsOcupandoSala = [];
@@ -420,12 +420,12 @@ export class ModalCrearMeetComponent implements OnInit {
    * Método temporal para debug
    */
   debugEstado(): void {
-    console.log('=== DEBUG ESTADO ACTUAL ===');
-    console.log('Room value:', this.room?.value);
-    console.log('Sala disponible:', this.salaDisponible);
-    console.log('IsValidatingSala:', this.isValidatingSala);
-    console.log('Meets ocupados:', this.meetsOcupandoSala.length);
-    console.log('==========================');
+    // console.log('=== DEBUG ESTADO ACTUAL ===');
+    // console.log('Room value:', this.room?.value);
+    // console.log('Sala disponible:', this.salaDisponible);
+    // console.log('IsValidatingSala:', this.isValidatingSala);
+    // console.log('Meets ocupados:', this.meetsOcupandoSala.length);
+    // console.log('==========================');
   }
 
   /**
@@ -472,7 +472,7 @@ export class ModalCrearMeetComponent implements OnInit {
 
       return today;
     } catch (error) {
-      console.error('Error al extraer la hora:', error);
+      // console.error('Error al extraer la hora:', error);
       return undefined;
     }
   }

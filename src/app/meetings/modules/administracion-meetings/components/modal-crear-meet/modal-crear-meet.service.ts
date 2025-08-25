@@ -105,21 +105,18 @@ export class ModalCrearMeetService {
   }
 
   insertarMeet(meet: IMeetModelo): Observable<number> {
-    console.log(meet);
     const url = `api/meet`;
     return this.http.post<number>(url, meet);
   } // end
 
 
   actualizarMeet(meet: IMeetModelo): Observable<boolean> {
-    console.log(meet);
     const url = `api/meet`;
     return this.http.put<boolean>(url, meet);
   }
 
 
   actualizarHorariosMeet(meet: IMeetModelo): Observable<boolean> {
-    console.log(meet);
     const url = `api/meet/actualizarHorarios`;
     return this.http.put<boolean>(url, meet);
   }

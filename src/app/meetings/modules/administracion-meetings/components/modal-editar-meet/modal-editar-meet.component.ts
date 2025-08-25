@@ -106,8 +106,8 @@ export class ModalEditarMeetComponent implements OnInit {
       cancelButtonBackground: "#fff",
     });
 
-    console.log('🔄 Modal editar inicializando...');
-    console.log('🔄 bsModalRef.content:', this.bsModalRef.content);
+    // console.log('🔄 Modal editar inicializando...');
+    // console.log('🔄 bsModalRef.content:', this.bsModalRef.content);
 
     // Cargar catálogos
     this.cargarCatalogos();
@@ -131,7 +131,7 @@ export class ModalEditarMeetComponent implements OnInit {
 
       // Establecer prioridad por defecto si no hay evento, o cargar datos del evento
       setTimeout(() => {
-        console.log('🔄 Verificando evento en caché:', this.event);
+        // console.log('🔄 Verificando evento en caché:', this.event);
         if (this.event) {
           this.loadEventData();
         } else {
@@ -151,7 +151,7 @@ export class ModalEditarMeetComponent implements OnInit {
       this.modalCrearMeetService.obtenerParticipantes()
     ]).subscribe({
       next: (result) => {
-        console.log('Datos cargados:', result);
+        // console.log('Datos cargados:', result);
         this.salas = result[0];
         this.prioridades = result[1];
         this.participantes = result[2];
@@ -159,7 +159,7 @@ export class ModalEditarMeetComponent implements OnInit {
         Loading.remove();
 
         // Cargar datos del evento después de tener los catálogos o establecer prioridad por defecto
-        console.log('🔄 Verificando evento después de cargar catálogos:', this.event);
+        // console.log('🔄 Verificando evento después de cargar catálogos:', this.event);
         if (this.event) {
           this.loadEventData();
         } else {
@@ -167,7 +167,7 @@ export class ModalEditarMeetComponent implements OnInit {
         }
       },
       error: (error) => {
-        console.error('Error al cargar catálogos:', error);
+        // console.error('Error al cargar catálogos:', error);
         Loading.remove();
       },
       complete() { },
@@ -178,8 +178,8 @@ export class ModalEditarMeetComponent implements OnInit {
    * Cargar datos del evento al formulario
    */
   private loadEventData(): void {
-    console.log('Datos del evento completo:', this.event);
-    console.log('extendedProps:', this.event.extendedProps);
+    // console.log('Datos del evento completo:', this.event);
+    // console.log('extendedProps:', this.event.extendedProps);
 
     // Los datos pueden estar en extendedProps o directamente en el evento
     const eventData = this.event.extendedProps || {};
@@ -190,7 +190,7 @@ export class ModalEditarMeetComponent implements OnInit {
       eventData.id ||
       this.event.id ||
       null;
-    console.log('🔄 Meeting ID cargado:', this.meetingId);
+    // console.log('🔄 Meeting ID cargado:', this.meetingId);
 
     // Cargar datos básicos al formulario
     this.formMeeting.patchValue({
@@ -210,25 +210,25 @@ export class ModalEditarMeetComponent implements OnInit {
       this.event.room ||
       eventData.room;
 
-    console.log('🔄 salaId encontrado:', salaId);
-    console.log('🔄 salaNombre encontrado:', salaNombre);
+    // console.log('🔄 salaId encontrado:', salaId);
+    // console.log('🔄 salaNombre encontrado:', salaNombre);
 
     if (salaId && salaId !== null && salaId !== undefined) {
       this.formMeeting.patchValue({ room: salaId.toString() });
-      console.log('✅ Sala cargada por ID:', salaId);
+      // console.log('✅ Sala cargada por ID:', salaId);
     } else if (salaNombre && this.salas.length > 0) {
       const sala = this.salas.find(s => s.nombreSala === salaNombre);
       if (sala) {
         this.formMeeting.patchValue({ room: sala.idSala?.toString() });
-        console.log('✅ Sala cargada por nombre:', salaNombre, 'con ID:', sala.idSala);
+        // console.log('✅ Sala cargada por nombre:', salaNombre, 'con ID:', sala.idSala);
       }
     }
 
     // Cargar prioridad - ahora con extendedProps
-    console.log('🔄 CARGANDO PRIORIDAD:');
-    console.log('🔄 eventData (extendedProps):', eventData);
-    console.log('🔄 this.event:', this.event);
-    console.log('🔄 this.event.extendedProps:', this.event.extendedProps);
+    // console.log('🔄 CARGANDO PRIORIDAD:');
+    // console.log('🔄 eventData (extendedProps):', eventData);
+    // console.log('🔄 this.event:', this.event);
+    // console.log('🔄 this.event.extendedProps:', this.event.extendedProps);
 
     // Buscar ID de prioridad en varios lugares posibles
     const prioridadId = eventData.idPrioridad ||
@@ -241,27 +241,27 @@ export class ModalEditarMeetComponent implements OnInit {
       this.event.priority ||
       eventData.priority;
 
-    console.log('🔄 prioridadId encontrado:', prioridadId);
-    console.log('🔄 prioridadNombre encontrado:', prioridadNombre);
-    console.log('🔄 Prioridades disponibles:', this.prioridades.map(p => ({ id: p.idPrioridad, nombre: p.nombrePrioridad })));
+    // console.log('🔄 prioridadId encontrado:', prioridadId);
+    // console.log('🔄 prioridadNombre encontrado:', prioridadNombre);
+    // console.log('🔄 Prioridades disponibles:', this.prioridades.map(p => ({ id: p.idPrioridad, nombre: p.nombrePrioridad })));
 
     if (prioridadId && prioridadId !== null && prioridadId !== undefined) {
       this.formMeeting.patchValue({ priority: prioridadId.toString() });
-      console.log('✅ Prioridad cargada por ID:', prioridadId);
+      // console.log('✅ Prioridad cargada por ID:', prioridadId);
     } else if (prioridadNombre && this.prioridades.length > 0) {
       const prioridad = this.prioridades.find(p =>
         p.nombrePrioridad?.toLowerCase() === prioridadNombre.toLowerCase()
       );
-      console.log('🔄 Prioridad encontrada por nombre:', prioridad);
+      // console.log('🔄 Prioridad encontrada por nombre:', prioridad);
       if (prioridad) {
         this.formMeeting.patchValue({ priority: prioridad.idPrioridad?.toString() });
-        console.log('✅ Prioridad cargada por nombre:', prioridad.nombrePrioridad, 'con ID:', prioridad.idPrioridad);
+        // console.log('✅ Prioridad cargada por nombre:', prioridad.nombrePrioridad, 'con ID:', prioridad.idPrioridad);
       } else {
-        console.log('❌ No se encontró prioridad por nombre, usando por defecto');
+        // console.log('❌ No se encontró prioridad por nombre, usando por defecto');
         this.establecerPrioridadPorDefecto();
       }
     } else {
-      console.log('❌ No hay datos de prioridad, usando por defecto');
+      // console.log('❌ No hay datos de prioridad, usando por defecto');
       this.establecerPrioridadPorDefecto();
     }
 
@@ -270,7 +270,7 @@ export class ModalEditarMeetComponent implements OnInit {
       this.event.extendedProps?.invitados ||
       this.event.attendees ||
       eventData.attendees;
-    console.log('🔄 Participantes encontrados:', participantesData);
+    // console.log('🔄 Participantes encontrados:', participantesData);
     this.loadParticipants(participantesData);
 
     // Cargar organizadores
@@ -278,15 +278,15 @@ export class ModalEditarMeetComponent implements OnInit {
       this.event.extendedProps?.organizadores ||
       this.event.organizer ||
       eventData.organizer;
-    console.log('🔄 Organizadores encontrados:', organizadoresData);
+    // console.log('🔄 Organizadores encontrados:', organizadoresData);
     this.loadOrganizers(organizadoresData);
 
     // Forzar detección de cambios
     setTimeout(() => {
       this.cdr.detectChanges();
-      console.log('✅ Datos cargados en el formulario reactivo');
-      console.log('✅ Valor actual de priority:', this.formMeeting.get('priority')?.value);
-      console.log('✅ Prioridades disponibles:', this.prioridades.map(p => ({ id: p.idPrioridad, nombre: p.nombrePrioridad })));
+      // console.log('✅ Datos cargados en el formulario reactivo');
+      // console.log('✅ Valor actual de priority:', this.formMeeting.get('priority')?.value);
+      // console.log('✅ Prioridades disponibles:', this.prioridades.map(p => ({ id: p.idPrioridad, nombre: p.nombrePrioridad })));
     }, 100);
   }
 
@@ -423,7 +423,7 @@ export class ModalEditarMeetComponent implements OnInit {
 
     this.modalCrearMeetService.actualizarMeet(meeting).subscribe({
       next: (response) => {
-        console.log(response);
+        // console.log(response);
         Loading.remove();
 
         // Mostrar notificación de éxito con el título de la reunión
@@ -440,7 +440,7 @@ export class ModalEditarMeetComponent implements OnInit {
         }, 1000); */
       },
       error: (error) => {
-        console.error('Error al guardar la reunión:', error);
+        // console.error('Error al guardar la reunión:', error);
         Loading.remove();
 
         // Mostrar notificación de error
@@ -453,29 +453,29 @@ export class ModalEditarMeetComponent implements OnInit {
    * Establece la primera prioridad como seleccionada por defecto
    */
   private establecerPrioridadPorDefecto(): void {
-    console.log('🔄 Estableciendo prioridad por defecto...');
-    console.log('🔄 Prioridades disponibles:', this.prioridades?.length);
+    // console.log('🔄 Estableciendo prioridad por defecto...');
+    // console.log('🔄 Prioridades disponibles:', this.prioridades?.length);
 
     if (this.prioridades && this.prioridades.length > 0) {
       const primeraPrioridad = this.prioridades[0];
-      console.log('🔄 Primera prioridad:', primeraPrioridad);
+      // console.log('🔄 Primera prioridad:', primeraPrioridad);
 
       if (primeraPrioridad && primeraPrioridad.idPrioridad) {
         this.formMeeting.patchValue({
           priority: primeraPrioridad.idPrioridad.toString()
         });
-        console.log('✅ Prioridad por defecto establecida:', primeraPrioridad.nombrePrioridad);
-        console.log('✅ Valor establecido:', primeraPrioridad.idPrioridad.toString());
+        // console.log('✅ Prioridad por defecto establecida:', primeraPrioridad.nombrePrioridad);
+        // console.log('✅ Valor establecido:', primeraPrioridad.idPrioridad.toString());
 
         // Forzar detección de cambios
         setTimeout(() => {
           this.cdr.detectChanges();
         }, 10);
       } else {
-        console.log('❌ Primera prioridad no tiene ID válido');
+        // console.log('❌ Primera prioridad no tiene ID válido');
       }
     } else {
-      console.log('❌ No hay prioridades disponibles');
+      // console.log('❌ No hay prioridades disponibles');
     }
   }
 
@@ -533,7 +533,7 @@ export class ModalEditarMeetComponent implements OnInit {
         this.cdr.detectChanges();
       },
       error: (error) => {
-        console.error('Error al validar la sala:', error);
+        // console.error('Error al validar la sala:', error);
         this.isValidatingSala = false;
         this.salaDisponible = false;
         this.meetsOcupandoSala = [];
