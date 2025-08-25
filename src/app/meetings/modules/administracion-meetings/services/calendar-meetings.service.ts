@@ -4,11 +4,11 @@ import { Observable, of, delay } from 'rxjs';
 import { IMeetModelo } from 'src/app/interfaces/meetings/meetModel';
 
 export interface ICalendarMeeting extends IMeetModelo {
-    id?: number;
-    sala?: string;
-    prioridadNombre?: string;
-    estadoNombre?: string;
-    tipoMeetNombre?: string;
+    idMeet?: number;
+    nombreSala?: string;
+    nombrePrioridad?: string;
+    nombreEstado?: string;
+    nombreTipoMeet?: string;
 }
 
 @Injectable({
@@ -39,99 +39,6 @@ export class CalendarMeetingsService {
         return this.http.get<ICalendarMeeting[]>(url, { params });
     }
 
-    /**
-     * Obtiene todas las reuniones (para vista general)
-     */
-    obtenerTodasLasReuniones(): Observable<ICalendarMeeting[]> {
-        return of(this.generarReunionesSimuladas(new Date(), new Date(), 'month')).pipe(delay(300));
-    }
-
-    /**
-     * Genera datos simulados de reuniones según el rango de fechas
-     */
-    private generarReunionesSimuladas(startDate: Date, endDate: Date, viewType: string): ICalendarMeeting[] {
-        const reuniones: ICalendarMeeting[] = [];
-        const salas = [
-            'Sala de Conferencias A',
-            'Sala de Conferencias B',
-            'Sala de Reuniones 1',
-            'Sala de Reuniones 2',
-            'Sala Ejecutiva',
-            'Auditorio Principal',
-            'Sala de Capacitación'
-        ];
-
-        const prioridades = [
-            { id: 1, nombre: 'Baja', color: '#2196F3' },
-            { id: 2, nombre: 'Media', color: '#9C27B0' },
-            { id: 3, nombre: 'Alta', color: '#3F51B5' }
-        ];
-
-        const tipos = [
-            { id: 1, nombre: 'Reunión de Equipo' },
-            { id: 2, nombre: 'Presentación' },
-            { id: 3, nombre: 'Planificación' },
-            { id: 4, nombre: 'Revisión' },
-            { id: 5, nombre: 'Capacitación' }
-        ];
-
-        const estados = [
-            { id: 1, nombre: 'Programada' },
-            { id: 2, nombre: 'En Curso' },
-            { id: 3, nombre: 'Completada' },
-            { id: 4, nombre: 'Cancelada' }
-        ];
-
-        // Generar reuniones según el tipo de vista
-        let cantidadReuniones = 0;
-        switch (viewType) {
-            case 'timeGridDay':
-                cantidadReuniones = Math.floor(Math.random() * 8) + 3; // 3-10 reuniones por día
-                break;
-            case 'timeGridWeek':
-                cantidadReuniones = Math.floor(Math.random() * 25) + 15; // 15-40 reuniones por semana
-                break;
-            case 'dayGridMonth':
-                cantidadReuniones = Math.floor(Math.random() * 80) + 50; // 50-130 reuniones por mes
-                break;
-            default:
-                cantidadReuniones = Math.floor(Math.random() * 15) + 5;
-        }
-
-        for (let i = 0; i < cantidadReuniones; i++) {
-            const fechaInicio = this.generarFechaAleatoria(startDate, endDate);
-            const duracion = Math.floor(Math.random() * 120) + 30; // 30 min a 2.5 horas
-            const fechaFin = new Date(fechaInicio.getTime() + duracion * 60000);
-
-            const prioridad = prioridades[Math.floor(Math.random() * prioridades.length)];
-            const tipo = tipos[Math.floor(Math.random() * tipos.length)];
-            const estado = estados[Math.floor(Math.random() * estados.length)];
-            const sala = salas[Math.floor(Math.random() * salas.length)];
-
-            const reunion: ICalendarMeeting = {
-                id: i + 1,
-                titulo: this.generarTituloReunion(tipo.nombre),
-                descripcion: this.generarDescripcionReunion(tipo.nombre),
-                fechaInicio: fechaInicio,
-                fechaFin: fechaFin,
-                idSala: Math.floor(Math.random() * 7) + 1,
-                idPrioridad: prioridad.id,
-                idEstado: estado.id,
-                idTipoMeet: tipo.id,
-                invitados: this.generarInvitadosAleatorios(),
-                organizadores: this.generarOrganizadoresAleatorios(),
-                sala: sala,
-                prioridadNombre: prioridad.nombre,
-                estadoNombre: estado.nombre,
-                tipoMeetNombre: tipo.nombre
-            };
-
-            reuniones.push(reunion);
-        }
-
-        // Ordenar por fecha de inicio
-        return reuniones.sort((a, b) => a.fechaInicio.getTime() - b.fechaInicio.getTime());
-    }
 
     /**
      * Genera una fecha aleatoria dentro del rango especificado

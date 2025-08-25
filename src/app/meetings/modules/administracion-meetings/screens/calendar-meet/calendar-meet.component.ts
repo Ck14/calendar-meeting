@@ -17,7 +17,7 @@ interface MeetingEvent extends EventInput {
   end: string | Date;
   room?: string;
   description?: string;
-  attendees?: string[];
+  attendees?: string;
   organizer?: string;
   priority?: string;
   backgroundColor?: string;
@@ -189,13 +189,6 @@ export class CalendarMeetComponent implements OnInit, AfterViewInit {
       error: (error: any) => { },
       complete() { },
     });
-
-    // Suscribirse al resultado del modal    
-    /* this.bsModalCrear.onHidden?.subscribe((result: any) => {
-      if (result && result.title) {
-        this.agregarNuevoEvento(result);
-      }
-    }); */
   }
 
   // Método para abrir modal de editar evento
@@ -204,6 +197,7 @@ export class CalendarMeetComponent implements OnInit, AfterViewInit {
       tituloModal: `Editar Reunión: ${event.title}`,
       event: event
     };
+    console.log(initialState);
 
     this.bsModalEditar = this.modalService.show(
       ModalEditarMeetComponent,
@@ -227,29 +221,7 @@ export class CalendarMeetComponent implements OnInit, AfterViewInit {
   }
 
   // Método para agregar nuevo evento
-  private agregarNuevoEvento(eventData: CreateMeetingEvent): void {
-    const newEvent: MeetingEvent = {
-      id: this.createEventId(),
-      title: eventData.title,
-      start: eventData.start,
-      end: eventData.end,
-      room: eventData.room,
-      description: eventData.description,
-      attendees: eventData.attendees,
-      organizer: eventData.organizer,
-      priority: eventData.priority,
-      backgroundColor: this.getEventColor(eventData.priority),
-      borderColor: this.getEventBorderColor(eventData.priority),
-      textColor: this.getEventTextColor(eventData.priority),
-      classNames: ['bootstrap-event', `event-${this.getEventType(eventData.priority)}`]
-    };
 
-    // Agregar evento al calendario
-    const calendarApi = this.calendarOptions.events as any;
-    if (calendarApi) {
-      calendarApi.push(newEvent);
-    }
-  }
 
   // Método para actualizar evento existente
   private actualizarEventoExistente(event: any, updatedData: EditMeetingEvent): void {
@@ -436,7 +408,9 @@ export class CalendarMeetComponent implements OnInit, AfterViewInit {
       this.currentView
     ).subscribe({
       next: (reuniones) => {
+        console.log('reuniones', reuniones);
         const eventos = this.convertirReunionesAEventos(reuniones);
+        console.log('eventos', eventos);
         this.actualizarEventosCalendario(eventos);
         this.isLoading = false;
       },
@@ -453,19 +427,31 @@ export class CalendarMeetComponent implements OnInit, AfterViewInit {
    */
   private convertirReunionesAEventos(reuniones: ICalendarMeeting[]): MeetingEvent[] {
     return reuniones.map(reunion => ({
-      id: reunion.id?.toString(),
+      id: reunion.idMeet?.toString(),
       title: reunion.titulo,
       start: reunion.fechaInicio,
       end: reunion.fechaFin || reunion.fechaInicio,
-      room: reunion.sala,
+      room: (reunion as any).nombreSala || '',
       description: reunion.descripcion,
-      attendees: reunion.invitados,
-      organizer: reunion.organizadores?.[0] || '',
-      priority: reunion.prioridadNombre ? reunion.prioridadNombre : '',
+      attendees: Array.isArray(reunion.invitados) ? reunion.invitados.join(', ') : reunion.invitados || '',
+      organizer: Array.isArray(reunion.organizadores) ? reunion.organizadores.join(', ') : reunion.organizadores || '',
+      priority: (reunion as any).prioridadNombre ? (reunion as any).prioridadNombre : '',
       backgroundColor: this.calendarMeetingsService.obtenerColorPorPrioridad(reunion.idPrioridad),
       borderColor: this.calendarMeetingsService.obtenerColorBordePorPrioridad(reunion.idPrioridad),
       textColor: 'white',
-      classNames: ['fc-event-custom', `event-${this.calendarMeetingsService.obtenerClasePrioridad(reunion.idPrioridad)}`]
+      classNames: ['fc-event-custom', `event-${this.calendarMeetingsService.obtenerClasePrioridad(reunion.idPrioridad)}`],
+      // Agregar datos extendidos para el modal de edición
+      extendedProps: {
+        idMeet: reunion.idMeet,
+        idSala: reunion.idSala,
+        idPrioridad: reunion.idPrioridad,
+        idEstado: reunion.idEstado,
+        idTipoMeet: reunion.idTipoMeet,
+        nombreSala: (reunion as any).nombreSala,
+        prioridadNombre: (reunion as any).prioridadNombre,
+        invitados: reunion.invitados,
+        organizadores: reunion.organizadores
+      }
     }));
   }
 

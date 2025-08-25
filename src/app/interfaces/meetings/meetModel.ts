@@ -9,7 +9,7 @@ export interface IMeetModelo {
     idPrioridad: number;
     idEstado: number;
     idTipoMeet: number;
-    invitados: string[];
+    invitados?: string[];
     organizadores?: string[];
 }
 

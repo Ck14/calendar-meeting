@@ -3,30 +3,37 @@
         <h3 class="modal-title mb-3">{{ tituloModal }}</h3>
         <br>
 
-        <form class="row g-3">
+        <form class="row g-3" [formGroup]="formMeeting">
             <div class="row g-3">
                 <div class="col-lg-8">
                     <label class="form-label required">Título de la Reunión</label>
-                    <input type="text" class="form-control" [(ngModel)]="modalData.title" name="title" />
+                    <input type="text" class="form-control" formControlName="title" />
+                    <app-campo-errores [control]="title"></app-campo-errores>
                 </div>
                 <div class="col-lg-4">
                     <label class="form-label">Prioridad</label>
-                    <select class="form-select" [(ngModel)]="modalData.priority" name="priority">
-                        <option value="low">Baja</option>
-                        <option value="medium">Media</option>
-                        <option value="high">Alta</option>
+                    <select class="form-select" formControlName="priority">
+                        <option value="">Seleccionar prioridad...</option>
+                        <option *ngFor="let prioridad of prioridades" value="{{prioridad.idPrioridad}}">
+                            {{prioridad.nombrePrioridad}}</option>
                     </select>
+                    <app-campo-errores [control]="priority"></app-campo-errores>
                 </div>
             </div>
             <br>
             <div class="row g-3">
                 <div class="col-lg-6">
                     <label class="form-label required">Fecha y Hora de Inicio</label>
-                    <input type="datetime-local" class="form-control" [(ngModel)]="modalData.start" name="start" />
+                    <input type="datetime-local" class="form-control" formControlName="start"
+                        (change)="onFechaChange()" />
+                    <app-campo-errores [control]="start"></app-campo-errores>
                 </div>
                 <div class="col-lg-6">
                     <label class="form-label required">Fecha y Hora de Fin</label>
-                    <input type="datetime-local" class="form-control" [(ngModel)]="modalData.end" name="end" />
+                    <input type="datetime-local" class="form-control" formControlName="end"
+                        (change)="onFechaChange()" />
+                    <app-campo-errores [control]="end"></app-campo-errores>
+                    <app-campo-errores *ngIf="hasRangoFechaHoraError" [control]="formMeeting"></app-campo-errores>
                 </div>
             </div>
 
@@ -35,19 +42,50 @@
                 <div class="col-lg-12">
                     <label class="form-label">Sala de Reunión</label>
                     <div class="position-relative">
-                        <select class="form-select" [(ngModel)]="modalData.room" name="room">
-                            <option value="">Seleccionar sala...</option>
-                            <option *ngFor="let room of availableRooms" [value]="room">{{room}}</option>
+                        <select class="form-select" formControlName="room" (change)="onSalaChange()">
+                            <option value="" [disabled]="true">Seleccionar sala...</option>
+                            <option *ngFor="let sala of salas" value="{{sala.idSala}}">{{sala.nombreSala}}</option>
                         </select>
+
+                        <!-- Check verde dentro del input cuando la sala está disponible -->
+                        <div class="input-check-success" *ngIf="room?.value && salaDisponible">
+                            <span class="material-icons">check</span>
+                        </div>
+
+                        <!-- Loading mientras valida -->
+                        <div class="sala-validation-loading" *ngIf="room?.value && isValidatingSala">
+                            <span class="material-icons">sync</span>
+                        </div>
                     </div>
+
+                    <!-- Badge de error separado del input -->
+                    <div class="sala-ocupada-badge"
+                        *ngIf="room?.value && !salaDisponible && meetsOcupandoSala.length > 0 && !isValidatingSala">
+                        <div class="badge-header">
+                            <span class="material-icons">info</span>
+                            <span class="badge-title">Sala ocupada</span>
+                        </div>
+                        <div class="ocupacion-details">
+                            <div *ngFor="let meet of meetsOcupandoSala" class="meet-ocupacion">
+                                <div class="meet-title">{{ meet.titulo }}</div>
+                                <div class="meet-time">
+                                    <span class="material-icons">schedule</span>
+                                    {{ meet.fechaInicio | date:'dd/MM/yyyy HH:mm' }} - {{ meet.fechaFin |
+                                    date:'dd/MM/yyyy HH:mm' }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <app-campo-errores [control]="room"></app-campo-errores>
                 </div>
             </div>
             <br>
             <div class="row g-3">
                 <div class="col-lg-12">
                     <label class="form-label">Descripción</label>
-                    <textarea class="form-control" rows="3" [(ngModel)]="modalData.description" name="description"
+                    <textarea class="form-control" rows="3" formControlName="description"
                         placeholder="Descripción de la reunión..."></textarea>
+                    <app-campo-errores [control]="description"></app-campo-errores>
                 </div>
             </div>
             <br>
@@ -55,12 +93,57 @@
                 <div class="col-lg-12">
                     <label class="form-label">Participantes</label>
                     <div class="position-relative">
-                        <textarea class="form-control" rows="2" [(ngModel)]="modalData.attendees" name="attendees"
-                            placeholder="Separar nombres con comas..."></textarea>
+                        <input type="text" class="form-control" formControlName="attendees"
+                            (input)="onAttendeesInput($event)" (keydown)="onAttendeesKeyDown($event)"
+                            (blur)="onAttendeesBlur()" (paste)="onAttendeesClear()"
+                            placeholder="Escribir nombre o correo para autocompletar" />
+
+                        <!-- Sugerencias de autocompletado -->
+                        <div class="suggestions-container" *ngIf="showSuggestions && filteredParticipants.length > 0">
+                            <div class="suggestions-list">
+                                <div class="suggestion-item"
+                                    *ngFor="let participante of filteredParticipants; let i = index"
+                                    [class]="getSuggestionClass(i)" (click)="selectParticipant(participante)">
+                                    <div class="suggestion-name">{{ participante.nombre || 'Sin nombre' }}</div>
+                                    <div class="suggestion-email" *ngIf="participante.correo">{{ participante.correo }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Opción para agregar correo personalizado cuando no hay coincidencias -->
+                        <div class="suggestions-container" *ngIf="getCurrentSearchText() && !showSuggestions">
+                            <div class="suggestions-list">
+                                <div class="suggestion-item custom-email-option"
+                                    (click)="addCustomEmail(getCurrentSearchText())">
+                                    <div class="suggestion-name">
+                                        <i class="fas fa-plus-circle" style="color: #28a745; margin-right: 8px;"></i>
+                                        Agregar "{{ getCurrentSearchText() }}" como participante
+                                    </div>
+                                    <div class="suggestion-email">Presiona Enter o haz clic para agregar</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-text text-muted" style="font-size: smaller;">
-                        Ejemplo: Juan Pérez, María García, Carlos López
+
+                    <!-- Badges de participantes seleccionados -->
+                    <div class="selected-participants" *ngIf="selectedParticipants.length > 0">
+                        <div class="participant-badge" *ngFor="let participante of selectedParticipants">
+                            <span class="badge-name">{{ participante.nombre || participante.correo }}</span>
+                            <span class="badge-email" *ngIf="participante.correo && participante.nombre">{{
+                                participante.correo }}</span>
+                            <button type="button" class="badge-remove" (click)="removeParticipant(participante)">
+                                <span style="vertical-align: middle;  color: var(--bs-info);" style="font-size: 16px;"
+                                    class="material-icons">close</span>
+                            </button>
+                        </div>
                     </div>
+
+                    <div class="form-text text-muted" style="font-size: smaller;">Escriba el nombre o correo del
+                        participante para ver
+                        sugerencias
+                    </div>
+                    <app-campo-errores [control]="attendees"></app-campo-errores>
                 </div>
             </div>
             <br>
@@ -68,18 +151,64 @@
                 <div class="col-lg-12">
                     <label class="form-label">Organizador</label>
                     <div class="position-relative">
-                        <input type="text" class="form-control" [(ngModel)]="modalData.organizer" name="organizer"
-                            placeholder="Nombre del organizador...">
+                        <input type="text" class="form-control" formControlName="organizer"
+                            (input)="onOrganizerInput($event)" (keydown)="onOrganizerKeyDown($event)"
+                            (blur)="onOrganizerBlur()" (paste)="onOrganizerClear()"
+                            placeholder="Escribir nombre o correo para autocompletar" />
+
+                        <!-- Sugerencias de autocompletado para organizadores -->
+                        <div class="suggestions-container"
+                            *ngIf="showOrganizerSuggestions && filteredOrganizers.length > 0">
+                            <div class="suggestions-list">
+                                <div class="suggestion-item"
+                                    *ngFor="let organizador of filteredOrganizers; let i = index"
+                                    [class]="getOrganizerSuggestionClass(i)" (click)="selectOrganizer(organizador)">
+                                    <div class="suggestion-name">{{ organizador.nombre || 'Sin nombre' }}</div>
+                                    <div class="suggestion-email" *ngIf="organizador.correo">{{ organizador.correo }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Opción para agregar correo personalizado cuando no hay coincidencias -->
+                        <div class="suggestions-container"
+                            *ngIf="getCurrentOrganizerSearchText() && !showOrganizerSuggestions">
+                            <div class="suggestions-list">
+                                <div class="suggestion-item custom-email-option"
+                                    (click)="addCustomOrganizerEmail(getCurrentOrganizerSearchText())">
+                                    <div class="suggestion-name">
+                                        <i class="fas fa-plus-circle" style="color: #28a745; margin-right: 8px;"></i>
+                                        Agregar "{{ getCurrentOrganizerSearchText() }}" como organizador
+                                    </div>
+                                    <div class="suggestion-email">Presiona Enter o haz clic para agregar</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-text text-muted" style="font-size: smaller;">
-                        Nombre del organizador de la reunión
+
+                    <!-- Badges de organizadores seleccionados -->
+                    <div class="selected-participants" *ngIf="selectedOrganizers.length > 0">
+                        <div class="organizer-badge" *ngFor="let organizador of selectedOrganizers">
+                            <span class="badge-name">{{ organizador.nombre || organizador.correo }}</span>
+                            <span class="badge-email" *ngIf="organizador.correo && organizador.nombre">{{
+                                organizador.correo }}</span>
+                            <button type="button" class="badge-remove" (click)="removeOrganizer(organizador)">
+                                <span style="vertical-align: middle;  color: var(--bs-info);" style="font-size: 16px;"
+                                    class="material-icons">close</span>
+                            </button>
+                        </div>
                     </div>
+
+                    <div class="form-text text-muted" style="font-size: smaller;">Escriba el nombre o correo del
+                        organizador para ver sugerencias
+                    </div>
+                    <app-campo-errores [control]="organizer"></app-campo-errores>
                 </div>
             </div>
         </form>
     </div>
     <div class="modal-footer" style="text-align: left;">
-        <button type="button" class="btn btn-success text-white" (click)="updateEvent()">
+        <button type="button" class="btn btn-success text-white" (click)="confirmUpdate()">
             Actualizar Reunión
         </button>
         <button type="button" class="btn btn-danger text-white" (click)="cancel()">
