@@ -1,14 +1,15 @@
 export interface IMeetModelo {
-    titulo: string;
+    idMeet?: number;
+    titulo?: string;
     descripcion?: string;
     fechaInicio: Date;
     horaInicio?: Date;
     fechaFin?: Date;
     horaFin?: Date;
-    idSala: number;
-    idPrioridad: number;
-    idEstado: number;
-    idTipoMeet: number;
+    idSala?: number;
+    idPrioridad?: number;
+    idEstado?: number;
+    idTipoMeet?: number;
     invitados?: string[];
     organizadores?: string[];
 }

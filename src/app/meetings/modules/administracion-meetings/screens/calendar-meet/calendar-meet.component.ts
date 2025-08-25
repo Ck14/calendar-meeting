@@ -8,6 +8,9 @@ import { BsModalService } from 'ngx-bootstrap/modal';
 import { ModalCrearMeetComponent, MeetingEvent as CreateMeetingEvent } from '../../components/modal-crear-meet/modal-crear-meet.component';
 import { ModalEditarMeetComponent, ModalEditarMeetData, MeetingEvent as EditMeetingEvent } from '../../components/modal-editar-meet/modal-editar-meet.component';
 import { CalendarMeetingsService, ICalendarMeeting } from '../../services/calendar-meetings.service';
+import { IMeetModelo } from 'src/app/interfaces/meetings/meetModel';
+import { ModalCrearMeetService } from '../../components/modal-crear-meet/modal-crear-meet.service';
+import { Loading, Notify } from 'notiflix';
 
 // Interfaz extendida para eventos con datos adicionales
 interface MeetingEvent extends EventInput {
@@ -138,7 +141,8 @@ export class CalendarMeetComponent implements OnInit, AfterViewInit {
 
   constructor(
     private modalService: BsModalService,
-    private calendarMeetingsService: CalendarMeetingsService
+    private calendarMeetingsService: CalendarMeetingsService,
+    private modalCrearMeetService: ModalCrearMeetService,
   ) { }
 
   ngOnInit(): void {
@@ -209,53 +213,19 @@ export class CalendarMeetComponent implements OnInit, AfterViewInit {
       }
     );
 
-    // Suscribirse al resultado del modal
-    this.bsModalEditar.content = initialState;
-    this.bsModalEditar.onHidden?.subscribe(() => {
-      // Verificar si hay un resultado en el content
-      const result = this.bsModalEditar.content?.result;
-      if (result && result.title) {
-        this.actualizarEventoExistente(event, result);
-      }
+    this.bsModalEditar.content.eventoGuardar.subscribe({
+      next: () => {
+        this.cargarEventosPorVista();
+      },
+      error: (error: any) => { },
+      complete() { },
     });
   }
 
   // Método para agregar nuevo evento
 
 
-  // Método para actualizar evento existente
-  private actualizarEventoExistente(event: any, updatedData: EditMeetingEvent): void {
-    console.log('Actualizando evento:', event.id, 'con datos:', updatedData);
 
-    // Actualizar propiedades del evento
-    event.setProp('title', updatedData.title);
-
-    // Actualizar propiedades personalizadas - estas se almacenan directamente en el evento
-    event.room = updatedData.room;
-    event.description = updatedData.description;
-    event.attendees = updatedData.attendees;
-    event.organizer = updatedData.organizer;
-    event.priority = updatedData.priority;
-
-    // También usar extendedProps como backup
-    event.setExtendedProp('room', updatedData.room);
-    event.setExtendedProp('description', updatedData.description);
-    event.setExtendedProp('attendees', updatedData.attendees);
-    event.setExtendedProp('organizer', updatedData.organizer);
-    event.setExtendedProp('priority', updatedData.priority);
-
-    // Actualizar fechas
-    event.setStart(updatedData.start);
-    event.setEnd(updatedData.end);
-
-    // Actualizar colores basados en la nueva prioridad
-    const priorityString = this.mapPriorityToString(updatedData.priority || 'medium');
-    event.setProp('backgroundColor', this.getEventColor(priorityString));
-    event.setProp('borderColor', this.getEventBorderColor(priorityString));
-    event.setProp('textColor', this.getEventTextColor(priorityString));
-
-    console.log('Evento actualizado exitosamente');
-  }
 
   // Método auxiliar para mapear prioridad a string
   private mapPriorityToString(priority: 'low' | 'medium' | 'high'): string {
@@ -363,10 +333,9 @@ export class CalendarMeetComponent implements OnInit, AfterViewInit {
     const event = arg.event;
     const newStart = event.start;
     const newEnd = event.end;
+    const idMeet = event.extendedProps.idMeet;
 
-    console.log(`Evento redimensionado: ${event.title}`);
-    console.log(`Nuevo inicio: ${newStart}`);
-    console.log(`Nuevo fin: ${newEnd}`);
+
 
     // Detectar traslapes después del redimensionamiento
     setTimeout(() => {
@@ -375,6 +344,31 @@ export class CalendarMeetComponent implements OnInit, AfterViewInit {
 
     // Aquí puedes agregar lógica adicional para guardar los cambios
     // Por ejemplo, actualizar en base de datos, notificar a otros usuarios, etc.
+
+    // Convertir las fechas UTC a zona horaria local
+    const fechaInicioLocal = new Date(newStart.getTime() - (newStart.getTimezoneOffset() * 60000));
+    const fechaFinLocal = new Date(newEnd.getTime() - (newEnd.getTimezoneOffset() * 60000));
+
+    console.log(`Fecha inicio local: ${fechaInicioLocal}`);
+    console.log(`Fecha fin local: ${fechaFinLocal}`);
+
+    let meeting: IMeetModelo = {
+      idMeet: idMeet,
+      fechaInicio: fechaInicioLocal,
+      fechaFin: fechaFinLocal,
+    }
+
+    this.modalCrearMeetService.actualizarHorariosMeet(meeting).subscribe({
+      next: (response) => {
+        Notify.success(`¡Reunión actualizada exitosamente!`);
+        Loading.remove();
+      },
+      error: (error) => {
+        console.error('Error al guardar la reunión:', error);
+        Loading.remove();
+        Notify.failure("Error al actualizar la reunión. Por favor, intente nuevamente.");
+      }
+    });
   }
 
   // Método para manejar el arrastre de eventos
@@ -382,10 +376,9 @@ export class CalendarMeetComponent implements OnInit, AfterViewInit {
     const event = arg.event;
     const newStart = event.start;
     const newEnd = event.end;
+    const idMeet = event.extendedProps.idMeet;
 
-    console.log(`Evento movido: ${event.title}`);
-    console.log(`Nuevo inicio: ${newStart}`);
-    console.log(`Nuevo fin: ${newEnd}`);
+
 
     // Detectar traslapes después del movimiento
     setTimeout(() => {
@@ -394,6 +387,31 @@ export class CalendarMeetComponent implements OnInit, AfterViewInit {
 
     // Aquí puedes agregar lógica adicional para guardar los cambios
     // Por ejemplo, actualizar en base de datos, notificar a otros usuarios, etc.
+
+    // Convertir las fechas UTC a zona horaria local
+    const fechaInicioLocal = new Date(newStart.getTime() - (newStart.getTimezoneOffset() * 60000));
+    const fechaFinLocal = new Date(newEnd.getTime() - (newEnd.getTimezoneOffset() * 60000));
+
+    console.log(`Fecha inicio local: ${fechaInicioLocal}`);
+    console.log(`Fecha fin local: ${fechaFinLocal}`);
+
+    let meeting: IMeetModelo = {
+      idMeet: idMeet,
+      fechaInicio: fechaInicioLocal,
+      fechaFin: fechaFinLocal,
+    }
+
+    this.modalCrearMeetService.actualizarHorariosMeet(meeting).subscribe({
+      next: (response) => {
+        Notify.success(`¡Reunión actualizada exitosamente!`);
+        Loading.remove();
+      },
+      error: (error) => {
+        console.error('Error al guardar la reunión:', error);
+        Loading.remove();
+        Notify.failure("Error al actualizar la reunión. Por favor, intente nuevamente.");
+      }
+    });
   }
 
   /**
@@ -427,8 +445,8 @@ export class CalendarMeetComponent implements OnInit, AfterViewInit {
    */
   private convertirReunionesAEventos(reuniones: ICalendarMeeting[]): MeetingEvent[] {
     return reuniones.map(reunion => ({
-      id: reunion.idMeet?.toString(),
-      title: reunion.titulo,
+      id: reunion.idMeet?.toString() ?? '',
+      title: reunion.titulo ?? '',
       start: reunion.fechaInicio,
       end: reunion.fechaFin || reunion.fechaInicio,
       room: (reunion as any).nombreSala || '',
@@ -436,10 +454,10 @@ export class CalendarMeetComponent implements OnInit, AfterViewInit {
       attendees: Array.isArray(reunion.invitados) ? reunion.invitados.join(', ') : reunion.invitados || '',
       organizer: Array.isArray(reunion.organizadores) ? reunion.organizadores.join(', ') : reunion.organizadores || '',
       priority: (reunion as any).prioridadNombre ? (reunion as any).prioridadNombre : '',
-      backgroundColor: this.calendarMeetingsService.obtenerColorPorPrioridad(reunion.idPrioridad),
-      borderColor: this.calendarMeetingsService.obtenerColorBordePorPrioridad(reunion.idPrioridad),
+      backgroundColor: this.calendarMeetingsService.obtenerColorPorPrioridad(reunion.idPrioridad ?? 0),
+      borderColor: this.calendarMeetingsService.obtenerColorBordePorPrioridad(reunion.idPrioridad ?? 0),
       textColor: 'white',
-      classNames: ['fc-event-custom', `event-${this.calendarMeetingsService.obtenerClasePrioridad(reunion.idPrioridad)}`],
+      classNames: ['fc-event-custom', `event-${this.calendarMeetingsService.obtenerClasePrioridad(reunion.idPrioridad ?? 0)}`],
       // Agregar datos extendidos para el modal de edición
       extendedProps: {
         idMeet: reunion.idMeet,

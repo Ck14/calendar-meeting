@@ -110,6 +110,20 @@ export class ModalCrearMeetService {
     return this.http.post<number>(url, meet);
   } // end
 
+
+  actualizarMeet(meet: IMeetModelo): Observable<boolean> {
+    console.log(meet);
+    const url = `api/meet`;
+    return this.http.put<boolean>(url, meet);
+  }
+
+
+  actualizarHorariosMeet(meet: IMeetModelo): Observable<boolean> {
+    console.log(meet);
+    const url = `api/meet/actualizarHorarios`;
+    return this.http.put<boolean>(url, meet);
+  }
+
   /**
    * Valida si una sala está disponible en el horario especificado
    * @param meet - Modelo con idSala, fechaInicio y fechaFin
