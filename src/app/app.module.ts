@@ -34,6 +34,7 @@ import { MatStepperModule } from "@angular/material/stepper";
 import { TooltipModule } from "ngx-bootstrap/tooltip";
 import { NgxColorsModule } from "ngx-colors";
 import { FormularioDesactivadoComponent } from './layouts/formulario-desactivado/formulario-desactivado.component';
+import { FormularioVencidoComponent } from "./layouts/formulario-vencido/formulario-vencido.component";
 
 const maskConfig: Partial<IConfig> = {
   validation: false,
@@ -59,6 +60,7 @@ function initializeAppFactory(
     LoadingComponent,
     PublicAppComponent,
     FormularioDesactivadoComponent,
+    FormularioVencidoComponent
   ],
   imports: [
     BrowserModule,

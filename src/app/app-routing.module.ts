@@ -12,6 +12,7 @@ import { PageNotFoundComponent } from "./layouts/page-not-found/page-not-found.c
 import { PageErrorComponent } from "./layouts/page-error/page-error.component";
 import { PublicAppComponent } from "./layouts/public-app/public-app.component";
 import { FormularioDesactivadoComponent } from './layouts/formulario-desactivado/formulario-desactivado.component';
+import { FormularioVencidoComponent } from "./layouts/formulario-vencido/formulario-vencido.component";
 
 const routes: Routes = [
   {
@@ -48,7 +49,8 @@ const routes: Routes = [
   {
     path: "off-line",
     //component: PageBadGatewayComponent,
-    component: FormularioDesactivadoComponent,
+    //component: FormularioDesactivadoComponent,
+    component: FormularioVencidoComponent,
   },
   {
     path: "two-factor-auth",
