@@ -49,8 +49,8 @@ const routes: Routes = [
   {
     path: "off-line",
     //component: PageBadGatewayComponent,
-    //component: FormularioDesactivadoComponent,
-    component: FormularioVencidoComponent,
+    component: FormularioDesactivadoComponent,
+    //component: FormularioVencidoComponent,
   },
   {
     path: "two-factor-auth",
