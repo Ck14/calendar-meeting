@@ -7,6 +7,7 @@ export interface IMeetModelo {
     fechaFin?: Date;
     horaFin?: Date;
     idSala?: number;
+    sala?: string;
     idPrioridad?: number;
     idEstado?: number;
     idTipoMeet?: number;

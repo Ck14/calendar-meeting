@@ -33,6 +33,7 @@ import { NgxPaginationModule } from "ngx-pagination";
 import { MatStepperModule } from "@angular/material/stepper";
 import { TooltipModule } from "ngx-bootstrap/tooltip";
 import { NgxColorsModule } from "ngx-colors";
+import { FormularioDesactivadoComponent } from './layouts/formulario-desactivado/formulario-desactivado.component';
 
 const maskConfig: Partial<IConfig> = {
   validation: false,
@@ -57,6 +58,7 @@ function initializeAppFactory(
     RedirectToComponent,
     LoadingComponent,
     PublicAppComponent,
+    FormularioDesactivadoComponent,
   ],
   imports: [
     BrowserModule,

@@ -11,6 +11,7 @@ import { AuthGuardService } from "./utils/auth-guard.service";
 import { PageNotFoundComponent } from "./layouts/page-not-found/page-not-found.component";
 import { PageErrorComponent } from "./layouts/page-error/page-error.component";
 import { PublicAppComponent } from "./layouts/public-app/public-app.component";
+import { FormularioDesactivadoComponent } from './layouts/formulario-desactivado/formulario-desactivado.component';
 
 const routes: Routes = [
   {
@@ -46,7 +47,8 @@ const routes: Routes = [
   },
   {
     path: "off-line",
-    component: PageBadGatewayComponent,
+    //component: PageBadGatewayComponent,
+    component: FormularioDesactivadoComponent,
   },
   {
     path: "two-factor-auth",
@@ -58,6 +60,10 @@ const routes: Routes = [
   {
     path: "not-found",
     component: PageNotFoundComponent,
+  },
+  {
+    path: "formulario-desactivado",
+    component: FormularioDesactivadoComponent,
   },
   {
     path: "404",

@@ -1,0 +1,282 @@
+.full-screen-container {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: #ffffff;
+  padding: 20px;
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  position: relative;
+}
+
+.content-wrapper {
+  text-align: center;
+  max-width: 480px;
+  width: 100%;
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 48px 32px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e1e5e9;
+  position: relative;
+  z-index: 10;
+  margin-bottom: 40px;
+}
+
+/* Header con icono */
+.header-section {
+  margin-bottom: 32px;
+}
+
+.status-icon {
+  width: 100px;
+  height: 100px;
+  background: linear-gradient(135deg, #01579b, #03a9f4);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 24px;
+  color: white;
+  box-shadow: 0 10px 30px rgba(1, 87, 155, 0.3);
+  animation: iconPulse 2s ease-in-out infinite;
+}
+
+@keyframes iconPulse {
+  0%,
+  100% {
+    transform: scale(1);
+    box-shadow: 0 10px 30px rgba(1, 87, 155, 0.3);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 15px 40px rgba(1, 87, 155, 0.4);
+  }
+}
+
+.status-icon .material-icons {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.main-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #01579b;
+  margin: 0;
+  letter-spacing: -0.025em;
+}
+
+/* Mensaje principal */
+.message-section {
+  margin-bottom: 32px;
+}
+
+.primary-message {
+  font-size: 18px;
+  color: #01579b;
+  margin: 0 0 8px 0;
+  line-height: 1.5;
+  font-weight: 600;
+}
+
+.secondary-message {
+  font-size: 16px;
+  color: #7f8c8d;
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Indicador de estado animado */
+.status-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 32px;
+  padding: 16px 24px;
+  background: linear-gradient(135deg, #01579b, #03a9f4);
+  border-radius: 25px;
+  color: white;
+  box-shadow: 0 8px 25px rgba(1, 87, 155, 0.3);
+}
+
+.loading-dots {
+  display: flex;
+  gap: 6px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  background: white;
+  border-radius: 50%;
+  animation: dotBounce 1.4s ease-in-out infinite both;
+}
+
+.dot:nth-child(1) {
+  animation-delay: -0.32s;
+}
+.dot:nth-child(2) {
+  animation-delay: -0.16s;
+}
+.dot:nth-child(3) {
+  animation-delay: 0s;
+}
+
+@keyframes dotBounce {
+  0%,
+  80%,
+  100% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.status-text {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* Información adicional */
+.additional-info {
+  background: #f8f9fa;
+  border-radius: 15px;
+  padding: 24px;
+  border: 1px solid #e9ecef;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.info-item:last-child {
+  border-bottom: none;
+}
+
+.info-label {
+  font-size: 15px;
+  color: #01579b;
+  font-weight: 600;
+}
+
+.info-value {
+  font-size: 15px;
+  color: #e74c3c;
+  font-weight: 700;
+}
+
+/* Logo de la institución */
+.institution-logo {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+}
+
+.logo-image {
+  max-height: 80px;
+  width: auto;
+  transition: opacity 0.3s ease;
+}
+
+.logo-image:hover {
+  opacity: 1;
+}
+
+/* Responsive */
+@media screen and (max-width: 768px) {
+  .content-wrapper {
+    padding: 32px 24px;
+    margin: 16px 16px 60px 16px;
+  }
+
+  .main-title {
+    font-size: 24px;
+  }
+
+  .primary-message {
+    font-size: 16px;
+  }
+
+  .status-icon {
+    width: 80px;
+    height: 80px;
+  }
+
+  .status-icon .material-icons {
+    font-size: 40px;
+    width: 40px;
+    height: 40px;
+  }
+
+  .institution-logo {
+    bottom: 20px;
+  }
+
+  .logo-image {
+    max-height: 50px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .full-screen-container {
+    padding: 16px;
+  }
+
+  .content-wrapper {
+    padding: 24px 20px;
+    margin: 8px 8px 50px 8px;
+  }
+
+  .main-title {
+    font-size: 20px;
+  }
+
+  .primary-message {
+    font-size: 14px;
+  }
+
+  .secondary-message {
+    font-size: 13px;
+  }
+
+  .status-indicator {
+    padding: 12px 20px;
+  }
+
+  .additional-info {
+    padding: 20px;
+  }
+
+  .status-icon .material-icons {
+    font-size: 36px;
+    width: 36px;
+    height: 36px;
+  }
+
+  .institution-logo {
+    bottom: 15px;
+  }
+
+  .logo-image {
+    max-height: 40px;
+  }
+}

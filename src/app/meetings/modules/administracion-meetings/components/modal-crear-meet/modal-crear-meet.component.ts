@@ -299,6 +299,7 @@ export class ModalCrearMeetComponent implements OnInit {
       fechaInicio: this.start?.value,
       fechaFin: this.end?.value,
       idSala: +this.room?.value,
+      sala: this.obtenerNombreSala(+this.room?.value),
       idPrioridad: +this.priority?.value,
       idEstado: 1,
       idTipoMeet: 1,
