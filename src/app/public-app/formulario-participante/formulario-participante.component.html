@@ -14,10 +14,58 @@
             <p class="subtitle">Complete la información requerida para registrar su asistencia en la reunión</p>
         </div>
 
+        <!-- Información de la reunión -->
+        <div class="meeting-info" *ngIf="meetingInfo">
+            <div class="meeting-card">
+                <div class="meeting-header">
+                    <div class="header-icon">
+                        <span class="material-icons">event</span>
+                    </div>
+                    <h3>Reunión: {{ meetingInfo.titulo }}</h3>
+                </div>
+                <div class="meeting-details" style="margin-left: 20px;">
+                    <div class="detail-row">
+                        <div class="detail-item">
+                            <div class="icon-wrapper">
+                                <span class="material-icons">calendar_today</span>
+                            </div>
+                            <div class="detail-content">
+                                <span class="detail-label">Fecha</span>
+                                <span class="detail-value">15 de Enero, 2024</span>
+                            </div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="icon-wrapper">
+                                <span class="material-icons">schedule</span>
+                            </div>
+                            <div class="detail-content">
+                                <span class="detail-label">Hora</span>
+                                <span class="detail-value">10:00 AM - 12:00 PM</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading indicator -->
+        <div class="loading-container" *ngIf="isLoading">
+            <div class="loading-spinner">
+                <span class="material-icons rotating">refresh</span>
+                <p>Validando acceso...</p>
+            </div>
+        </div>
+
         <!-- Formulario -->
-        <form [formGroup]="formParticipante" (ngSubmit)="onSubmit()" class="form-container">
+        <form [formGroup]="formParticipante" (ngSubmit)="onSubmit()" class="form-container" *ngIf="!isLoading">
             <div class="form-section">
-                <h3 class="section-title">Información Personal</h3>
+                <h3 class="section-title">
+                    <div class="section-icon">
+                        <span class="material-icons">person</span>
+                    </div>
+                    Información Personal
+                </h3>
 
                 <div class="form-row">
                     <div class="form-group">
@@ -73,7 +121,12 @@
             </div>
 
             <div class="form-section">
-                <h3 class="section-title">Información Laboral</h3>
+                <h3 class="section-title">
+                    <div class="section-icon">
+                        <span class="material-icons">work</span>
+                    </div>
+                    Información Laboral
+                </h3>
 
                 <div class="form-row">
                     <div class="form-group">
@@ -126,7 +179,12 @@
             </div>
 
             <div class="form-section">
-                <h3 class="section-title">Información Cultural y Lingüística</h3>
+                <h3 class="section-title">
+                    <div class="section-icon">
+                        <span class="material-icons">language</span>
+                    </div>
+                    Información Cultural y Lingüística
+                </h3>
 
                 <div class="form-row">
 

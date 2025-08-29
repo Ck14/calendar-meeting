@@ -48,8 +48,8 @@ const routes: Routes = [
   },
   {
     path: "off-line",
-    //component: PageBadGatewayComponent,
-    component: FormularioDesactivadoComponent,
+    component: PageBadGatewayComponent,
+    //component: FormularioDesactivadoComponent,
     //component: FormularioVencidoComponent,
   },
   {
@@ -66,6 +66,10 @@ const routes: Routes = [
   {
     path: "formulario-desactivado",
     component: FormularioDesactivadoComponent,
+  },
+  {
+    path: "formulario-vencido",
+    component: FormularioVencidoComponent,
   },
   {
     path: "404",
