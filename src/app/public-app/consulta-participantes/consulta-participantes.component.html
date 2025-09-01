@@ -114,61 +114,49 @@
                 </h3>
             </div>
 
-            <div class="participantes-grid">
-                <div class="participante-card" *ngFor="let participante of participantes; trackBy: trackByParticipante">
-                    <div class="participante-header">
-                        <div class="avatar">
-                            <span class="material-icons">person</span>
-                        </div>
-                        <div class="participante-info">
-                            <h4 class="nombre">{{ participante.nombreCompleto }}</h4>
-                            <p class="dpi">DPI: {{ participante.dpi }}</p>
-                        </div>
-                    </div>
-
-                    <div class="participante-details">
-                        <div class="detail-item">
-                            <span class="label">Puesto:</span>
-                            <span class="value">{{ participante.puesto }}</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="label">Institución:</span>
-                            <span class="value">{{ participante.institucion }}</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="label">Teléfono:</span>
-                            <span class="value">{{ participante.telefonoExtension }}</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="label">Correo:</span>
-                            <span class="value">{{ participante.correo }}</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="label">Sexo:</span>
-                            <span class="value">{{ participante.sexo === 'M' ? 'Masculino' : 'Femenino' }}</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="label">Rango de Edad:</span>
-                            <span class="value">{{ participante.rangoEdad }}</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="label">Discapacidad:</span>
-                            <span class="value">{{ participante.discapacidad }}</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="label">Pueblo:</span>
-                            <span class="value">{{ participante.pueblo }}</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="label">Comunidad Lingüística:</span>
-                            <span class="value">{{ participante.comunidadLinguistica }}</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="label">Fecha de Registro:</span>
-                            <span class="value">{{ participante.fechaRegistro | date:'dd/MM/yyyy HH:mm' }}</span>
-                        </div>
-                    </div>
-                </div>
+            <div class="table-container">
+                <table class="participantes-table">
+                    <thead>
+                        <tr>
+                            <th>Nombre Completo</th>
+                            <th>DPI</th>
+                            <th>Puesto</th>
+                            <th>Institución</th>
+                            <th>Teléfono</th>
+                            <th>Correo</th>
+                            <th>Sexo</th>
+                            <th>Rango de Edad</th>
+                            <th>Discapacidad</th>
+                            <th>Pueblo</th>
+                            <th>Comunidad Lingüística</th>
+                            <th>Fecha de Registro</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let participante of participantes; trackBy: trackByParticipante"
+                            class="participante-row">
+                            <td class="nombre-cell">
+                                <div class="participante-nombre">
+                                    <span class="avatar-small">
+                                        <span class="material-icons">person</span>
+                                    </span>
+                                    {{ participante.nombreCompleto }}
+                                </div>
+                            </td>
+                            <td>{{ participante.dpi }}</td>
+                            <td>{{ participante.puesto }}</td>
+                            <td>{{ participante.institucion }}</td>
+                            <td>{{ participante.telefonoExtension }}</td>
+                            <td class="email-cell">{{ participante.correo }}</td>
+                            <td>{{ participante.sexo === 'M' ? 'Masculino' : 'Femenino' }}</td>
+                            <td>{{ participante.rangoEdadTexto }}</td>
+                            <td>{{ participante.discapacidadTexto }}</td>
+                            <td>{{ participante.puebloTexto }}</td>
+                            <td>{{ participante.comunidadLinguisticaTexto }}</td>
+                            <td>{{ participante.fechaRegistro | date:'dd/MM/yyyy HH:mm' }}</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
 

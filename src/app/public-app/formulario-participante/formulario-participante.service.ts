@@ -28,9 +28,14 @@ export interface FormularioParticipanteData {
   correo: string;
   sexo: string;
   rangoEdad: number;
+  rangoEdadTexto?: string;
   discapacidad: number;
+  discapacidadTexto?: string;
   pueblo: number;
+  puebloTexto?: string;
   comunidadLinguistica: number;
+  comunidadLinguisticaTexto?: string;
+  fechaRegistro?: Date;
 }
 
 @Injectable({

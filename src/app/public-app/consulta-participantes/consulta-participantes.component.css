@@ -374,95 +374,141 @@
   margin-bottom: 24px;
 }
 
-.participantes-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-  gap: 24px;
-}
-
-.participante-card {
-  background: white;
-  border: 1px solid #e1e5e9;
-  border-radius: 16px;
-  padding: 24px;
+/* Estilos de la tabla */
+.table-container {
+  overflow-x: auto;
+  border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  transition: all 0.3s ease;
+  border: 1px solid #e1e5e9;
 }
 
-.participante-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+.participantes-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  font-size: 14px;
 }
 
-.participante-header {
+.participantes-table thead {
+  background: linear-gradient(135deg, #01579b, #03a9f4);
+  color: white;
+}
+
+.participantes-table th {
+  padding: 16px 12px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid #01579b;
+  white-space: nowrap;
+}
+
+.participantes-table tbody tr {
+  border-bottom: 1px solid #f0f0f0;
+  transition: background-color 0.2s ease;
+}
+
+.participantes-table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+.participantes-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.participantes-table td {
+  padding: 12px;
+  vertical-align: middle;
+  border-bottom: 1px solid #f0f0f0;
+  max-width: 200px;
+  word-wrap: break-word;
+}
+
+.participante-row:hover {
+  background-color: #f8f9fa;
+}
+
+.nombre-cell {
+  min-width: 200px;
+}
+
+.participante-nombre {
   display: flex;
   align-items: center;
-  gap: 16px;
-  margin-bottom: 20px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid #e9ecef;
+  gap: 12px;
 }
 
-.avatar {
-  width: 48px;
-  height: 48px;
+.avatar-small {
+  width: 32px;
+  height: 32px;
   background: linear-gradient(135deg, #01579b, #03a9f4);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
+  flex-shrink: 0;
 }
 
-.avatar .material-icons {
-  font-size: 24px;
+.avatar-small .material-icons {
+  font-size: 16px;
 }
 
-.participante-info h4 {
-  margin: 0 0 4px 0;
-  font-size: 18px;
-  font-weight: 600;
-  color: #333333;
+.email-cell {
+  max-width: 180px;
+  word-break: break-all;
 }
 
-.participante-info .dpi {
-  margin: 0;
-  font-size: 14px;
-  color: #7f8c8d;
-  font-weight: 500;
+/* Responsive para la tabla */
+@media (max-width: 1200px) {
+  .participantes-table th,
+  .participantes-table td {
+    padding: 10px 8px;
+    font-size: 13px;
+  }
+
+  .participantes-table th {
+    font-size: 12px;
+  }
 }
 
-.participante-details {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 12px;
-}
+@media (max-width: 768px) {
+  .table-container {
+    margin: 0 -16px;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+  }
 
-.participante-details .detail-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px 0;
-  border-bottom: 1px solid #f8f9fa;
-}
+  .participantes-table {
+    font-size: 12px;
+  }
 
-.participante-details .detail-item:last-child {
-  border-bottom: none;
-}
+  .participantes-table th,
+  .participantes-table td {
+    padding: 8px 6px;
+    font-size: 12px;
+  }
 
-.participante-details .label {
-  font-weight: 600;
-  color: #7f8c8d;
-  font-size: 14px;
-}
+  .participantes-table th {
+    font-size: 11px;
+    padding: 10px 6px;
+  }
 
-.participante-details .value {
-  font-weight: 500;
-  color: #333333;
-  font-size: 14px;
-  text-align: right;
-  max-width: 200px;
-  word-wrap: break-word;
+  .nombre-cell {
+    min-width: 150px;
+  }
+
+  .avatar-small {
+    width: 28px;
+    height: 28px;
+  }
+
+  .avatar-small .material-icons {
+    font-size: 14px;
+  }
 }
 
 /* Estado vacío */
@@ -495,7 +541,7 @@
   color: #7f8c8d;
 }
 
-/* Responsive */
+/* Responsive general */
 @media (max-width: 768px) {
   .content-wrapper {
     padding: 24px 16px;
@@ -515,10 +561,6 @@
   .btn-secondary {
     width: 100%;
     max-width: 300px;
-  }
-
-  .participantes-grid {
-    grid-template-columns: 1fr;
   }
 
   .detail-row {
