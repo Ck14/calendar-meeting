@@ -1,0 +1,184 @@
+<!-- Título de la aplicación -->
+<div class="app-title">
+    <h1>MINFIN Meetings</h1>
+</div>
+
+<div class="full-screen-container">
+    <div class="content-wrapper">
+        <!-- Header con icono -->
+        <div class="header-section">
+            <div class="status-icon">
+                <span class="material-icons">people</span>
+            </div>
+            <h1 class="main-title">Consulta de Participantes</h1>
+            <p class="subtitle">Ingrese el token de la reunión para consultar la lista de participantes registrados</p>
+        </div>
+
+        <!-- Formulario de consulta -->
+        <form [formGroup]="formConsulta" (ngSubmit)="buscarParticipantes()" class="form-container">
+            <div class="form-section">
+                <h3 class="section-title">
+                    <div class="section-icon">
+                        <span class="material-icons">search</span>
+                    </div>
+                    Buscar Participantes
+                </h3>
+
+                <div class="form-row">
+                    <div class="form-group full-width">
+                        <label for="token">Token de la Reunión *</label>
+                        <input type="text" id="token" formControlName="token"
+                            placeholder="Ingrese el token de la reunión" class="form-control"
+                            [class.invalid]="formConsulta.get('token')?.invalid && formConsulta.get('token')?.touched">
+                        <div class="error-message" *ngIf="getErrorMessage('token')">
+                            {{ getErrorMessage('token') }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary" [disabled]="isLoading">
+                        <span class="material-icons" *ngIf="!isLoading">search</span>
+                        <span class="material-icons rotating" *ngIf="isLoading">refresh</span>
+                        {{ isLoading ? 'Buscando...' : 'Buscar Participantes' }}
+                    </button>
+                    <button type="button" class="btn-secondary" (click)="limpiarConsulta()"
+                        [disabled]="isLoading || !hasSearched">
+                        <span class="material-icons">clear</span>
+                        Limpiar
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <!-- Loading indicator -->
+        <div class="loading-container" *ngIf="isLoading">
+            <div class="loading-spinner">
+                <span class="material-icons rotating">refresh</span>
+                <p>Consultando participantes...</p>
+            </div>
+        </div>
+
+        <!-- Información de la reunión -->
+        <div class="meeting-info" *ngIf="meetingInfo && !isLoading">
+            <div class="meeting-card">
+                <div class="meeting-header">
+                    <div class="header-icon">
+                        <span class="material-icons">event</span>
+                    </div>
+                    <h3>Reunión: {{ meetingInfo.titulo }}</h3>
+                </div>
+                <div class="meeting-details" style="margin-left: 20px;">
+                    <div class="detail-row">
+                        <div class="detail-item">
+                            <div class="icon-wrapper">
+                                <span class="material-icons">calendar_today</span>
+                            </div>
+                            <div class="detail-content">
+                                <span class="detail-label">Fecha</span>
+                                <span class="detail-value">{{meetingInfo.horaInicio | date:'dd/MM/yyyy'}}</span>
+                            </div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="icon-wrapper">
+                                <span class="material-icons">schedule</span>
+                            </div>
+                            <div class="detail-content">
+                                <span class="detail-label">Hora</span>
+                                <span class="detail-value">{{meetingInfo.horaInicio | date:'HH:mm'}} -
+                                    {{meetingInfo.horaFin | date:'HH:mm'}}</span>
+                            </div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="icon-wrapper">
+                                <span class="material-icons">group</span>
+                            </div>
+                            <div class="detail-content">
+                                <span class="detail-label">Participantes</span>
+                                <span class="detail-value">{{participantes.length}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lista de participantes -->
+        <div class="participantes-container" *ngIf="participantes.length > 0 && !isLoading">
+            <div class="section-header">
+                <h3 class="section-title">
+                    <div class="section-icon">
+                        <span class="material-icons">people_outline</span>
+                    </div>
+                    Lista de Participantes ({{ participantes.length }})
+                </h3>
+            </div>
+
+            <div class="participantes-grid">
+                <div class="participante-card" *ngFor="let participante of participantes; trackBy: trackByParticipante">
+                    <div class="participante-header">
+                        <div class="avatar">
+                            <span class="material-icons">person</span>
+                        </div>
+                        <div class="participante-info">
+                            <h4 class="nombre">{{ participante.nombreCompleto }}</h4>
+                            <p class="dpi">DPI: {{ participante.dpi }}</p>
+                        </div>
+                    </div>
+
+                    <div class="participante-details">
+                        <div class="detail-item">
+                            <span class="label">Puesto:</span>
+                            <span class="value">{{ participante.puesto }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Institución:</span>
+                            <span class="value">{{ participante.institucion }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Teléfono:</span>
+                            <span class="value">{{ participante.telefonoExtension }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Correo:</span>
+                            <span class="value">{{ participante.correo }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Sexo:</span>
+                            <span class="value">{{ participante.sexo === 'M' ? 'Masculino' : 'Femenino' }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Rango de Edad:</span>
+                            <span class="value">{{ participante.rangoEdad }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Discapacidad:</span>
+                            <span class="value">{{ participante.discapacidad }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Pueblo:</span>
+                            <span class="value">{{ participante.pueblo }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Comunidad Lingüística:</span>
+                            <span class="value">{{ participante.comunidadLinguistica }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="label">Fecha de Registro:</span>
+                            <span class="value">{{ participante.fechaRegistro | date:'dd/MM/yyyy HH:mm' }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mensaje cuando no hay participantes -->
+        <div class="no-participantes" *ngIf="hasSearched && participantes.length === 0 && !isLoading && meetingInfo">
+            <div class="empty-state">
+                <span class="material-icons">people_off</span>
+                <h3>No se encontraron participantes</h3>
+                <p>No hay participantes registrados para esta reunión o el token no es válido.</p>
+            </div>
+        </div>
+    </div>
+</div>

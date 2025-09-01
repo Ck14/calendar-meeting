@@ -5,13 +5,15 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { PublicAppRoutingModule } from './public-app-routing.module';
 import { HomeComponent } from './home/home.component';
 import { FormularioParticipanteComponent } from './formulario-participante/formulario-participante.component';
+import { ConsultaParticipantesComponent } from './consulta-participantes/consulta-participantes.component';
 import { ComponentesHtmlModule } from '../componentes-html/componentes-html.module';
 
 
 @NgModule({
   declarations: [
     HomeComponent,
-    FormularioParticipanteComponent
+    FormularioParticipanteComponent,
+    ConsultaParticipantesComponent
   ],
   imports: [
     CommonModule,
