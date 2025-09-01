@@ -13,6 +13,8 @@ import { PageErrorComponent } from "./layouts/page-error/page-error.component";
 import { PublicAppComponent } from "./layouts/public-app/public-app.component";
 import { FormularioDesactivadoComponent } from './layouts/formulario-desactivado/formulario-desactivado.component';
 import { FormularioVencidoComponent } from "./layouts/formulario-vencido/formulario-vencido.component";
+import { RegistroExitosoComponent } from "./layouts/registro-exitoso/registro-exitoso.component";
+import { UsuarioYaRegistradoComponent } from "./layouts/usuario-ya-registrado/usuario-ya-registrado.component";
 
 const routes: Routes = [
   {
@@ -70,6 +72,14 @@ const routes: Routes = [
   {
     path: "formulario-vencido",
     component: FormularioVencidoComponent,
+  },
+  {
+    path: "registro-exitoso",
+    component: RegistroExitosoComponent,
+  },
+  {
+    path: "registrado",
+    component: UsuarioYaRegistradoComponent,
   },
   {
     path: "404",

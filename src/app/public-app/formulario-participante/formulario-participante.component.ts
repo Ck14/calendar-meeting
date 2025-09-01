@@ -50,6 +50,13 @@ export class FormularioParticipanteComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        // Configurar notificaciones para que duren más tiempo
+        Notify.init({
+            position: 'right-top',
+            timeout: 10000, // 10 segundos en lugar de los 5 por defecto
+            clickToClose: true,
+        });
+
         this.validarTokenYRedirigir();
     }
 
@@ -220,13 +227,20 @@ export class FormularioParticipanteComponent implements OnInit {
                 // Limpiar formulario después de guardar
                 this.formParticipante.reset();
 
+                this.router.navigate(['/registro-exitoso']);
+
                 // Opcional: redirigir a una página de confirmación
                 // this.router.navigate(['/public/confirmacion']);
             },
             error: (error) => {
                 Loading.remove();
                 this.isLoading = false;
-                Notify.failure(error.error.mensaje);
+                Notify.failure(error.error.mensaje, {
+                    timeout: 10000, // 10 segundos
+                    position: 'right-top',
+                    clickToClose: true
+                });
+                this.router.navigate(['/registrado']);
             }
         });
     }
