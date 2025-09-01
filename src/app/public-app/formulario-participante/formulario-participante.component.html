@@ -31,7 +31,7 @@
                             </div>
                             <div class="detail-content">
                                 <span class="detail-label">Fecha</span>
-                                <span class="detail-value">15 de Enero, 2024</span>
+                                <span class="detail-value">{{meetingInfo.horaInicio | date:'dd/MM/yyyy'}}</span>
                             </div>
                         </div>
                         <div class="detail-item">
@@ -40,7 +40,8 @@
                             </div>
                             <div class="detail-content">
                                 <span class="detail-label">Hora</span>
-                                <span class="detail-value">10:00 AM - 12:00 PM</span>
+                                <span class="detail-value">{{meetingInfo.horaInicio | date:'HH:mm'}} -
+                                    {{meetingInfo.horaFin | date:'HH:mm'}}</span>
                             </div>
                         </div>
                     </div>

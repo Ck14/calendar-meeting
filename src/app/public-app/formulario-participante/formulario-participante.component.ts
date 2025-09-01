@@ -208,6 +208,7 @@ export class FormularioParticipanteComponent implements OnInit {
     guardarFormulario(datos: FormularioParticipanteData): void {
         Loading.standard("Guardando formulario...");
         this.isLoading = true;
+        console.log('datos', datos);
 
         this.formularioParticipanteService.guardarFormularioParticipante(datos).subscribe({
             next: (response) => {
@@ -225,8 +226,7 @@ export class FormularioParticipanteComponent implements OnInit {
             error: (error) => {
                 Loading.remove();
                 this.isLoading = false;
-                console.error('Error al guardar formulario:', error);
-                Notify.failure('Error al guardar el formulario. Por favor, intente nuevamente.');
+                Notify.failure(error.error.mensaje);
             }
         });
     }

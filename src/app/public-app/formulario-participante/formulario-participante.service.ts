@@ -76,8 +76,15 @@ export class FormularioParticipanteService {
    */
   guardarFormularioParticipante(datos: FormularioParticipanteData): Observable<any> {
     // Simulación de guardado
-    return of({ success: true, message: 'Formulario guardado exitosamente' }).pipe(delay(1000));
+    //    return of({ success: true, message: 'Formulario guardado exitosamente' }).pipe(delay(1000));
+
+    const url = `api/meet/asistencia`;
+    return this.http.post<number>(url, datos);
+
+
   }
+
+
 
 
 }
