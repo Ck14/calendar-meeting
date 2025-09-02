@@ -128,19 +128,20 @@
   animation: fill 0.4s ease-in-out 0.4s forwards,
     scale 0.3s ease-in-out 0.9s both;
   position: relative;
+  background: #4caf50;
 }
 
 .checkmark::before {
   content: "";
   position: absolute;
-  width: 30px;
-  height: 15px;
-  border: 4px solid #4caf50;
+  width: 20px;
+  height: 10px;
+  border: 3px solid white;
   border-top: none;
   border-right: none;
   transform: rotate(-45deg);
-  top: 15px;
-  left: 12px;
+  top: 18px;
+  left: 18px;
   animation: checkmark 0.3s ease-in-out 0.9s both;
 }
 
@@ -152,17 +153,17 @@
   }
   20% {
     height: 0;
-    width: 30px;
+    width: 20px;
     opacity: 1;
   }
   40% {
-    width: 30px;
-    height: 15px;
+    width: 20px;
+    height: 10px;
     opacity: 1;
   }
   100% {
-    width: 30px;
-    height: 15px;
+    width: 20px;
+    height: 10px;
     opacity: 1;
   }
 }
