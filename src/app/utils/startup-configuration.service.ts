@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { NavigationEnd, RouteConfigLoadEnd, Router } from "@angular/router";
 import { localStorageCore } from "./functions/localStorageCore";
-import { catchError, of, tap } from "rxjs";
+import { catchError, of, tap, BehaviorSubject } from "rxjs";
 import { UsuarioSSOModelo } from "../interfaces/usuario";
 import { userCredentialsModel } from "../private-app/interfaces/usuario";
 import { ICredencialesUsuario } from "../private-app/interfaces/Login";
@@ -13,26 +13,50 @@ import { EstadosHttp } from "../private-app/constants/estado-http";
 })
 export class StartupConfigurationService {
   public usuario: UsuarioSSOModelo = {} as UsuarioSSOModelo;
+  private _isConfigurationLoaded = new BehaviorSubject<boolean>(false);
+  public isConfigurationLoaded$ = this._isConfigurationLoaded.asObservable();
 
   constructor(
     private http: HttpClient,
     private router: Router,
     private localStorage: localStorageCore
-  ) {}
+  ) { }
 
   public load() {
     return this.http.get<UsuarioSSOModelo>("/api/sso/usuario").pipe(
       tap((usuario) => {
         this.usuario = usuario ? usuario : ({} as UsuarioSSOModelo);
+        this._isConfigurationLoaded.next(true);
+        console.log('Configuration loaded successfully');
         // this.validarNavegacion(EstadosHttp.success);
       }),
       catchError((error) => {
+        console.error('Error loading configuration:', error);
         // this.validarNavegacion(EstadosHttp.error);
-
+        this._isConfigurationLoaded.next(true); // Marcar como cargado incluso en error
         this.router.navigate(["off-line"]);
         return of(error);
       })
     );
+  }
+
+  public isReady(): boolean {
+    return this._isConfigurationLoaded.value;
+  }
+
+  public waitForConfiguration(): Promise<void> {
+    if (this._isConfigurationLoaded.value) {
+      return Promise.resolve();
+    }
+
+    return new Promise((resolve) => {
+      const subscription = this.isConfigurationLoaded$.subscribe((loaded) => {
+        if (loaded) {
+          subscription.unsubscribe();
+          resolve();
+        }
+      });
+    });
   }
 
   private validarNavegacion(estado: EstadosHttp) {

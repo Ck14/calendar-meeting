@@ -18,6 +18,7 @@ import { NotFoundComponent } from "./layouts/not-found/not-found.component";
 import { PageBadGatewayComponent } from "./layouts/page-bad-gateway/page-bad-gateway.component";
 import { RedirectionComponent } from "./redirection/redirection.component";
 import { RedirectToComponent } from "./redirect-to/redirect-to.component";
+import { StartupLoadingComponent } from "./utils/startup-loading.component";
 import { ComponentesHtmlModule } from "./componentes-html/componentes-html.module";
 import { LoadingComponent } from "./layouts/components/loading/loading.component";
 import { LoadingInterceptor } from "./layouts/components/loading/loading.interceptor";
@@ -57,6 +58,7 @@ function initializeAppFactory(
     PageBadGatewayComponent,
     RedirectionComponent,
     RedirectToComponent,
+    StartupLoadingComponent,
     LoadingComponent,
     PublicAppComponent,
     FormularioDesactivadoComponent,
