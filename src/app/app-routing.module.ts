@@ -73,22 +73,6 @@ const routes: Routes = [
     component: PageNotFoundComponent,
   },
   {
-    path: "formulario-desactivado",
-    component: FormularioDesactivadoComponent,
-  },
-  {
-    path: "formulario-vencido",
-    component: FormularioVencidoComponent,
-  },
-  {
-    path: "registro-exitoso",
-    component: RegistroExitosoComponent,
-  },
-  {
-    path: "registrado",
-    component: UsuarioYaRegistradoComponent,
-  },
-  {
     path: "404",
     component: PageErrorComponent,
   },

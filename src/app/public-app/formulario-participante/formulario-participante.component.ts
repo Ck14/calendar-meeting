@@ -100,10 +100,10 @@ export class FormularioParticipanteComponent implements OnInit {
                         return;
                     } else if (response.validationCode == 2) {//token vencido muy temprano
 
-                        this.router.navigate(['/formulario-desactivado']);
+                        this.router.navigate(['/public/formulario-desactivado']);
                         return;
                     } else if (response.validationCode == 3) {// token vencido muy tarde
-                        this.router.navigate(['/formulario-vencido']);
+                        this.router.navigate(['/public/formulario-vencido']);
                         return;
                     }
                 }
@@ -146,8 +146,8 @@ export class FormularioParticipanteComponent implements OnInit {
         if (now < margenAntes) {
             // La reunión aún no ha comenzado
             console.log('Redirigiendo a formulario-desactivado');
-            console.log('URL de redirección: /formulario-desactivado');
-            this.router.navigate(['/formulario-desactivado']).then(() => {
+            console.log('URL de redirección: /public/formulario-desactivado');
+            this.router.navigate(['/public/formulario-desactivado']).then(() => {
                 console.log('Navegación completada exitosamente');
             }).catch((error) => {
                 console.error('Error en la navegación:', error);
@@ -158,8 +158,8 @@ export class FormularioParticipanteComponent implements OnInit {
         if (now > margenDespues) {
             // La reunión ya terminó
             console.log('Redirigiendo a formulario-vencido');
-            console.log('URL de redirección: /formulario-vencido');
-            this.router.navigate(['/formulario-vencido']).then(() => {
+            console.log('URL de redirección: /public/formulario-vencido');
+            this.router.navigate(['/public/formulario-vencido']).then(() => {
                 console.log('Navegación completada exitosamente');
             }).catch((error) => {
                 console.error('Error en la navegación:', error);
@@ -227,7 +227,7 @@ export class FormularioParticipanteComponent implements OnInit {
                 // Limpiar formulario después de guardar
                 this.formParticipante.reset();
 
-                this.router.navigate(['/registro-exitoso']);
+                this.router.navigate(['/public/registro-exitoso']);
 
                 // Opcional: redirigir a una página de confirmación
                 // this.router.navigate(['/public/confirmacion']);
@@ -240,7 +240,7 @@ export class FormularioParticipanteComponent implements OnInit {
                     position: 'right-top',
                     clickToClose: true
                 });
-                this.router.navigate(['/registrado']);
+                this.router.navigate(['/public/registrado']);
             }
         });
     }
