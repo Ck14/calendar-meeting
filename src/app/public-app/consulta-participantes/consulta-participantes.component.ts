@@ -64,6 +64,13 @@ export class ConsultaParticipantesComponent implements OnInit {
                 if (this.participantes.length === 0) {
                     Notify.info('No se encontraron participantes para esta reunión');
                 } else {
+                    this.meetingInfo = {
+                        titulo: this.participantes[0].nombreReunion,
+                        fechaReunion: this.participantes[0].fechaReunion,
+                        horaInicioReunion: this.participantes[0].horaInicioReunion,
+                        horaFinReunion: this.participantes[0].horaFinReunion,
+                    }
+                    console.log('this.meetingInfo', this.meetingInfo);
                     Notify.success(`Se encontraron ${this.participantes.length} participantes`);
                 }
                 /*  } else {

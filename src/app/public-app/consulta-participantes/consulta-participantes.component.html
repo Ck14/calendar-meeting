@@ -76,7 +76,7 @@
                             </div>
                             <div class="detail-content">
                                 <span class="detail-label">Fecha</span>
-                                <span class="detail-value">{{meetingInfo.horaInicio | date:'dd/MM/yyyy'}}</span>
+                                <span class="detail-value">{{meetingInfo.fechaReunion }}</span>
                             </div>
                         </div>
                         <div class="detail-item">
@@ -85,19 +85,11 @@
                             </div>
                             <div class="detail-content">
                                 <span class="detail-label">Hora</span>
-                                <span class="detail-value">{{meetingInfo.horaInicio | date:'HH:mm'}} -
-                                    {{meetingInfo.horaFin | date:'HH:mm'}}</span>
+                                <span class="detail-value">{{meetingInfo.horaInicioReunion}} -
+                                    {{meetingInfo.horaFinReunion }}</span>
                             </div>
                         </div>
-                        <div class="detail-item">
-                            <div class="icon-wrapper">
-                                <span class="material-icons">group</span>
-                            </div>
-                            <div class="detail-content">
-                                <span class="detail-label">Participantes</span>
-                                <span class="detail-value">{{participantes.length}}</span>
-                            </div>
-                        </div>
+
                     </div>
                 </div>
             </div>
