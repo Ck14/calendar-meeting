@@ -83,6 +83,7 @@ export class ModalCrearMeetComponent implements OnInit {
       start: ['', [Validators.required]],
       end: ['', [Validators.required]],
       room: ['', [Validators.required]],
+      documentoOficial: [''],
       description: [''],
       attendees: ['', [Validators.required, this.validacionesService.participantesRequeridosValidator()]],
       organizer: ['', [Validators.required, this.validacionesService.participantesRequeridosValidator()]],
@@ -1002,6 +1003,10 @@ export class ModalCrearMeetComponent implements OnInit {
 
   public get room() {
     return this.formMeeting.get("room");
+  }
+
+  public get documentoOficial() {
+    return this.formMeeting.get("documentoOficial");
   }
 
   public get description() {
