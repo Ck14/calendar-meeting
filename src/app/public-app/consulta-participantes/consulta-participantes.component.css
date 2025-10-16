@@ -371,6 +371,14 @@
 
 .section-header {
   margin-bottom: 24px;
+  position: relative;
+}
+
+.section-header .btn-primary {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 /* Estilos de la tabla */
