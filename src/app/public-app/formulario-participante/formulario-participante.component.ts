@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormularioParticipanteService, TokenValidationResponse, FormularioParticipanteData } from './formulario-participante.service';
 import { forkJoin } from 'rxjs';
@@ -36,10 +36,10 @@ export class FormularioParticipanteComponent implements OnInit {
     ) {
         this.formParticipante = this.fb.group({
             dpi: ['', [Validators.required, Validators.pattern('^[0-9]{13}$')]],
-            nombreCompleto: ['', [Validators.required, Validators.minLength(3)]],
-            puesto: ['', [Validators.required]],
-            institucion: ['', [Validators.required]],
-            telefonoExtension: ['', [Validators.required]],
+            nombreCompleto: ['', [Validators.required, Validators.minLength(3), this.soloTextoConTildes]],
+            puesto: ['', [Validators.required, this.soloTextoConTildes]],
+            institucion: ['', [Validators.required, this.soloTextoConTildes]],
+            telefonoExtension: ['', [Validators.required, Validators.pattern('^[0-9]{3,}$')]],
             correo: ['', [Validators.required, Validators.email]],
             sexo: ['', [Validators.required]],
             rangoEdad: ['', [Validators.required]],
@@ -47,6 +47,15 @@ export class FormularioParticipanteComponent implements OnInit {
             pueblo: ['', [Validators.required]],
             comunidadLinguistica: ['', [Validators.required]]
         });
+    }
+
+    /**
+     * Validador personalizado para permitir solo texto y letras con tilde
+     */
+    soloTextoConTildes(control: AbstractControl): ValidationErrors | null {
+        if (!control.value) return null;
+        const regex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]+$/;
+        return regex.test(control.value) ? null : { soloTexto: true };
     }
 
     ngOnInit(): void {
@@ -268,6 +277,9 @@ export class FormularioParticipanteComponent implements OnInit {
             }
             if (control.errors['minlength']) {
                 return `Mínimo ${control.errors['minlength'].requiredLength} caracteres`;
+            }
+            if (control.errors['soloTexto']) {
+                return 'Solo se permiten letras y espacios';
             }
         }
         return '';

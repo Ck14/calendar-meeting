@@ -522,8 +522,10 @@ export class ModalEditarMeetComponent implements OnInit {
     const validacionSala: IValidarSalaModel = {
       idSala: +salaId,
       fechaInicio: fechaInicio,
-      fechaFin: fechaFin
+      fechaFin: fechaFin,
+      idMeet: this.meetingId ?? 0
     };
+    console.log(validacionSala);
 
     this.modalCrearMeetService.validarSalaDisponible(validacionSala).subscribe({
       next: (meetsOcupados: IMeetModelo[]) => {

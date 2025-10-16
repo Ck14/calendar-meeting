@@ -8,6 +8,7 @@ export interface IMeetModelo {
     horaFin?: Date;
     idSala?: number;
     sala?: string;
+    correoSala?: string;
     idPrioridad?: number;
     idEstado?: number;
     idTipoMeet?: number;
@@ -19,5 +20,6 @@ export interface IValidarSalaModel {
     idSala: number;
     fechaInicio: Date;
     fechaFin: Date;
+    idMeet?: number;
 }
 

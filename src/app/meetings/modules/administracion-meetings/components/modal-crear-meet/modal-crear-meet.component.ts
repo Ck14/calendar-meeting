@@ -244,6 +244,14 @@ export class ModalCrearMeetComponent implements OnInit {
     return sala?.nombreSala || 'No especificada';
   }
 
+  /**
+   * Obtiene el nombre de la sala basado en el ID
+   */
+  private obtenerCorreoSala(idSala: number): string {
+    const sala = this.salas.find(s => s.idSala === idSala);
+    return sala?.correoSala || 'No especificada';
+  }
+
   public confirmSave(): void {
 
 
@@ -300,6 +308,7 @@ export class ModalCrearMeetComponent implements OnInit {
       fechaFin: this.end?.value,
       idSala: +this.room?.value,
       sala: this.obtenerNombreSala(+this.room?.value),
+      correoSala: this.obtenerCorreoSala(+this.room?.value),
       idPrioridad: +this.priority?.value,
       idEstado: 1,
       idTipoMeet: 1,
