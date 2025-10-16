@@ -30,4 +30,19 @@ export class ConsultaParticipantesService {
         const url = `api/meet/participantes/consulta?token=${token}`;
         return this.http.get<FormularioParticipanteData[]>(url);
     }
+
+
+    public obtenerReporteAsistentes(qr?: string) {
+        const url =
+            environment.servidorReportes +
+            `/asistencia.pdf?net.sf.jasperreports.json.source=` +
+            environment.urlSistema +
+            `api/meet/participantes/consulta?token=${qr}`;
+
+        //En el auht.interceptor.ts se maneja el authorization y ahí se envía la clave de jasper
+        return this.http.get(url, {
+            responseType: "blob",
+            withCredentials: true,
+        });
+    } // end
 }

@@ -70,7 +70,9 @@ export class ConsultaParticipantesComponent implements OnInit {
                         horaInicioReunion: this.participantes[0].horaInicioReunion,
                         horaFinReunion: this.participantes[0].horaFinReunion,
                         descripcionReunion: this.participantes[0].descripcionReunion,
-                        documentoOficial: this.participantes[0].documentoOficial
+                        documentoOficial: this.participantes[0].documentoOficial,
+                        token: this.participantes[0].token
+
                     }
                     console.log('this.meetingInfo', this.meetingInfo);
                     Notify.success(`Se encontraron ${this.participantes.length} participantes`);
@@ -128,5 +130,28 @@ export class ConsultaParticipantesComponent implements OnInit {
      */
     trackByParticipante(index: number, participante: any): number {
         return participante.id;
+    }
+
+
+    descargarPdf(qr: string) {
+        Loading.standard("Generando cuestionario...");
+
+        this.consultaParticipantesService
+            .obtenerReporteAsistentes(qr)
+            .subscribe({
+                next(response) {
+                    const file = new Blob([response], { type: "application/pdf" });
+                    const fileURL = URL.createObjectURL(file);
+                    window.open(fileURL);
+                },
+                error(err) {
+                    Notify.failure("No se pudo generar el reporte.");
+                    Loading.remove();
+                },
+                complete() {
+                    Notify.success("Vista previa generada.");
+                    Loading.remove();
+                },
+            });
     }
 }

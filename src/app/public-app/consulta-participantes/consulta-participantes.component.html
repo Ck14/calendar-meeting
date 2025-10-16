@@ -134,7 +134,7 @@
                     </div>
                     Lista de Participantes ({{ participantes.length }})
                 </h3>
-                <button type="button" class="btn-primary">
+                <button type="button" class="btn-primary" (click)="descargarPdf(meetingInfo?.token)">
                     <span class="material-icons">picture_as_pdf</span>
                     Descargar PDF
                 </button>
