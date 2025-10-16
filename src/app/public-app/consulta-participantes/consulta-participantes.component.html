@@ -15,7 +15,8 @@
         </div>
 
         <!-- Formulario de consulta -->
-        <form [formGroup]="formConsulta" (ngSubmit)="buscarParticipantes()" class="form-container">
+        <form [formGroup]="formConsulta" (ngSubmit)="buscarParticipantes()" class="form-container"
+            *ngIf="!hasSearched || (!meetingInfo && !participantes.length)">
             <div class="form-section">
                 <h3 class="section-title">
                     <div class="section-icon">
@@ -50,6 +51,15 @@
                 </div>
             </div>
         </form>
+
+        <!-- Botón Nueva Búsqueda -->
+        <div class="nueva-busqueda-container"
+            *ngIf="hasSearched && (meetingInfo || participantes.length) && !isLoading">
+            <button type="button" class="btn-secondary" (click)="nuevaBusqueda()">
+                <span class="material-icons">search</span>
+                Nueva Búsqueda
+            </button>
+        </div>
 
         <!-- Loading indicator -->
         <div class="loading-container" *ngIf="isLoading">
@@ -87,6 +97,26 @@
                                 <span class="detail-label">Hora</span>
                                 <span class="detail-value">{{meetingInfo.horaInicioReunion}} -
                                     {{meetingInfo.horaFinReunion }}</span>
+                            </div>
+                        </div>
+
+                        <div class="detail-item">
+                            <div class="icon-wrapper">
+                                <span class="material-icons">numbers</span>
+                            </div>
+                            <div class="detail-content">
+                                <span class="detail-label">Documento oficial</span>
+                                <span class="detail-value">{{meetingInfo.documentoOficial}}</span>
+                            </div>
+                        </div>
+
+                        <div class="detail-item">
+                            <div class="icon-wrapper">
+                                <span class="material-icons">event_note</span>
+                            </div>
+                            <div class="detail-content">
+                                <span class="detail-label">Descripción</span>
+                                <span class="detail-value">{{meetingInfo.descripcionReunion}} </span>
                             </div>
                         </div>
 

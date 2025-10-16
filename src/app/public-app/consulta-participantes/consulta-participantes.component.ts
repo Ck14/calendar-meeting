@@ -69,6 +69,8 @@ export class ConsultaParticipantesComponent implements OnInit {
                         fechaReunion: this.participantes[0].fechaReunion,
                         horaInicioReunion: this.participantes[0].horaInicioReunion,
                         horaFinReunion: this.participantes[0].horaFinReunion,
+                        descripcionReunion: this.participantes[0].descripcionReunion,
+                        documentoOficial: this.participantes[0].documentoOficial
                     }
                     console.log('this.meetingInfo', this.meetingInfo);
                     Notify.success(`Se encontraron ${this.participantes.length} participantes`);
@@ -93,6 +95,16 @@ export class ConsultaParticipantesComponent implements OnInit {
         this.participantes = [];
         this.meetingInfo = null;
         this.hasSearched = false;
+    }
+
+    /**
+     * Permite realizar una nueva búsqueda
+     */
+    nuevaBusqueda(): void {
+        this.participantes = [];
+        this.meetingInfo = null;
+        this.hasSearched = false;
+        this.formConsulta.reset();
     }
 
     /**
