@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { ConsultaParticipantesService } from './consulta-participantes.service';
 import { Loading, Notify } from 'notiflix';
 
@@ -17,6 +18,7 @@ export class ConsultaParticipantesComponent implements OnInit {
 
     constructor(
         private fb: FormBuilder,
+        private route: ActivatedRoute,
         private consultaParticipantesService: ConsultaParticipantesService
     ) {
         this.formConsulta = this.fb.group({
@@ -30,6 +32,15 @@ export class ConsultaParticipantesComponent implements OnInit {
             position: 'right-top',
             timeout: 10000,
             clickToClose: true,
+        });
+
+        // Verificar si viene token por query parameter
+        this.route.queryParams.subscribe(params => {
+            const token = params['token'];
+            if (token) {
+                this.formConsulta.patchValue({ token });
+                this.buscarParticipantes();
+            }
         });
     }
 
