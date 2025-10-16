@@ -305,6 +305,7 @@ export class ModalCrearMeetComponent implements OnInit {
     let meeting: IMeetModelo = {
       titulo: this.title?.value,
       descripcion: this.description?.value,
+      documentoOficial: this.documentoOficial?.value,
       fechaInicio: this.start?.value,
       fechaFin: this.end?.value,
       idSala: +this.room?.value,

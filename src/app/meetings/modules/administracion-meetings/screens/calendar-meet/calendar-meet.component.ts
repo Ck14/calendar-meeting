@@ -454,7 +454,8 @@ export class CalendarMeetComponent implements OnInit, AfterViewInit {
         nombreSala: (reunion as any).nombreSala,
         prioridadNombre: (reunion as any).prioridadNombre,
         invitados: reunion.invitados,
-        organizadores: reunion.organizadores
+        organizadores: reunion.organizadores,
+        documentoOficial: reunion.documentoOficial
       }
     }));
   }

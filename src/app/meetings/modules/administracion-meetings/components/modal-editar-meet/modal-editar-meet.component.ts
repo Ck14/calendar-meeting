@@ -83,6 +83,7 @@ export class ModalEditarMeetComponent implements OnInit {
       start: ['', [Validators.required]],
       end: ['', [Validators.required]],
       room: ['', [Validators.required]],
+      documentoOficial: [''],
       description: [''],
       attendees: ['', [Validators.required, this.validacionesService.participantesRequeridosValidator()]],
       organizer: ['', [Validators.required, this.validacionesService.participantesRequeridosValidator()]],
@@ -159,7 +160,7 @@ export class ModalEditarMeetComponent implements OnInit {
         Loading.remove();
 
         // Cargar datos del evento después de tener los catálogos o establecer prioridad por defecto
-        // console.log('🔄 Verificando evento después de cargar catálogos:', this.event);
+        console.log('🔄 Verificando evento después de cargar catálogos:', this.event);
         if (this.event) {
           this.loadEventData();
         } else {
@@ -197,6 +198,7 @@ export class ModalEditarMeetComponent implements OnInit {
       title: this.event.title || '',
       start: this.formatDateTimeForInput(this.event.start),
       end: this.formatDateTimeForInput(this.event.end),
+      documentoOficial: eventData.documentoOficial || this.event.documentoOficial || '',
       description: eventData.description || this.event.description || ''
     });
 
@@ -409,6 +411,7 @@ export class ModalEditarMeetComponent implements OnInit {
       idMeet: this.meetingId ?? undefined,
       titulo: this.title?.value,
       descripcion: this.description?.value,
+      documentoOficial: this.documentoOficial?.value,
       fechaInicio: this.start?.value,
       fechaFin: this.end?.value,
       idSala: +this.room?.value,
@@ -1054,6 +1057,10 @@ export class ModalEditarMeetComponent implements OnInit {
 
   public get room() {
     return this.formMeeting.get("room");
+  }
+
+  public get documentoOficial() {
+    return this.formMeeting.get("documentoOficial");
   }
 
   public get description() {

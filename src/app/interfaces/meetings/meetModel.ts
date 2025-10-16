@@ -1,6 +1,7 @@
 export interface IMeetModelo {
     idMeet?: number;
     titulo?: string;
+    documentoOficial?: string;
     descripcion?: string;
     fechaInicio: Date;
     horaInicio?: Date;
