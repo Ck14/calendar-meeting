@@ -8,11 +8,26 @@ import { RedirectionComponent } from "./redirection/redirection.component";
 import { RedirectToComponent } from "./redirect-to/redirect-to.component";
 import { TwoFactorAuthComponent } from "./private-app/components/two-factor-auth/two-factor-auth.component";
 import { AuthGuardService } from "./utils/auth-guard.service";
+import { StartupConfigurationGuard } from "./utils/startup-configuration.guard";
+import { StartupLoadingComponent } from "./utils/startup-loading.component";
 import { PageNotFoundComponent } from "./layouts/page-not-found/page-not-found.component";
 import { PageErrorComponent } from "./layouts/page-error/page-error.component";
 import { PublicAppComponent } from "./layouts/public-app/public-app.component";
+import { FormularioDesactivadoComponent } from './layouts/formulario-desactivado/formulario-desactivado.component';
+import { FormularioVencidoComponent } from "./layouts/formulario-vencido/formulario-vencido.component";
+import { RegistroExitosoComponent } from "./layouts/registro-exitoso/registro-exitoso.component";
+import { UsuarioYaRegistradoComponent } from "./layouts/usuario-ya-registrado/usuario-ya-registrado.component";
 
 const routes: Routes = [
+  {
+    path: "",
+    component: StartupLoadingComponent,
+  },
+  {
+    path: "redirect",
+    component: RedirectToComponent,
+    canActivate: [StartupConfigurationGuard],
+  },
   {
     path: "login",
     component: RedirectionComponent,
@@ -25,10 +40,6 @@ const routes: Routes = [
       import("./meetings/meetings.module").then(
         (m) => m.MeetingsModule
       ),
-  },
-  {
-    path: "",
-    component: RedirectToComponent,
   },
   {
     path: "admin",
@@ -47,6 +58,8 @@ const routes: Routes = [
   {
     path: "off-line",
     component: PageBadGatewayComponent,
+    //component: FormularioDesactivadoComponent,
+    //component: FormularioVencidoComponent,
   },
   {
     path: "two-factor-auth",

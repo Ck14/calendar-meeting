@@ -18,6 +18,7 @@ import { NotFoundComponent } from "./layouts/not-found/not-found.component";
 import { PageBadGatewayComponent } from "./layouts/page-bad-gateway/page-bad-gateway.component";
 import { RedirectionComponent } from "./redirection/redirection.component";
 import { RedirectToComponent } from "./redirect-to/redirect-to.component";
+import { StartupLoadingComponent } from "./utils/startup-loading.component";
 import { ComponentesHtmlModule } from "./componentes-html/componentes-html.module";
 import { LoadingComponent } from "./layouts/components/loading/loading.component";
 import { LoadingInterceptor } from "./layouts/components/loading/loading.interceptor";
@@ -33,6 +34,8 @@ import { NgxPaginationModule } from "ngx-pagination";
 import { MatStepperModule } from "@angular/material/stepper";
 import { TooltipModule } from "ngx-bootstrap/tooltip";
 import { NgxColorsModule } from "ngx-colors";
+import { FormularioDesactivadoComponent } from './layouts/formulario-desactivado/formulario-desactivado.component';
+import { FormularioVencidoComponent } from "./layouts/formulario-vencido/formulario-vencido.component";
 
 const maskConfig: Partial<IConfig> = {
   validation: false,
@@ -55,8 +58,11 @@ function initializeAppFactory(
     PageBadGatewayComponent,
     RedirectionComponent,
     RedirectToComponent,
+    StartupLoadingComponent,
     LoadingComponent,
     PublicAppComponent,
+    FormularioDesactivadoComponent,
+    FormularioVencidoComponent
   ],
   imports: [
     BrowserModule,

@@ -10,6 +10,7 @@ const routes: Routes = [
     component: CalendarMeetComponent,
     canActivate: [AuthGuardService],
     canLoad: [AuthGuardService],
+    canActivateChild: [AuthGuardService]
   },
 ];
 

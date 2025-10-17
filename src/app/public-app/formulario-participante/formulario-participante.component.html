@@ -1,0 +1,263 @@
+<!-- Título de la aplicación -->
+<div class="app-title">
+    <h1>MINFIN Meetings</h1>
+</div>
+
+<div class="full-screen-container">
+    <div class="content-wrapper">
+        <!-- Header con icono -->
+        <div class="header-section">
+            <div class="status-icon">
+                <span class="material-icons">how_to_reg</span>
+            </div>
+            <h1 class="main-title">Asistencia de Participante</h1>
+            <p class="subtitle">Complete la información requerida para registrar su asistencia en la reunión</p>
+        </div>
+
+        <!-- Información de la reunión -->
+        <div class="meeting-info" *ngIf="meetingInfo">
+            <div class="meeting-card">
+                <div class="meeting-header">
+                    <div class="header-icon">
+                        <span class="material-icons">event</span>
+                    </div>
+                    <h3>Reunión: {{ meetingInfo.titulo }}</h3>
+                </div>
+                <div class="meeting-details" style="margin-left: 20px;">
+                    <div class="detail-row">
+                        <div class="detail-item">
+                            <div class="icon-wrapper">
+                                <span class="material-icons">calendar_today</span>
+                            </div>
+                            <div class="detail-content">
+                                <span class="detail-label">Fecha</span>
+                                <span class="detail-value">{{meetingInfo.horaInicio | date:'dd/MM/yyyy'}}</span>
+                            </div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="icon-wrapper">
+                                <span class="material-icons">schedule</span>
+                            </div>
+                            <div class="detail-content">
+                                <span class="detail-label">Hora</span>
+                                <span class="detail-value">{{meetingInfo.horaInicio | date:'HH:mm'}} -
+                                    {{meetingInfo.horaFin | date:'HH:mm'}}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading indicator -->
+        <div class="loading-container" *ngIf="isLoading">
+            <div class="loading-spinner">
+                <span class="material-icons rotating">refresh</span>
+                <p>Validando acceso...</p>
+            </div>
+        </div>
+
+        <!-- Formulario -->
+        <form [formGroup]="formParticipante" (ngSubmit)="onSubmit()" class="form-container" *ngIf="!isLoading">
+            <div class="form-section">
+                <h3 class="section-title">
+                    <div class="section-icon">
+                        <span class="material-icons">person</span>
+                    </div>
+                    Información Personal
+                </h3>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="dpi">DPI *</label>
+                        <input type="text" id="dpi" formControlName="dpi" placeholder="Ingrese su número de DPI"
+                            maxlength="13" class="form-control"
+                            [class.invalid]="formParticipante.get('dpi')?.invalid && formParticipante.get('dpi')?.touched">
+                        <div class="error-message" *ngIf="getErrorMessage('dpi')">
+                            {{ getErrorMessage('dpi') }}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="nombreCompleto">Nombre Completo *</label>
+                        <input type="text" id="nombreCompleto" formControlName="nombreCompleto"
+                            placeholder="Ingrese su nombre completo" class="form-control"
+                            [class.invalid]="formParticipante.get('nombreCompleto')?.invalid && formParticipante.get('nombreCompleto')?.touched">
+                        <div class="error-message" *ngIf="getErrorMessage('nombreCompleto')">
+                            {{ getErrorMessage('nombreCompleto') }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="sexo">Sexo *</label>
+                        <select id="sexo" formControlName="sexo" class="form-control"
+                            [class.invalid]="formParticipante.get('sexo')?.invalid && formParticipante.get('sexo')?.touched">
+                            <option value="">Seleccione su sexo</option>
+                            <option *ngFor="let opcion of opcionesSexo" [value]="opcion.value">
+                                {{ opcion.label }}
+                            </option>
+                        </select>
+                        <div class="error-message" *ngIf="getErrorMessage('sexo')">
+                            {{ getErrorMessage('sexo') }}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="rangoEdad">Rango de Edad *</label>
+                        <select id="rangoEdad" formControlName="rangoEdad" class="form-control"
+                            [class.invalid]="formParticipante.get('rangoEdad')?.invalid && formParticipante.get('rangoEdad')?.touched">
+                            <option value="">Seleccione su rango de edad</option>
+                            <option *ngFor="let opcion of rangosEdad" [value]="opcion.idRango">
+                                {{ opcion.descripcion }}
+                            </option>
+                        </select>
+                        <div class="error-message" *ngIf="getErrorMessage('rangoEdad')">
+                            {{ getErrorMessage('rangoEdad') }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3 class="section-title">
+                    <div class="section-icon">
+                        <span class="material-icons">work</span>
+                    </div>
+                    Información Laboral
+                </h3>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="institucion">Institución *</label>
+                        <input type="text" id="institucion" formControlName="institucion"
+                            placeholder="Ingrese su institución" class="form-control"
+                            [class.invalid]="formParticipante.get('institucion')?.invalid && formParticipante.get('institucion')?.touched">
+                        <div class="error-message" *ngIf="getErrorMessage('institucion')">
+                            {{ getErrorMessage('institucion') }}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="puesto">Puesto *</label>
+                        <input type="text" id="puesto" formControlName="puesto" placeholder="Ingrese su puesto"
+                            class="form-control"
+                            [class.invalid]="formParticipante.get('puesto')?.invalid && formParticipante.get('puesto')?.touched">
+                        <div class="error-message" *ngIf="getErrorMessage('puesto')">
+                            {{ getErrorMessage('puesto') }}
+                        </div>
+                    </div>
+
+
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="correo">Correo Electrónico *</label>
+                        <input type="email" id="correo" formControlName="correo"
+                            placeholder="Ingrese su correo electrónico" class="form-control"
+                            [class.invalid]="formParticipante.get('correo')?.invalid && formParticipante.get('correo')?.touched">
+                        <div class="error-message" *ngIf="getErrorMessage('correo')">
+                            {{ getErrorMessage('correo') }}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="telefonoExtension">Teléfono/Extensión *</label>
+                        <input type="text" id="telefonoExtension" formControlName="telefonoExtension"
+                            placeholder="Ingrese teléfono o extensión" class="form-control"
+                            [class.invalid]="formParticipante.get('telefonoExtension')?.invalid && formParticipante.get('telefonoExtension')?.touched">
+                        <div class="error-message" *ngIf="getErrorMessage('telefonoExtension')">
+                            {{ getErrorMessage('telefonoExtension') }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group full-width">
+
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3 class="section-title">
+                    <div class="section-icon">
+                        <span class="material-icons">language</span>
+                    </div>
+                    Información Cultural y Lingüística
+                </h3>
+
+                <div class="form-row">
+
+
+                    <div class="form-group">
+                        <label for="pueblo">Pueblo *</label>
+                        <select id="pueblo" formControlName="pueblo" class="form-control"
+                            [class.invalid]="formParticipante.get('pueblo')?.invalid && formParticipante.get('pueblo')?.touched">
+                            <option value="">Seleccione su pueblo</option>
+                            <option *ngFor="let opcion of pueblos" [value]="opcion.idPueblo">
+                                {{ opcion.nombrePueblo }}
+                            </option>
+                        </select>
+                        <div class="error-message" *ngIf="getErrorMessage('pueblo')">
+                            {{ getErrorMessage('pueblo') }}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="comunidadLinguistica">Comunidad Lingüística *</label>
+                        <select id="comunidadLinguistica" formControlName="comunidadLinguistica" class="form-control"
+                            [class.invalid]="formParticipante.get('comunidadLinguistica')?.invalid && formParticipante.get('comunidadLinguistica')?.touched">
+                            <option value="">Seleccione su comunidad lingüística</option>
+                            <option *ngFor="let opcion of comunidadesLinguisticas" [value]="opcion.idLenguaje">
+                                {{ opcion.nombreLenguaje }}
+                            </option>
+                        </select>
+                        <div class="error-message" *ngIf="getErrorMessage('comunidadLinguistica')">
+                            {{ getErrorMessage('comunidadLinguistica') }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+
+
+                    <div class="form-group">
+                        <label for="discapacidad">Discapacidad *</label>
+                        <select id="discapacidad" formControlName="discapacidad" class="form-control"
+                            [class.invalid]="formParticipante.get('discapacidad')?.invalid && formParticipante.get('discapacidad')?.touched">
+                            <option value="">Seleccione si tiene discapacidad</option>
+                            <option *ngFor="let opcion of discapacidades" [value]="opcion.idDiscapacidad">
+                                {{ opcion.nombreDiscapacidad }}
+                            </option>
+                        </select>
+                        <div class="error-message" *ngIf="getErrorMessage('discapacidad')">
+                            {{ getErrorMessage('discapacidad') }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Información de la llave del formulario -->
+            <div class="form-info" *ngIf="llaveFormulario">
+                <div class="info-item">
+                    <span class="info-label">Llave del Formulario:</span>
+                    <span class="info-value">{{ llaveFormulario }}</span>
+                </div>
+            </div>
+
+            <!-- Botón de envío -->
+            <div class="form-actions">
+                <button type="submit" class="submit-button" [disabled]="formParticipante.invalid">
+                    <span class="material-icons">send</span>
+                    Enviar Registro
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Logo de la institución -->
+    <div class="institution-logo">
+        <img src="../../../assets/images/minfin.png" alt="Logo MINFIN" class="logo-image">
+    </div>
+</div>

@@ -5,28 +5,36 @@
     </header>
 
     <main class="calendar-main">
-        <div class="calendar-wrapper">
+        <div class="calendar-wrapper" style="position: relative;">
+            <!-- Componente de loading -->
+            <app-calendar-loading [mostrar]="isLoading"
+                [mensaje]="'Cargando reuniones para ' + obtenerNombreVista() + '...'">
+            </app-calendar-loading>
+
             <full-calendar [options]="calendarOptions"></full-calendar>
         </div>
     </main>
 
     <aside class="calendar-info">
+
         <div class="info-section">
-            <h3>Tipos de reunión</h3>
+            <h3>Prioridades</h3>
             <div class="legend">
                 <div class="legend-item">
-                    <span class="dot planning"></span>
-                    <span>Planificación</span>
+                    <span class="dot priority-low"></span>
+                    <span>Baja</span>
                 </div>
                 <div class="legend-item">
-                    <span class="dot review"></span>
-                    <span>Revisión</span>
+                    <span class="dot priority-medium"></span>
+                    <span>Media</span>
                 </div>
                 <div class="legend-item">
-                    <span class="dot presentation"></span>
-                    <span>Presentación</span>
+                    <span class="dot priority-high"></span>
+                    <span>Alta</span>
                 </div>
             </div>
         </div>
+
+
     </aside>
 </div>

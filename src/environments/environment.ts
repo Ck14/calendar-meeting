@@ -7,7 +7,7 @@ export const environment = {
   exceptionLessUrl: "https://exceptionless.minfin.gob.gt",
   apiDecryptKey: "b14ca5898a4e4142",
 
-  servidorReportes: "/jasperserver/rest_v2/reports/REPORTES",
+  servidorReportes: "/jasperserver/rest_v2/reports/MEETINGS",
   seguridadJasper: "jasperadmin:bitnami",
   urlSistema:
     "http://clima-laboral-backend-clima-laboral-qa.apps.okd4.mfpweb.local/",

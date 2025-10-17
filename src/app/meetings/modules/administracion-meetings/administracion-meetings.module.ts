@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { ModalModule } from 'ngx-bootstrap/modal';
 
@@ -8,6 +8,8 @@ import { AdministracionMeetingsRoutingModule } from './administracion-meetings-r
 import { ModalCrearMeetComponent } from './components/modal-crear-meet/modal-crear-meet.component';
 import { ModalEditarMeetComponent } from './components/modal-editar-meet/modal-editar-meet.component';
 import { CalendarMeetComponent } from './screens/calendar-meet/calendar-meet.component';
+import { CampoErroresComponent } from './components/campo-errores/campo-errores.component';
+import { CalendarLoadingComponent } from './components/calendar-loading/calendar-loading.component';
 
 
 @NgModule({
@@ -15,10 +17,13 @@ import { CalendarMeetComponent } from './screens/calendar-meet/calendar-meet.com
     CalendarMeetComponent,
     ModalCrearMeetComponent,
     ModalEditarMeetComponent,
+    CampoErroresComponent,
+    CalendarLoadingComponent,
   ],
   imports: [
     CommonModule,
     FormsModule,
+    ReactiveFormsModule,
     AdministracionMeetingsRoutingModule,
     FullCalendarModule,
     ModalModule.forRoot()

@@ -29,9 +29,16 @@ export class RedirectToComponent implements OnInit {
     private http: SeguridadService,
     private router: Router,
     private local: localStorageCore
-  ) {}
+  ) { }
 
   ngOnInit(): void {
+    // Esperar a que la configuración esté completamente cargada
+    this.config.waitForConfiguration().then(() => {
+      this.executeRedirectLogic();
+    });
+  }
+
+  private executeRedirectLogic(): void {
     if (!this.config.usuario.isAuthenticated) {
       this.injector.get(Router).navigate(["public"]);
       return;

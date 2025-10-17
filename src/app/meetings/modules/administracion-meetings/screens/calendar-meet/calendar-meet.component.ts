@@ -1,12 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { CalendarOptions, EventInput, CalendarApi } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import listPlugin from '@fullcalendar/list';
 import { BsModalService } from 'ngx-bootstrap/modal';
-import { ModalCrearMeetComponent, ModalCrearMeetData, MeetingEvent as CreateMeetingEvent } from '../../components/modal-crear-meet/modal-crear-meet.component';
+import { ModalCrearMeetComponent, MeetingEvent as CreateMeetingEvent } from '../../components/modal-crear-meet/modal-crear-meet.component';
 import { ModalEditarMeetComponent, ModalEditarMeetData, MeetingEvent as EditMeetingEvent } from '../../components/modal-editar-meet/modal-editar-meet.component';
+import { CalendarMeetingsService, ICalendarMeeting } from '../../services/calendar-meetings.service';
+import { IMeetModelo } from 'src/app/interfaces/meetings/meetModel';
+import { ModalCrearMeetService } from '../../components/modal-crear-meet/modal-crear-meet.service';
+import { Loading, Notify } from 'notiflix';
 
 // Interfaz extendida para eventos con datos adicionales
 interface MeetingEvent extends EventInput {
@@ -16,9 +20,9 @@ interface MeetingEvent extends EventInput {
   end: string | Date;
   room?: string;
   description?: string;
-  attendees?: string[];
+  attendees?: string;
   organizer?: string;
-  priority?: 'low' | 'medium' | 'high';
+  priority?: string;
   backgroundColor?: string;
   borderColor?: string;
   textColor?: string;
@@ -30,22 +34,18 @@ interface MeetingEvent extends EventInput {
   templateUrl: './calendar-meet.component.html',
   styleUrls: ['./calendar-meet.component.css']
 })
-export class CalendarMeetComponent implements OnInit {
+export class CalendarMeetComponent implements OnInit, AfterViewInit {
 
   // Referencias a los modales
   bsModalCrear: any;
   bsModalEditar: any;
 
-  // Lista de salas disponibles
-  availableRooms = [
-    'Sala de Conferencias A',
-    'Sala de Conferencias B',
-    'Sala de Reuniones 1',
-    'Sala de Reuniones 2',
-    'Sala Ejecutiva',
-    'Auditorio Principal',
-    'Sala de Capacitación'
-  ];
+  // Estado del calendario
+  isLoading: boolean = false;
+  currentView: string = 'timeGridDay';
+  currentStartDate: Date = new Date();
+  currentEndDate: Date = new Date();
+
 
   calendarOptions: CalendarOptions = {
     plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin],
@@ -81,7 +81,7 @@ export class CalendarMeetComponent implements OnInit {
     },
     slotMinTime: '00:00:00',
     slotMaxTime: '24:00:00',
-    scrollTime: '06:00:00',
+    scrollTime: '08:00:00', // Se actualizará dinámicamente
     slotDuration: '00:30:00',
     expandRows: true,
     allDaySlot: false,
@@ -99,83 +99,7 @@ export class CalendarMeetComponent implements OnInit {
     slotLaneClassNames: 'fc-slot-lane',
     eventClassNames: 'fc-event-custom',
     dayCellClassNames: 'fc-day-cell',
-    events: [
-      {
-        id: '1',
-        title: 'Reunión de Planificación',
-        start: new Date(new Date().setHours(10, 0, 0, 0)),
-        end: new Date(new Date().setHours(11, 30, 0, 0)),
-        room: 'Sala de Conferencias A',
-        description: 'Reunión semanal de planificación de proyectos',
-        attendees: ['Juan Pérez', 'María García', 'Carlos López'],
-        organizer: 'Juan Pérez',
-        priority: 'high',
-        backgroundColor: 'rgba(52, 152, 219, 0.9)',
-        borderColor: 'rgba(31, 95, 139, 0.9)',
-        textColor: 'white',
-        classNames: ['fc-event-custom', 'event-primary']
-      },
-      {
-        id: '2',
-        title: 'Revisión de Proyectos',
-        start: new Date(new Date().setHours(14, 0, 0, 0)),
-        end: new Date(new Date().setHours(15, 0, 0, 0)),
-        room: 'Sala de Reuniones 1',
-        description: 'Revisión mensual de proyectos en curso',
-        attendees: ['Ana Rodríguez', 'Luis Martínez'],
-        organizer: 'Ana Rodríguez',
-        priority: 'medium',
-        backgroundColor: 'rgba(52, 152, 219, 0.9)',
-        borderColor: 'rgba(31, 95, 139, 0.9)',
-        textColor: 'white',
-        classNames: ['fc-event-custom', 'event-success']
-      },
-      {
-        id: '3',
-        title: 'Presentación Ejecutiva',
-        start: new Date(new Date().setHours(9, 0, 0, 0)),
-        end: new Date(new Date().setHours(12, 0, 0, 0)),
-        room: 'Auditorio Principal',
-        description: 'Presentación de resultados trimestrales',
-        attendees: ['Directores Ejecutivos', 'Gerentes de Área'],
-        organizer: 'CEO',
-        priority: 'high',
-        backgroundColor: 'rgba(52, 152, 219, 0.9)',
-        borderColor: 'rgba(31, 95, 139, 0.9)',
-        textColor: 'white',
-        classNames: ['fc-event-custom', 'event-danger']
-      },
-      {
-        id: '4',
-        title: 'Reunión de Equipo',
-        start: new Date(new Date().setHours(10, 30, 0, 0)),
-        end: new Date(new Date().setHours(11, 30, 0, 0)),
-        room: 'Sala de Reuniones 2',
-        description: 'Reunión diaria del equipo de desarrollo',
-        attendees: ['Desarrolladores', 'QA', 'Product Owner'],
-        organizer: 'Tech Lead',
-        priority: 'medium',
-        backgroundColor: 'rgba(52, 152, 219, 0.9)',
-        borderColor: 'rgba(31, 95, 139, 0.9)',
-        textColor: 'white',
-        classNames: ['fc-event-custom', 'event-warning']
-      },
-      {
-        id: '5',
-        title: 'Entrevista de Trabajo',
-        start: new Date(new Date().setHours(11, 0, 0, 0)),
-        end: new Date(new Date().setHours(12, 0, 0, 0)),
-        room: 'Sala Ejecutiva',
-        description: 'Entrevista para posición de Senior Developer',
-        attendees: ['HR Manager', 'Tech Lead', 'Candidato'],
-        organizer: 'HR Manager',
-        priority: 'high',
-        backgroundColor: 'rgba(52, 152, 219, 0.9)',
-        borderColor: 'rgba(31, 95, 139, 0.9)',
-        textColor: 'white',
-        classNames: ['fc-event-custom', 'event-info']
-      }
-    ],
+    events: [], // Los eventos se cargarán dinámicamente
     select: (arg) => {
       this.abrirModalCrearEvento(arg);
     },
@@ -194,19 +118,51 @@ export class CalendarMeetComponent implements OnInit {
     datesSet: (arg) => {
       // Capturar el calendarApi y detectar traslapes cuando cambian las fechas
       this.calendarApi = arg.view.calendar;
-      this.detectAndStyleOverlappingEvents();
+      this.currentView = arg.view.type;
+      this.currentStartDate = arg.start;
+      this.currentEndDate = arg.end;
+
+      // Cargar eventos para la nueva vista
+      this.cargarEventosPorVista();
+
+      // Detectar traslapes y hacer scroll a la hora actual
+      setTimeout(() => {
+        this.detectAndStyleOverlappingEvents();
+
+        // Si es vista de día o semana, hacer scroll a la hora actual
+        if (this.currentView === 'timeGridDay' || this.currentView === 'timeGridWeek') {
+          this.scrollToCurrentTime();
+        }
+      }, 300);
     }
   };
 
   private calendarApi: CalendarApi | null = null;
 
-  constructor(private modalService: BsModalService) { }
+  constructor(
+    private modalService: BsModalService,
+    private calendarMeetingsService: CalendarMeetingsService,
+    private modalCrearMeetService: ModalCrearMeetService,
+  ) { }
 
   ngOnInit(): void {
+    // Actualizar scrollTime con la hora actual
+    this.calendarOptions.scrollTime = this.getCurrentTimeForScroll();
+
+    // Cargar eventos iniciales
+    this.cargarEventosPorVista();
+
     // Detectar traslapes iniciales
     setTimeout(() => {
       this.detectAndStyleOverlappingEvents();
     }, 500);
+  }
+
+  ngAfterViewInit(): void {
+    // Hacer scroll a la hora actual después de que la vista se haya renderizado
+    setTimeout(() => {
+      this.scrollToCurrentTime();
+    }, 1000);
   }
 
   private createEventId(): string {
@@ -215,28 +171,26 @@ export class CalendarMeetComponent implements OnInit {
 
   // Método para abrir modal de crear evento
   abrirModalCrearEvento(arg: any): void {
-    const initialState: ModalCrearMeetData = {
-      tituloModal: 'Crear Nueva Reunión',
-      startDate: new Date(arg.startStr),
-      endDate: new Date(arg.endStr)
-    };
 
     this.bsModalCrear = this.modalService.show(
       ModalCrearMeetComponent,
       {
-        initialState,
+        initialState: {
+          calendarData: arg
+        },
         class: "modal-lg modal-dialog-centered",
         keyboard: true,
         backdrop: "static",
       }
     );
 
-    // Suscribirse al resultado del modal
-    this.bsModalCrear.content = initialState;
-    this.bsModalCrear.onHidden?.subscribe((result: any) => {
-      if (result && result.title) {
-        this.agregarNuevoEvento(result);
-      }
+
+    this.bsModalCrear.content.eventoGuardar.subscribe({
+      next: () => {
+        this.cargarEventosPorVista();
+      },
+      error: (error: any) => { },
+      complete() { },
     });
   }
 
@@ -257,56 +211,28 @@ export class CalendarMeetComponent implements OnInit {
       }
     );
 
-    // Suscribirse al resultado del modal
-    this.bsModalEditar.content = initialState;
-    this.bsModalEditar.onHidden?.subscribe((result: any) => {
-      if (result && result.title) {
-        this.actualizarEventoExistente(event, result);
-      }
+    this.bsModalEditar.content.eventoGuardar.subscribe({
+      next: () => {
+        this.cargarEventosPorVista();
+      },
+      error: (error: any) => { },
+      complete() { },
     });
   }
 
   // Método para agregar nuevo evento
-  private agregarNuevoEvento(eventData: CreateMeetingEvent): void {
-    const newEvent: MeetingEvent = {
-      id: this.createEventId(),
-      title: eventData.title,
-      start: eventData.start,
-      end: eventData.end,
-      room: eventData.room,
-      description: eventData.description,
-      attendees: eventData.attendees,
-      organizer: eventData.organizer,
-      priority: eventData.priority,
-      backgroundColor: this.getEventColor(eventData.priority),
-      borderColor: this.getEventBorderColor(eventData.priority),
-      textColor: this.getEventTextColor(eventData.priority),
-      classNames: ['bootstrap-event', `event-${this.getEventType(eventData.priority)}`]
-    };
 
-    // Agregar evento al calendario
-    const calendarApi = this.calendarOptions.events as any;
-    if (calendarApi) {
-      calendarApi.push(newEvent);
+
+
+
+  // Método auxiliar para mapear prioridad a string
+  private mapPriorityToString(priority: 'low' | 'medium' | 'high'): string {
+    switch (priority) {
+      case 'low': return 'Baja';
+      case 'medium': return 'Media';
+      case 'high': return 'Alta';
+      default: return 'Media';
     }
-  }
-
-  // Método para actualizar evento existente
-  private actualizarEventoExistente(event: any, updatedData: EditMeetingEvent): void {
-    // Actualizar propiedades del evento
-    event.setProp('title', updatedData.title);
-    event.setExtendedProp('room', updatedData.room);
-    event.setExtendedProp('description', updatedData.description);
-    event.setExtendedProp('attendees', updatedData.attendees);
-    event.setExtendedProp('organizer', updatedData.organizer);
-    event.setExtendedProp('priority', updatedData.priority);
-    event.setStart(updatedData.start);
-    event.setEnd(updatedData.end);
-
-    // Actualizar colores
-    event.setProp('backgroundColor', this.getEventColor(updatedData.priority));
-    event.setProp('borderColor', this.getEventBorderColor(updatedData.priority));
-    event.setProp('textColor', this.getEventTextColor(updatedData.priority));
   }
 
   // Método para personalizar la visualización del evento
@@ -393,20 +319,7 @@ export class CalendarMeetComponent implements OnInit {
     }
   }
 
-  // Método para agregar nueva reunión
-  agregarReunion(evento: MeetingEvent): void {
-    const calendarApi = this.calendarOptions.events as any;
-    if (calendarApi) {
-      calendarApi.push({
-        id: this.createEventId(),
-        ...evento,
-        backgroundColor: 'rgba(52, 152, 219, 0.9)',
-        borderColor: 'rgba(31, 95, 139, 0.9)',
-        textColor: 'white',
-        classNames: ['bootstrap-event', 'event-primary']
-      });
-    }
-  }
+
 
   // Método para obtener eventos
   obtenerEventos(): MeetingEvent[] {
@@ -418,10 +331,7 @@ export class CalendarMeetComponent implements OnInit {
     const event = arg.event;
     const newStart = event.start;
     const newEnd = event.end;
-
-    console.log(`Evento redimensionado: ${event.title}`);
-    console.log(`Nuevo inicio: ${newStart}`);
-    console.log(`Nuevo fin: ${newEnd}`);
+    const idMeet = event.extendedProps.idMeet;
 
     // Detectar traslapes después del redimensionamiento
     setTimeout(() => {
@@ -430,6 +340,29 @@ export class CalendarMeetComponent implements OnInit {
 
     // Aquí puedes agregar lógica adicional para guardar los cambios
     // Por ejemplo, actualizar en base de datos, notificar a otros usuarios, etc.
+
+    // Convertir las fechas UTC a zona horaria local
+    const fechaInicioLocal = new Date(newStart.getTime() - (newStart.getTimezoneOffset() * 60000));
+    const fechaFinLocal = new Date(newEnd.getTime() - (newEnd.getTimezoneOffset() * 60000));
+
+
+
+    let meeting: IMeetModelo = {
+      idMeet: idMeet,
+      fechaInicio: fechaInicioLocal,
+      fechaFin: fechaFinLocal,
+    }
+
+    this.modalCrearMeetService.actualizarHorariosMeet(meeting).subscribe({
+      next: (response) => {
+        Notify.success(`¡Reunión actualizada exitosamente!`);
+        Loading.remove();
+      },
+      error: (error) => {
+        Loading.remove();
+        Notify.failure("Error al actualizar la reunión. Por favor, intente nuevamente.");
+      }
+    });
   }
 
   // Método para manejar el arrastre de eventos
@@ -437,10 +370,7 @@ export class CalendarMeetComponent implements OnInit {
     const event = arg.event;
     const newStart = event.start;
     const newEnd = event.end;
-
-    console.log(`Evento movido: ${event.title}`);
-    console.log(`Nuevo inicio: ${newStart}`);
-    console.log(`Nuevo fin: ${newEnd}`);
+    const idMeet = event.extendedProps.idMeet;
 
     // Detectar traslapes después del movimiento
     setTimeout(() => {
@@ -449,6 +379,115 @@ export class CalendarMeetComponent implements OnInit {
 
     // Aquí puedes agregar lógica adicional para guardar los cambios
     // Por ejemplo, actualizar en base de datos, notificar a otros usuarios, etc.
+
+    // Convertir las fechas UTC a zona horaria local
+    const fechaInicioLocal = new Date(newStart.getTime() - (newStart.getTimezoneOffset() * 60000));
+    const fechaFinLocal = new Date(newEnd.getTime() - (newEnd.getTimezoneOffset() * 60000));
+
+
+
+    let meeting: IMeetModelo = {
+      idMeet: idMeet,
+      fechaInicio: fechaInicioLocal,
+      fechaFin: fechaFinLocal,
+    }
+
+    this.modalCrearMeetService.actualizarHorariosMeet(meeting).subscribe({
+      next: (response) => {
+        Notify.success(`¡Reunión actualizada exitosamente!`);
+        Loading.remove();
+      },
+      error: (error) => {
+        Loading.remove();
+        Notify.failure("Error al actualizar la reunión. Por favor, intente nuevamente.");
+      }
+    });
+  }
+
+  /**
+   * Carga eventos según la vista actual del calendario
+   */
+  private cargarEventosPorVista(): void {
+    this.isLoading = true;
+    this.calendarMeetingsService.obtenerReunionesPorRango(
+      this.currentStartDate,
+      this.currentEndDate,
+      this.currentView
+    ).subscribe({
+      next: (reuniones) => {
+        const eventos = this.convertirReunionesAEventos(reuniones);
+        this.actualizarEventosCalendario(eventos);
+        this.isLoading = false;
+      },
+      error: (error) => {
+        this.isLoading = false;
+        // Aquí podrías mostrar una notificación de error
+      }
+    });
+  }
+
+  /**
+   * Convierte las reuniones del backend a eventos del calendario
+   */
+  private convertirReunionesAEventos(reuniones: ICalendarMeeting[]): MeetingEvent[] {
+    return reuniones.map(reunion => ({
+      id: reunion.idMeet?.toString() ?? '',
+      title: reunion.titulo ?? '',
+      start: reunion.fechaInicio,
+      end: reunion.fechaFin || reunion.fechaInicio,
+      room: (reunion as any).nombreSala || '',
+      description: reunion.descripcion,
+      attendees: Array.isArray(reunion.invitados) ? reunion.invitados.join(', ') : reunion.invitados || '',
+      organizer: Array.isArray(reunion.organizadores) ? reunion.organizadores.join(', ') : reunion.organizadores || '',
+      priority: (reunion as any).prioridadNombre ? (reunion as any).prioridadNombre : '',
+      backgroundColor: this.calendarMeetingsService.obtenerColorPorPrioridad(reunion.idPrioridad ?? 0),
+      borderColor: this.calendarMeetingsService.obtenerColorBordePorPrioridad(reunion.idPrioridad ?? 0),
+      textColor: 'white',
+      classNames: ['fc-event-custom', `event-${this.calendarMeetingsService.obtenerClasePrioridad(reunion.idPrioridad ?? 0)}`],
+      // Agregar datos extendidos para el modal de edición
+      extendedProps: {
+        idMeet: reunion.idMeet,
+        idSala: reunion.idSala,
+        idPrioridad: reunion.idPrioridad,
+        idEstado: reunion.idEstado,
+        idTipoMeet: reunion.idTipoMeet,
+        nombreSala: (reunion as any).nombreSala,
+        prioridadNombre: (reunion as any).prioridadNombre,
+        invitados: reunion.invitados,
+        organizadores: reunion.organizadores,
+        documentoOficial: reunion.documentoOficial
+      }
+    }));
+  }
+
+  /**
+   * Actualiza los eventos del calendario
+   */
+  private actualizarEventosCalendario(eventos: MeetingEvent[]): void {
+    if (this.calendarApi) {
+      // Limpiar eventos existentes
+      this.calendarApi.removeAllEvents();
+      // Agregar nuevos eventos
+      this.calendarApi.addEventSource(eventos);
+    }
+  }
+
+
+
+  /**
+   * Obtiene el nombre legible de la vista actual
+   */
+  obtenerNombreVista(): string {
+    switch (this.currentView) {
+      case 'timeGridDay':
+        return 'Día';
+      case 'timeGridWeek':
+        return 'Semana';
+      case 'dayGridMonth':
+        return 'Mes';
+      default:
+        return 'Vista';
+    }
   }
 
   // Método para detectar eventos traslapados y aplicar estilos
@@ -515,5 +554,67 @@ export class CalendarMeetComponent implements OnInit {
         );
       }
     });
+  }
+
+  /**
+   * Obtiene la hora actual formateada para el scrollTime del calendario
+   */
+  private getCurrentTimeForScroll(): string {
+    const now = new Date();
+    const hours = now.getHours().toString().padStart(2, '0');
+    const minutes = now.getMinutes().toString().padStart(2, '0');
+
+    // Si es muy temprano (antes de las 6 AM), mostrar desde las 6 AM
+    if (now.getHours() < 6) {
+      return '06:00:00';
+    }
+
+    // Si es muy tarde (después de las 10 PM), mostrar desde las 10 PM
+    if (now.getHours() > 22) {
+      return '22:00:00';
+    }
+
+    // Restar 1 hora para centrar mejor la hora actual en la vista
+    const adjustedHour = Math.max(0, now.getHours() - 1);
+    return `${adjustedHour.toString().padStart(2, '0')}:${minutes}:00`;
+  }
+
+  /**
+   * Hace scroll hacia la línea de la hora actual (línea roja)
+   */
+  private scrollToCurrentTime(): void {
+    if (!this.calendarApi) {
+      return;
+    }
+
+    // Buscar la línea indicadora de la hora actual
+    const nowIndicator = document.querySelector('.fc-timegrid-now-indicator-line') as HTMLElement;
+
+    if (nowIndicator) {
+      // Scroll hacia la línea de la hora actual con una animación suave
+      nowIndicator.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+        inline: 'nearest'
+      });
+    } else {
+      // Si no se encuentra la línea, usar el método nativo de FullCalendar
+      try {
+        const now = new Date();
+        const currentTimeString = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:00`;
+
+        // Actualizar el scrollTime y refrescar la vista
+        this.calendarApi.setOption('scrollTime', currentTimeString);
+      } catch (error) {
+        // No se pudo hacer scroll a la hora actual
+      }
+    }
+  }
+
+  /**
+   * Método público para hacer scroll a la hora actual (puede ser llamado desde el template)
+   */
+  public scrollToNow(): void {
+    this.scrollToCurrentTime();
   }
 }
